@@ -86,7 +86,7 @@ data class GameState(
         playerPositions
             .filterKeys { it != Diver && it != Pilot }
             .filter { locationFloodStates.getValue(it.value.location) == Sunken }
-            .filter { gameSetup.map.adjacentSites(it.value.position, includeDiagonals = it.key == Explorer)
+            .filter { gameSetup.map.adjacentSites(it.value.position, includeDiagonals = (it.key == Explorer))
             .all { locationFloodStates.getValue(it.location) == Sunken } }
             .keys
 
