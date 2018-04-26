@@ -2,6 +2,8 @@
 
 package com.grahamlea.forbiddenisland
 
+import com.grahamlea.forbiddenisland.Adventurer.Diver
+import com.grahamlea.forbiddenisland.Adventurer.Messenger
 import com.grahamlea.forbiddenisland.FloodLevel.*
 import com.grahamlea.forbiddenisland.GameSetup.Companion.newRandomGameSetupFor
 import com.grahamlea.forbiddenisland.LocationFloodState.Flooded
@@ -12,7 +14,6 @@ import org.hamcrest.CoreMatchers.not
 import org.hamcrest.CoreMatchers.nullValue
 import org.junit.Assert.assertThat
 import org.junit.Test
-import kotlin.reflect.KClass
 import org.hamcrest.CoreMatchers.`is` as is_
 
 class GameInitialisationTest {
@@ -118,6 +119,12 @@ class GameInitialisationTest {
         val treasureDeck = GameState::class.getPrivateFieldValue("treasureDeck", game.gameState) as ImmutableList<HoldableCard>
         assertThat(treasureDeck.count { it === WatersRiseCard }, is_(3))
         assertThat(treasureDeck.dropLast(3), is_(not(initialTreasureDeck.drop(7))))
+    }
+
+    @Test()
+    fun `new game phase is waiting for first player action out of 3`() {
+        val game = Game.newRandomGameFor(listOf(Diver, Messenger).immutable(), GameMap.newShuffledMap())
+        assertThat(game.gameState.phase, is_(AwaitingPlayerAction(Diver, 3) as GamePhase))
     }
 
     @Test()

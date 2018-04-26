@@ -1,6 +1,7 @@
 package com.grahamlea.forbiddenisland
 
 import com.grahamlea.forbiddenisland.Adventurer.Companion.randomListOfPlayers
+import com.grahamlea.forbiddenisland.GamePhase.Companion.maxActionsPerPlayerTurn
 import com.grahamlea.forbiddenisland.LocationFloodState.*
 import java.util.*
 
@@ -79,8 +80,8 @@ class Game(val gameSetup: GameSetup, gameState: GameState, val random: Random = 
                     treasuresCollected = Treasure.values().associate { Pair(it, false) }.immutable(),
                     locationFloodStates = initialLocationFloodStates.immutable(),
                     playerCards = initialPlayerCards.mapValues { (_, v) -> v.immutable() }.immutable(),
-                    playerPositions = initialPlayerPositions.immutable()
-
+                    playerPositions = initialPlayerPositions.immutable(),
+                    phase = AwaitingPlayerAction(gameSetup.adventurers.first(), actionsRemaining = maxActionsPerPlayerTurn)
             )
 
             return Game(gameSetup, gameState, random)

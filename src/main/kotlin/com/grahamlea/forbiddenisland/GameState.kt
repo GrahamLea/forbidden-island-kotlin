@@ -6,7 +6,6 @@ import com.grahamlea.forbiddenisland.Location.FoolsLanding
 import com.grahamlea.forbiddenisland.LocationFloodState.Sunken
 
 data class GameState(
-        // TODO: Need to record which player's turn it is, how many actions remaining, are we turning flood cards, etc
         val gameSetup: GameSetup,
         val floodLevel: FloodLevel,
         private val treasureDeck: ImmutableList<HoldableCard>,
@@ -16,7 +15,8 @@ data class GameState(
         val treasuresCollected: ImmutableMap<Treasure, Boolean>,
         val locationFloodStates: ImmutableMap<Location, LocationFloodState>,
         val playerPositions: ImmutableMap<Adventurer, MapSite>,
-        val playerCards: ImmutableMap<Adventurer, ImmutableList<HoldableCard>>
+        val playerCards: ImmutableMap<Adventurer, ImmutableList<HoldableCard>>,
+        val phase: GamePhase
         ) {
 
     init {
