@@ -63,20 +63,18 @@ data class GameState(
         }
     }
 
-    val result: GameResult?
-
-    init {
+    val result: GameResult? by lazy {
         val lostTreasures = unreachableTreasures() intersect uncollectedTreasures()
         val drownedPlayers = drownedPlayers()
-        result = when {
+        when {
             floodLevel == DEAD -> MaximumWaterLevelReached
             drownedPlayers.any() -> PlayerDrowned(drownedPlayers.first())
             lostTreasures.any() -> BothPickupLocationsSankBeforeCollectingTreasure(lostTreasures.first())
             locationFloodStates[FoolsLanding] == Sunken -> FoolsLandingSank
             treasuresCollected.all { it.value } &&
-                playerPositions.values.all { it.location == FoolsLanding } &&
-                treasureDeckDiscard.lastOrNull() == HelicopterLiftCard
-                -> AdventurersWon
+                    playerPositions.values.all { it.location == FoolsLanding } &&
+                    treasureDeckDiscard.lastOrNull() == HelicopterLiftCard
+            -> AdventurersWon
             else -> null
         }
     }
