@@ -81,23 +81,22 @@ data class GameState(
         }
     }
 
+    private fun uncollectedTreasures(): Set<Treasure> = treasuresCollected.filterValues { !it }.keys
+
     private fun drownedPlayers() =
         playerPositions
             .filterKeys { it != Diver && it != Pilot }
             .filter { locationFloodStates.getValue(it.value.location) == Sunken }
             .filter { gameSetup.map.adjacentSites(it.value.position, includeDiagonals = it.key == Explorer)
-                        .all { locationFloodStates.getValue(it.location) == Sunken } }
+            .all { locationFloodStates.getValue(it.location) == Sunken } }
             .keys
 
-    private fun uncollectedTreasures(): Set<Treasure> = treasuresCollected.filterValues { !it }.keys
-
-    private fun unreachableTreasures(): Set<Treasure> {
-        return locationFloodStates
-                .filterKeys { it.pickupLocationForTreasure != null }
-                .toList()
-                .groupBy { it.first.pickupLocationForTreasure!! }
-                .filterValues { it.all { it.second == Sunken } }
-                .keys
-    }
+    private fun unreachableTreasures(): Set<Treasure> =
+        locationFloodStates
+            .filterKeys { it.pickupLocationForTreasure != null }
+            .toList()
+            .groupBy { it.first.pickupLocationForTreasure!! }
+            .filterValues { it.all { it.second == Sunken } }
+            .keys
 
 }
