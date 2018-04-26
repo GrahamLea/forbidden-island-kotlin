@@ -87,8 +87,6 @@ class GameStateResultTest {
                 .withPlayerPosition(players[1], game.gameSetup.map.positionOf(TempleOfTheSun))
         }
 
-        println("game = ${game}")
-
         assertThat(game.gameState.result, is_(nullValue()))
     }
 
