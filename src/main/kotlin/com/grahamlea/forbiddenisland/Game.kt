@@ -26,8 +26,8 @@ class Game(val gameSetup: GameSetup, gameState: GameState, val random: Random = 
         fun newRandomGameFor(numberOfPlayers: Int, random: Random = Random()) =
                 newRandomGameFor(randomListOfPlayers(numberOfPlayers, random), GameMap.newShuffledMap(random), random)
 
-        fun newRandomGameFor(adventurers: ImmutableList<Adventurer>, map: GameMap, random: Random = Random()) =
-                newRandomGameFor(GameSetup(adventurers, map), random)
+        fun newRandomGameFor(players: ImmutableList<Adventurer>, map: GameMap, random: Random = Random()) =
+                newRandomGameFor(GameSetup(players, map), random)
 
         fun newRandomGameFor(
                 gameSetup: GameSetup,
@@ -45,18 +45,18 @@ class Game(val gameSetup: GameSetup, gameState: GameState, val random: Random = 
             val mutableTreasureDeck = treasureDeck.toMutableList()
 
             val initialPlayerCards = mutableMapOf<Adventurer, MutableList<HoldableCard>>()
-            for (adventurer in gameSetup.adventurers) {
-                initialPlayerCards.put(adventurer, mutableListOf())
+            for (player in gameSetup.players) {
+                initialPlayerCards.put(player, mutableListOf())
             }
             var watersRiseCardsRemoved = 0
             for (n in 1..numberOfInitialTreasureCardsPerPlayer) {
-                for (adventurer in gameSetup.adventurers) {
+                for (player in gameSetup.players) {
                     var card = mutableTreasureDeck.removeAt(0)
                     while (card is WatersRiseCard) {
                         watersRiseCardsRemoved++
                         card = mutableTreasureDeck.removeAt(0)
                     }
-                    initialPlayerCards[adventurer]!!.add(card)
+                    initialPlayerCards[player]!!.add(card)
                 }
             }
             if (watersRiseCardsRemoved != 0) {
@@ -64,9 +64,9 @@ class Game(val gameSetup: GameSetup, gameState: GameState, val random: Random = 
                 mutableTreasureDeck.shuffle(random)
             }
 
-            val initialPlayerPositions = gameSetup.adventurers.associate { adventurer ->
-                adventurer to
-                        (Location.values().first { it.startingLocationForAdventurer == adventurer }
+            val initialPlayerPositions = gameSetup.players.associate { player ->
+                player to
+                        (Location.values().first { it.startingLocationForAdventurer == player }
                                 .let { location -> gameSetup.map.mapSites.first { it.location == location } })
             }
 
@@ -81,7 +81,7 @@ class Game(val gameSetup: GameSetup, gameState: GameState, val random: Random = 
                     locationFloodStates = initialLocationFloodStates.immutable(),
                     playerCards = initialPlayerCards.mapValues { (_, v) -> v.immutable() }.immutable(),
                     playerPositions = initialPlayerPositions.immutable(),
-                    phase = AwaitingPlayerAction(gameSetup.adventurers.first(), actionsRemaining = maxActionsPerPlayerTurn)
+                    phase = AwaitingPlayerAction(gameSetup.players.first(), actionsRemaining = maxActionsPerPlayerTurn)
             )
 
             return Game(gameSetup, gameState, random)
@@ -90,10 +90,10 @@ class Game(val gameSetup: GameSetup, gameState: GameState, val random: Random = 
     }
 }
 
-data class GameSetup(val adventurers: ImmutableList<Adventurer>, val map: GameMap) {
+data class GameSetup(val players: ImmutableList<Adventurer>, val map: GameMap) {
     init {
-        require(adventurers.size in 2..4) { "The game must have 2, 3 or 4 adventurers." }
-        require(adventurers.distinct().size == adventurers.size) { "Each Adventurer can only be played by one player." }
+        require(players.size in 2..4) { "The game must have 2, 3 or 4 players." }
+        require(players.distinct().size == players.size) { "Each Adventurer can only be played by one player." }
     }
 
     companion object {

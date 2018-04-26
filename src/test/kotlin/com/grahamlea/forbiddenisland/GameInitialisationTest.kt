@@ -28,9 +28,9 @@ class GameInitialisationTest {
 
     @Test
     fun `new game has unique Adventurer for each player`() {
-        assertThat(Game.newRandomGameFor(2).gameSetup.adventurers.distinct().size, is_(2))
-        assertThat(Game.newRandomGameFor(3).gameSetup.adventurers.distinct().size, is_(3))
-        assertThat(Game.newRandomGameFor(4).gameSetup.adventurers.distinct().size, is_(4))
+        assertThat(Game.newRandomGameFor(2).gameSetup.players.distinct().size, is_(2))
+        assertThat(Game.newRandomGameFor(3).gameSetup.players.distinct().size, is_(3))
+        assertThat(Game.newRandomGameFor(4).gameSetup.players.distinct().size, is_(4))
     }
 
     @Test
@@ -68,10 +68,10 @@ class GameInitialisationTest {
         val checksPerAdventurer = Adventurer.values().associate { it to 0 }.toMutableMap()
         while (checksPerAdventurer.values.any { it < 2 }) {
             val game = Game.newRandomGameFor(4)
-            for (adventurer in game.gameSetup.adventurers) {
-                val expectedStartingLocation = Location.values().first { it.startingLocationForAdventurer == adventurer }
-                assertThat(game.gameState.playerPositions[adventurer]?.location, is_(expectedStartingLocation))
-                checksPerAdventurer[adventurer] = checksPerAdventurer[adventurer]!! + 1
+            for (player in game.gameSetup.players) {
+                val expectedStartingLocation = Location.values().first { it.startingLocationForAdventurer == player }
+                assertThat(game.gameState.playerPositions[player]?.location, is_(expectedStartingLocation))
+                checksPerAdventurer[player] = checksPerAdventurer[player]!! + 1
             }
         }
     }

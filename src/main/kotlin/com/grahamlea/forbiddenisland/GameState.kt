@@ -48,8 +48,8 @@ data class GameState(
         }
 
         // Players with positions must match those in the game setup
-        require(playerPositions.keys == gameSetup.adventurers.toSet()) {
-            "Adventurers with positions ${playerPositions.keys} must match the adventurers in the game ${gameSetup.adventurers.toSet()}"
+        require(playerPositions.keys == gameSetup.players.toSet()) {
+            "Adventurers with positions ${playerPositions.keys} must match the players in the game ${gameSetup.players.toSet()}"
         }
 
         // MapSites of playerPositions must match GameSetup
@@ -58,8 +58,8 @@ data class GameState(
         }
 
         // Players with cards must match those in the game setup
-        require(playerCards.keys == gameSetup.adventurers.toSet()) {
-            "Adventurers with cards ${playerCards.keys} must match the adventurers in the game ${gameSetup.adventurers.toSet()}"
+        require(playerCards.keys == gameSetup.players.toSet()) {
+            "Adventurers with cards ${playerCards.keys} must match the players in the game ${gameSetup.players.toSet()}"
         }
     }
 

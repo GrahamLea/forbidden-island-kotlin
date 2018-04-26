@@ -12,7 +12,7 @@ object GamePrinter {
     ): String {
         val maxLocationNameLengthPerColumn =
             map.mapSites.groupBy { it.position.x }.mapValues { it.value.map { it.location.toString().length }.max()!! }
-        val maxAdventurersOnSingleSitePerColumn =
+        val maxPlayersOnSingleSitePerColumn =
             map.mapSites.groupBy { it.position.x }.mapValues { it.value.map { site -> playerPositions.count { it.value == site } }.max() ?: 0 }
 
         val mapSiteStrings = map.mapSites.associate { site ->
@@ -20,7 +20,7 @@ object GamePrinter {
                     toString(
                             site,
                             playerPositions.filterValues { it == site }.keys,
-                            maxAdventurersOnSingleSitePerColumn.getValue(site.position.x),
+                            maxPlayersOnSingleSitePerColumn.getValue(site.position.x),
                             maxLocationNameLengthPerColumn[site.position.x],
                             locationFloodStates[site.location]
                     )
@@ -38,20 +38,20 @@ object GamePrinter {
 
     fun toString(
             mapSite: MapSite,
-            adventurers: Set<Adventurer>? = null,
-            maxAdventurersOnSingleSiteInColumn: Int = 0,
+            players: Set<Adventurer>? = null,
+            maxPlayersOnSingleSiteInColumn: Int = 0,
             padToAccommodateLocationNameLength: Int? = null,
             floodState: LocationFloodState? = null
     ): String {
-        val adventurerString = when {
-            adventurers == null -> ""
-            maxAdventurersOnSingleSiteInColumn == 0 -> ""
-            adventurers.none() -> " ".repeat(maxAdventurersOnSingleSiteInColumn + 1)
-            else -> "%${maxAdventurersOnSingleSiteInColumn}s>"
-                        .format(adventurers.map { if (it == Adventurer.Explorer) 'X' else it.name[0] }.sorted().joinToString(""))
+        val playersString = when {
+            players == null -> ""
+            maxPlayersOnSingleSiteInColumn == 0 -> ""
+            players.none() -> " ".repeat(maxPlayersOnSingleSiteInColumn + 1)
+            else -> "%${maxPlayersOnSingleSiteInColumn}s>"
+                        .format(players.map { if (it == Adventurer.Explorer) 'X' else it.name[0] }.sorted().joinToString(""))
         }
         val floodStateString = floodState?.let { when (it) { Sunken -> "**"; Flooded -> "* "; else -> "  "} } ?: ""
-        return adventurerString +
+        return playersString +
             ((if (padToAccommodateLocationNameLength == null) "%s~%s" else "%s:%-${padToAccommodateLocationNameLength + 2}s")
                     .format(mapSite.position, mapSite.location.toString() + floodStateString))
     }
