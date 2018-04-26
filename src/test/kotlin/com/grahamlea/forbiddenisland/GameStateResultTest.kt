@@ -27,7 +27,7 @@ class GameStateResultTest {
         }
     }
 
-    val allLocationsUnflooded = Location.values().associate { it to Unflooded }
+    private val allLocationsUnflooded = Location.values().associate { it to Unflooded }
 
     // TODO: Game is won only when Helicopter Lift is played after players on Fool's Landing.
     // TODO: Game not won when all treasures possessed, all players on Fool's Landing and Helicopter Lift was previous card played
