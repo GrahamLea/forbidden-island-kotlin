@@ -40,7 +40,7 @@ class GameStateResultTest {
                     treasuresCollected = Treasure.values().associate { it to true }.immutable(),
                     treasureDeck = (TreasureDeck.newShuffledDeck() - TreasureCard(EarthStone) - HelicopterLiftCard).immutable(),
                     treasureDeckDiscard = immutableListOf(TreasureCard(EarthStone), HelicopterLiftCard),
-                    playerCards = players.associate { it to emptyList<HoldableCard>().immutable() }.immutable()
+                    playerCards = players.associate { it to immutableListOf<HoldableCard>() }.immutable()
             ))
                 .withPlayerPosition(players[0], game.gameSetup.map.positionOf(FoolsLanding))
                 .withPlayerPosition(players[1], game.gameSetup.map.positionOf(FoolsLanding))
@@ -81,7 +81,7 @@ class GameStateResultTest {
                     treasuresCollected = Treasure.values().associate { it to true }.immutable(),
                     treasureDeck = (TreasureDeck.newShuffledDeck() - TreasureCard(EarthStone) - HelicopterLiftCard).immutable(),
                     treasureDeckDiscard = immutableListOf(TreasureCard(EarthStone), HelicopterLiftCard),
-                    playerCards = players.associate { it to emptyList<HoldableCard>().immutable() }.immutable()
+                    playerCards = players.associate { it to immutableListOf<HoldableCard>() }.immutable()
             ))
                 .withPlayerPosition(players[0], game.gameSetup.map.positionOf(FoolsLanding))
                 .withPlayerPosition(players[1], game.gameSetup.map.positionOf(TempleOfTheSun))
@@ -98,7 +98,7 @@ class GameStateResultTest {
                     treasuresCollected = (Treasure.values().take(3).associate { it to true } + (Treasure.values().last() to false)).immutable(),
                     treasureDeck = (TreasureDeck.newShuffledDeck() - TreasureCard(EarthStone) - HelicopterLiftCard).immutable(),
                     treasureDeckDiscard = immutableListOf(TreasureCard(EarthStone), HelicopterLiftCard),
-                    playerCards = players.associate { it to emptyList<HoldableCard>().immutable() }.immutable()
+                    playerCards = players.associate { it to immutableListOf<HoldableCard>() }.immutable()
             ))
                 .withPlayerPosition(players[0], game.gameSetup.map.positionOf(FoolsLanding))
                 .withPlayerPosition(players[1], game.gameSetup.map.positionOf(FoolsLanding))

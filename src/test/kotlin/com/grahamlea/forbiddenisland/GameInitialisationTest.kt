@@ -98,7 +98,7 @@ class GameInitialisationTest {
 
     @Test
     fun `new game has empty treasure deck discard pile`() {
-        assertThat(Game.newRandomGameFor(4).gameState.treasureDeckDiscard, is_(emptyList<HoldableCard>().immutable()))
+        assertThat(Game.newRandomGameFor(4).gameState.treasureDeckDiscard, is_(immutableListOf()))
     }
 
     @Test
