@@ -9,7 +9,7 @@
     <url>http://maven.apache.org</url>
     <properties>
         <kotlin.version>1.2.40</kotlin.version>
-        <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
+        <!--<kotlin.compiler.incremental>true</kotlin.compiler.incremental>-->
     </properties>
     <dependencies>
         <dependency>
