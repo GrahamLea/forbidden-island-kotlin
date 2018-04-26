@@ -102,6 +102,11 @@ class GameInitialisationTest {
     }
 
     @Test
+    fun `new game has empty previous event list`() {
+        assertThat(Game.newRandomGameFor(4).gameState.previousEvents, is_(immutableListOf()))
+    }
+
+    @Test
     fun `Waters Rise! cards are not dealt to players but shuffled back into the Treasure Deck`() {
         val treasureDeckWithoutWatersRise = TreasureDeck.newShuffledDeck().filterNot { it === WatersRiseCard }
         val initialTreasureDeck = listOf(WatersRiseCard, WatersRiseCard, WatersRiseCard) + treasureDeckWithoutWatersRise

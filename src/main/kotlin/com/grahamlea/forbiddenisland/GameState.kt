@@ -16,8 +16,9 @@ data class GameState(
         val locationFloodStates: ImmutableMap<Location, LocationFloodState>,
         val playerPositions: ImmutableMap<Adventurer, MapSite>,
         val playerCards: ImmutableMap<Adventurer, ImmutableList<HoldableCard>>,
-        val phase: GamePhase
-        ) {
+        val phase: GamePhase,
+        val previousEvents: ImmutableList<GameEvent> = immutableListOf()
+    ) {
 
     init {
         // Cards in treasure decks and hands must make a full deck
