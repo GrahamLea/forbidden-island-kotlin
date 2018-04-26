@@ -2,7 +2,8 @@ package com.grahamlea.forbiddenisland
 
 import com.grahamlea.forbiddenisland.Adventurer.Companion.randomListOfPlayers
 import com.grahamlea.forbiddenisland.GamePhase.Companion.maxActionsPerPlayerTurn
-import com.grahamlea.forbiddenisland.LocationFloodState.*
+import com.grahamlea.forbiddenisland.LocationFloodState.Flooded
+import com.grahamlea.forbiddenisland.LocationFloodState.Unflooded
 import java.util.*
 
 class Game(val gameSetup: GameSetup, gameState: GameState, val random: Random = Random()) {
@@ -17,6 +18,10 @@ class Game(val gameSetup: GameSetup, gameState: GameState, val random: Random = 
     ): Game = Game(gameSetup, gameState, random)
 
     override fun toString() = "Game($gameSetup, $gameState)"
+
+    fun process(event: GameEvent) {
+        gameState = gameState.after(event)
+    }
 
     companion object {
 

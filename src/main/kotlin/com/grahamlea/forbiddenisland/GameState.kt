@@ -80,6 +80,16 @@ data class GameState(
         }
     }
 
+    fun after(event: GameEvent): GameState {
+        // TODO Check that event is in list of possible events
+        return this.copy(previousEvents = previousEvents + event).let {
+            when (event) {
+                is Move -> it.copy(playerPositions = playerPositions + (event.player to event.mapSite))
+                else -> throw IllegalArgumentException("Event type ${event::class} isn't currently handled")
+            }
+        }
+    }
+
     private fun uncollectedTreasures(): Set<Treasure> = treasuresCollected.filterValues { !it }.keys
 
     private fun drownedPlayers() =
