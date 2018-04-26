@@ -123,7 +123,7 @@ class GameInitialisationTest {
 
     @Test()
     fun `new game phase is waiting for first player action out of 3`() {
-        val game = Game.newRandomGameFor(listOf(Diver, Messenger).immutable(), GameMap.newShuffledMap())
+        val game = Game.newRandomGameFor(listOf(Diver, Messenger).immutable())
         assertThat(game.gameState.phase, is_(AwaitingPlayerAction(Diver, 3) as GamePhase))
     }
 

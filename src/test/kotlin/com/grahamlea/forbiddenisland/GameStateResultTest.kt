@@ -35,7 +35,7 @@ class GameStateResultTest {
     @Test
     fun `game is won when all four treasures are collected and all adventurers are on fool's landing and helicopter lift has been played`() {
         val players = randomListOfPlayers(2)
-        val game = Game.newRandomGameFor(players, GameMap.newShuffledMap()).let { game ->
+        val game = Game.newRandomGameFor(players).let { game ->
             game.copy(gameState = game.gameState.copy(
                     treasuresCollected = Treasure.values().associate { it to true }.immutable(),
                     treasureDeck = (TreasureDeck.newShuffledDeck() - TreasureCard(EarthStone) - HelicopterLiftCard).immutable(),
@@ -52,7 +52,7 @@ class GameStateResultTest {
     @Test
     fun `game is not won just when all four treasures are collected`() {
         val players = randomListOfPlayers(2)
-        val game = Game.newRandomGameFor(players, GameMap.newShuffledMap()).let { game ->
+        val game = Game.newRandomGameFor(players).let { game ->
             game.copy(gameState = game.gameState.copy(
                     treasuresCollected = Treasure.values().associate { it to true }.immutable()))
         }
@@ -63,7 +63,7 @@ class GameStateResultTest {
     @Test
     fun `game is not won when all four treasures are collected and all adventurers are on fool's landing`() {
         val players = randomListOfPlayers(2)
-        val game = Game.newRandomGameFor(players, GameMap.newShuffledMap()).let { game ->
+        val game = Game.newRandomGameFor(players).let { game ->
             game.copy(gameState = game.gameState.copy(
                     treasuresCollected = Treasure.values().associate { it to true }.immutable()))
                 .withPlayerPosition(players[0], game.gameSetup.map.positionOf(FoolsLanding))
@@ -76,7 +76,7 @@ class GameStateResultTest {
     @Test
     fun `game is not won when all four treasures are collected and one adventurers is on fool's landing and helicopter lift has been played`() {
         val players = randomListOfPlayers(2)
-        val game = Game.newRandomGameFor(players, GameMap.newShuffledMap()).let { game ->
+        val game = Game.newRandomGameFor(players).let { game ->
             game.copy(gameState = game.gameState.copy(
                     treasuresCollected = Treasure.values().associate { it to true }.immutable(),
                     treasureDeck = (TreasureDeck.newShuffledDeck() - TreasureCard(EarthStone) - HelicopterLiftCard).immutable(),
@@ -93,7 +93,7 @@ class GameStateResultTest {
     @Test
     fun `game is not won when three treasures are collected and all adventurers are on fool's landing and helicopter lift has been played`() {
         val players = randomListOfPlayers(2)
-        val game = Game.newRandomGameFor(players, GameMap.newShuffledMap()).let { game ->
+        val game = Game.newRandomGameFor(players).let { game ->
             game.copy(gameState = game.gameState.copy(
                     treasuresCollected = (Treasure.values().take(3).associate { it to true } + (Treasure.values().last() to false)).immutable(),
                     treasureDeck = (TreasureDeck.newShuffledDeck() - TreasureCard(EarthStone) - HelicopterLiftCard).immutable(),

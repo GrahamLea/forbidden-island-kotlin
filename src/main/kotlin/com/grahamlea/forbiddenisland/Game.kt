@@ -24,7 +24,10 @@ class Game(val gameSetup: GameSetup, gameState: GameState, val random: Random = 
         private const val numberOfInitialLocationsToFlood = 6
 
         fun newRandomGameFor(numberOfPlayers: Int, random: Random = Random()) =
-                newRandomGameFor(randomListOfPlayers(numberOfPlayers, random), GameMap.newShuffledMap(random), random)
+                newRandomGameFor(randomListOfPlayers(numberOfPlayers, random), random)
+
+        fun newRandomGameFor(players: ImmutableList<Adventurer>, random: Random = Random()) =
+                newRandomGameFor(GameSetup(players, GameMap.newShuffledMap(random)), random)
 
         fun newRandomGameFor(players: ImmutableList<Adventurer>, map: GameMap, random: Random = Random()) =
                 newRandomGameFor(GameSetup(players, map), random)
