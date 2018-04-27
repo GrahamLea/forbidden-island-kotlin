@@ -55,4 +55,28 @@ class GameStateProgressionTest {
         assertThat(nextGameState.locationFloodStates[mapSiteToShoreUp.location], is_(LocationFloodState.Unflooded))
     }
 
+    @Test
+    fun `give treasure card event on game state changes player cards`() {
+        val card = TreasureCard(Treasure.EarthStone)
+        val emptyCardList = immListOf<HoldableCard>()
+        val game = Game.newRandomGameFor(immListOf(Messenger, Engineer), GameMap.newShuffledMap())
+                .withPlayerCards(immMapOf(Messenger to emptyCardList + card + card, Engineer to emptyCardList + card + card))
+
+        val event = GiveTreasureCard(Messenger, Engineer, immListOf(card))
+        val nextGameState = game.gameState.after(event)
+        assertThat(nextGameState.playerCards, is_(immMapOf(Messenger to emptyCardList + card, Engineer to emptyCardList + card + card + card)))
+    }
+
+    @Test
+    fun `give multiple treasure cards event on game state changes player cards`() {
+        val card = TreasureCard(Treasure.EarthStone)
+        val emptyCardList = immListOf<HoldableCard>()
+        val game = Game.newRandomGameFor(immListOf(Messenger, Engineer), GameMap.newShuffledMap())
+                .withPlayerCards(immMapOf(Messenger to emptyCardList + card + card, Engineer to emptyCardList + card + card))
+
+        val event = GiveTreasureCard(Messenger, Engineer, immListOf(card, card))
+        val nextGameState = game.gameState.after(event)
+        assertThat(nextGameState.playerCards, is_(immMapOf(Messenger to emptyCardList, Engineer to emptyCardList + card + card + card + card)))
+    }
+
 }

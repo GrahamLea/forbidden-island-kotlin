@@ -13,7 +13,7 @@ data class ShoreUp(val player: Adventurer, val mapSite: MapSite, val mapSite2: M
         "$mapSite ${if (mapSite2 == null) "is" else "and $mapSite2 are "} shored up by $player"
 }
 
-data class GiveTreasureCard(val player: Adventurer, val receiver: Adventurer, val cards: List<TreasureCard>): PlayerActionEvent() {
+data class GiveTreasureCard(val player: Adventurer, val receiver: Adventurer, val cards: ImmutableList<TreasureCard>): PlayerActionEvent() {
     override fun toString() = "$player gives ${cards} to $receiver"
 }
 

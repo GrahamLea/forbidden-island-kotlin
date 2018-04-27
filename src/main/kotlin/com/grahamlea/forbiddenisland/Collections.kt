@@ -8,6 +8,10 @@ fun <T> immListOf(vararg elements: T): ImmutableList<T> = listOf(*elements).imm(
 infix operator fun <E> ImmutableList<E>.plus(e: E): ImmutableList<E> = ImmutableList(this as List<E> + e)
 infix operator fun <E> ImmutableList<E>.plus(es: Collection<E>): ImmutableList<E> = ImmutableList(this as List<E> + es)
 fun <E> List<E>.imm() = this as? ImmutableList<E> ?: ImmutableList(this)
+fun <E> ImmutableList<E>.subtract(es: Collection<E>): ImmutableList<E> {
+    val undesired = es.toMutableList()
+    return this.filter { !undesired.remove(it) }.imm()
+}
 
 data class ImmutableMap<K, out V>(private val inner: Map<K, V>) : Map<K, V> by inner
 fun <K, V> immMapOf(pair: Pair<K, V>): ImmutableMap<K, V> = java.util.Collections.singletonMap(pair.first, pair.second).imm()

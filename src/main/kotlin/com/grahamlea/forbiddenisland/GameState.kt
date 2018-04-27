@@ -87,6 +87,10 @@ data class GameState(
             when (event) {
                 is Move -> it.copy(playerPositions = playerPositions + (event.player to event.mapSite))
                 is ShoreUp -> it.copy(locationFloodStates = it.locationFloodStates + (event.mapSite.location to Unflooded))
+                is GiveTreasureCard -> it.copy(playerCards =
+                    playerCards + (event.player   to playerCards.getValue(event.player)  .subtract(event.cards)) +
+                                  (event.receiver to playerCards.getValue(event.receiver).plus(    event.cards))
+                )
                 else -> throw IllegalArgumentException("Event type ${event::class} isn't currently handled")
             }
         }

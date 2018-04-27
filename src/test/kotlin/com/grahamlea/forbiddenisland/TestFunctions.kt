@@ -33,6 +33,15 @@ fun Game.withPlayerPosition(player: Adventurer, newPosition: Position): Game {
     )
 }
 
+fun Game.withPlayerCards(playerCards: ImmutableMap<Adventurer, ImmutableList<HoldableCard>>): Game {
+    return copy(
+        gameState.copy(
+            playerCards = playerCards,
+            treasureDeck = (TreasureDeck.newShuffledDeck().subtract(playerCards.values.flatten()))
+        )
+    )
+}
+
 @Suppress("UNCHECKED_CAST")
 val GameState.treasureDeck: ImmutableList<HoldableCard>
     get() = GameState::class.getPrivateFieldValue("treasureDeck", this) as ImmutableList<HoldableCard>
