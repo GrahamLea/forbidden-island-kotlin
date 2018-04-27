@@ -4,6 +4,7 @@ import com.grahamlea.forbiddenisland.Adventurer.*
 import com.grahamlea.forbiddenisland.FloodLevel.DEAD
 import com.grahamlea.forbiddenisland.Location.FoolsLanding
 import com.grahamlea.forbiddenisland.LocationFloodState.Sunken
+import com.grahamlea.forbiddenisland.LocationFloodState.Unflooded
 
 data class GameState(
         val gameSetup: GameSetup,
@@ -85,6 +86,7 @@ data class GameState(
         return this.copy(previousEvents = previousEvents + event).let {
             when (event) {
                 is Move -> it.copy(playerPositions = playerPositions + (event.player to event.mapSite))
+                is ShoreUp -> it.copy(locationFloodStates = it.locationFloodStates + (event.mapSite.location to Unflooded))
                 else -> throw IllegalArgumentException("Event type ${event::class} isn't currently handled")
             }
         }

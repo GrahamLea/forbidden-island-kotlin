@@ -12,14 +12,15 @@ class GameStateProgressionTest {
     fun `events on game state are recorded in previous events`() {
         val game = Game.newRandomGameFor(immutableListOf(Engineer, Messenger), GameMap.newShuffledMap())
                 .withPlayerPosition(Engineer, Position(4, 4))
+                .withLocationFloodStates(LocationFloodState.Flooded, listOf(Position(2, 3)))
 
-        val move1 = game.moveEvent(Engineer, Position(4, 3))
-        val move2 = game.moveEvent(Engineer, Position(3, 3))
-        val move3 = game.moveEvent(Engineer, Position(2, 3))
+        val event1 = Move(Engineer, game.gameSetup.map.mapSiteAt(Position(4, 3)))
+        val event2 = Move(Engineer, game.gameSetup.map.mapSiteAt(Position(3, 3)))
+        val event3 = ShoreUp(Engineer, game.gameSetup.map.mapSiteAt(Position(2, 3)))
 
-        val nextGameState = game.gameState.after(move1).after(move2).after(move3)
+        val nextGameState = game.gameState.after(event1).after(event2).after(event3)
 
-        assertThat(nextGameState.previousEvents, is_(immutableListOf<GameEvent>(move1, move2, move3)))
+        assertThat(nextGameState.previousEvents, is_(immutableListOf<GameEvent>(event1, event2, event3)))
     }
 
     @Test
@@ -38,5 +39,20 @@ class GameStateProgressionTest {
         assertThat(nextGameState.playerPositions, is_(immutableMapOf(Engineer to engineerNewSite, Messenger to messengerOriginalSite)))
     }
 
-    private fun Game.moveEvent(player: Adventurer, position: Position) = Move(player, gameSetup.map.mapSiteAt(position))
+    @Test
+    fun `shore up played on game changes location flood state`() {
+        val positionToShoreUp = Position(3, 4)
+        val game = Game.newRandomGameFor(immutableListOf(Engineer, Messenger), GameMap.newShuffledMap())
+                .withPlayerPosition(Engineer, Position(4, 4))
+                .withLocationFloodStates(LocationFloodState.Flooded, listOf(positionToShoreUp))
+
+        val mapSiteToShoreUp = game.gameSetup.map.mapSiteAt(positionToShoreUp)
+
+        assertThat(game.gameState.locationFloodStates[mapSiteToShoreUp.location], is_(LocationFloodState.Flooded))
+
+        val event = ShoreUp(Engineer, mapSiteToShoreUp)
+        val nextGameState = game.gameState.after(event)
+        assertThat(nextGameState.locationFloodStates[mapSiteToShoreUp.location], is_(LocationFloodState.Unflooded))
+    }
+
 }
