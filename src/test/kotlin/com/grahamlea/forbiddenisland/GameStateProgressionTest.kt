@@ -89,10 +89,10 @@ class GameStateProgressionTest {
                 .withTreasureDeckDiscard(cards(ocean))
 
         assertThat(game.gameState.treasuresCollected, is_(Treasure.values().associate { it to false }.imm()))
-        assertThat(game.gameState.treasureDeckDiscard, is_(cards(ocean)))
 
         after (CaptureTreasure(Messenger, Treasure.EarthStone) playedOn game) {
-            assertThat(treasuresCollected, is_(Treasure.values().associate { it to false }.imm() + (Treasure.EarthStone to true)))
+            assertThat(treasuresCollected[Treasure.EarthStone], is_(true))
+            assertThat(treasuresCollected.filterKeys { it != Treasure.EarthStone }.values.toSet(), is_(setOf(false)))
             assertThat(playerCards, is_(immMapOf(Messenger to cards(ocean), Engineer to cards(ocean, ocean))))
             assertThat(treasureDeckDiscard, is_(cards(ocean, earth, earth, earth, earth)))
         }
