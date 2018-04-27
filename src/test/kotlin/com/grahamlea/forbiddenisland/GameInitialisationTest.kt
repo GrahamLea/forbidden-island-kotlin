@@ -79,7 +79,7 @@ class GameInitialisationTest {
     @Test
     fun `new game has 4 treasures not collected`() {
         assertThat(Game.newRandomGameFor(4).gameState.treasuresCollected,
-                is_(mapOf(CrystalOfFire to false, EarthStone to false, OceansChalice to false, StatueOfTheWind to false).immutable()))
+                is_(mapOf(CrystalOfFire to false, EarthStone to false, OceansChalice to false, StatueOfTheWind to false).imm()))
     }
 
     @Test
@@ -98,12 +98,12 @@ class GameInitialisationTest {
 
     @Test
     fun `new game has empty treasure deck discard pile`() {
-        assertThat(Game.newRandomGameFor(4).gameState.treasureDeckDiscard, is_(immutableListOf()))
+        assertThat(Game.newRandomGameFor(4).gameState.treasureDeckDiscard, is_(immListOf()))
     }
 
     @Test
     fun `new game has empty previous event list`() {
-        assertThat(Game.newRandomGameFor(4).gameState.previousEvents, is_(immutableListOf()))
+        assertThat(Game.newRandomGameFor(4).gameState.previousEvents, is_(immListOf()))
     }
 
     @Test
@@ -114,7 +114,7 @@ class GameInitialisationTest {
 
         val game = Game.newRandomGameFor(
                 newRandomGameSetupFor(2),
-                treasureDeck = initialTreasureDeck.immutable()
+                treasureDeck = initialTreasureDeck.imm()
         )
         val allDealtCards = game.gameState.playerCards.flatMap { (_, v) -> v }
         assertThat(allDealtCards.size, is_(4))
@@ -128,7 +128,7 @@ class GameInitialisationTest {
 
     @Test()
     fun `new game phase is waiting for first player action out of 3`() {
-        val game = Game.newRandomGameFor(listOf(Diver, Messenger).immutable())
+        val game = Game.newRandomGameFor(listOf(Diver, Messenger).imm())
         assertThat(game.gameState.phase, is_(AwaitingPlayerAction(Diver, 3) as GamePhase))
     }
 

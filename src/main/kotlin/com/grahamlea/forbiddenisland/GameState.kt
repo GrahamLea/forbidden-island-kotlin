@@ -18,7 +18,7 @@ data class GameState(
         val playerPositions: ImmutableMap<Adventurer, MapSite>,
         val playerCards: ImmutableMap<Adventurer, ImmutableList<HoldableCard>>,
         val phase: GamePhase,
-        val previousEvents: ImmutableList<GameEvent> = immutableListOf()
+        val previousEvents: ImmutableList<GameEvent> = immListOf()
     ) {
 
     init {

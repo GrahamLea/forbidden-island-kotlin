@@ -5,7 +5,7 @@ import kotlin.reflect.KClass
 fun Game.withLocationFloodStates(floodState: LocationFloodState, positions: List<Position>): Game {
     val locations = this.gameSetup.map.mapSites.filter { it.position in positions }.map { it.location }
     return copy(
-            gameState.copy(locationFloodStates = (gameState.locationFloodStates + locations.associate { it to floodState }).immutable())
+            gameState.copy(locationFloodStates = (gameState.locationFloodStates + locations.associate { it to floodState }).imm())
     )
 }
 
@@ -21,7 +21,7 @@ fun GameMap.withLocationNotAtAnyOf(locationToEvict: Location, positions: List<Po
         GameMap(
                 (mapSites.filterNot { it.location in locationsToSwap } +
                         MapSite(currentPositionOfLocationToBeEvicted, locationToSwapIn) +
-                        MapSite(currentPositionOfLocationToSwapIn, locationToEvict)).immutable())
+                        MapSite(currentPositionOfLocationToSwapIn, locationToEvict)).imm())
     }
 }
 

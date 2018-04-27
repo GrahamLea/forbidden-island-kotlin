@@ -81,14 +81,14 @@ class Game(val gameSetup: GameSetup, gameState: GameState, val random: Random = 
             val gameState = GameState(
                     gameSetup = gameSetup,
                     floodLevel = startingFloodLevel.floodLevel,
-                    treasureDeck = mutableTreasureDeck.immutable(),
-                    treasureDeckDiscard = immutableListOf(),
-                    floodDeck = initialFloodDeck.immutable(),
-                    floodDeckDiscard = initialFloodDeckDiscard.immutable(),
-                    treasuresCollected = Treasure.values().associate { Pair(it, false) }.immutable(),
-                    locationFloodStates = initialLocationFloodStates.immutable(),
-                    playerCards = initialPlayerCards.mapValues { (_, v) -> v.immutable() }.immutable(),
-                    playerPositions = initialPlayerPositions.immutable(),
+                    treasureDeck = mutableTreasureDeck.imm(),
+                    treasureDeckDiscard = immListOf(),
+                    floodDeck = initialFloodDeck.imm(),
+                    floodDeckDiscard = initialFloodDeckDiscard.imm(),
+                    treasuresCollected = Treasure.values().associate { Pair(it, false) }.imm(),
+                    locationFloodStates = initialLocationFloodStates.imm(),
+                    playerCards = initialPlayerCards.mapValues { (_, v) -> v.imm() }.imm(),
+                    playerPositions = initialPlayerPositions.imm(),
                     phase = AwaitingPlayerAction(gameSetup.players.first(), actionsRemaining = maxActionsPerPlayerTurn)
             )
 

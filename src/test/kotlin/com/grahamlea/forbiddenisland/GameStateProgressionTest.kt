@@ -10,7 +10,7 @@ class GameStateProgressionTest {
 
     @Test
     fun `events on game state are recorded in previous events`() {
-        val game = Game.newRandomGameFor(immutableListOf(Engineer, Messenger), GameMap.newShuffledMap())
+        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
                 .withPlayerPosition(Engineer, Position(4, 4))
                 .withLocationFloodStates(LocationFloodState.Flooded, listOf(Position(2, 3)))
 
@@ -20,29 +20,29 @@ class GameStateProgressionTest {
 
         val nextGameState = game.gameState.after(event1).after(event2).after(event3)
 
-        assertThat(nextGameState.previousEvents, is_(immutableListOf<GameEvent>(event1, event2, event3)))
+        assertThat(nextGameState.previousEvents, is_(immListOf<GameEvent>(event1, event2, event3)))
     }
 
     @Test
     fun `move played on game changes map site of the one player`() {
-        val game = Game.newRandomGameFor(immutableListOf(Engineer, Messenger), GameMap.newShuffledMap())
+        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
                 .withPlayerPosition(Engineer, Position(4, 4))
 
         val engineerOriginalSite = game.gameState.playerPositions.getValue(Engineer)
         val messengerOriginalSite = game.gameState.playerPositions.getValue(Messenger)
 
-        assertThat(game.gameState.playerPositions, is_(immutableMapOf(Engineer to engineerOriginalSite, Messenger to messengerOriginalSite)))
+        assertThat(game.gameState.playerPositions, is_(immMapOf(Engineer to engineerOriginalSite, Messenger to messengerOriginalSite)))
 
         val engineerNewSite = game.gameSetup.map.mapSiteAt(Position(4, 3))
         val event = Move(Engineer, engineerNewSite)
         val nextGameState = game.gameState.after(event)
-        assertThat(nextGameState.playerPositions, is_(immutableMapOf(Engineer to engineerNewSite, Messenger to messengerOriginalSite)))
+        assertThat(nextGameState.playerPositions, is_(immMapOf(Engineer to engineerNewSite, Messenger to messengerOriginalSite)))
     }
 
     @Test
     fun `shore up played on game changes location flood state`() {
         val positionToShoreUp = Position(3, 4)
-        val game = Game.newRandomGameFor(immutableListOf(Engineer, Messenger), GameMap.newShuffledMap())
+        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
                 .withPlayerPosition(Engineer, Position(4, 4))
                 .withLocationFloodStates(LocationFloodState.Flooded, listOf(positionToShoreUp))
 

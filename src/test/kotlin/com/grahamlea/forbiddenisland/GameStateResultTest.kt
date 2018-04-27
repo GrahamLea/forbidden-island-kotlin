@@ -37,10 +37,10 @@ class GameStateResultTest {
         val players = randomListOfPlayers(2)
         val game = Game.newRandomGameFor(players).let { game ->
             game.copy(gameState = game.gameState.copy(
-                    treasuresCollected = Treasure.values().associate { it to true }.immutable(),
-                    treasureDeck = (TreasureDeck.newShuffledDeck() - TreasureCard(EarthStone) - HelicopterLiftCard).immutable(),
-                    treasureDeckDiscard = immutableListOf(TreasureCard(EarthStone), HelicopterLiftCard),
-                    playerCards = players.associate { it to immutableListOf<HoldableCard>() }.immutable()
+                    treasuresCollected = Treasure.values().associate { it to true }.imm(),
+                    treasureDeck = (TreasureDeck.newShuffledDeck() - TreasureCard(EarthStone) - HelicopterLiftCard).imm(),
+                    treasureDeckDiscard = immListOf(TreasureCard(EarthStone), HelicopterLiftCard),
+                    playerCards = players.associate { it to immListOf<HoldableCard>() }.imm()
             ))
                 .withPlayerPosition(players[0], game.gameSetup.map.positionOf(FoolsLanding))
                 .withPlayerPosition(players[1], game.gameSetup.map.positionOf(FoolsLanding))
@@ -54,7 +54,7 @@ class GameStateResultTest {
         val players = randomListOfPlayers(2)
         val game = Game.newRandomGameFor(players).let { game ->
             game.copy(gameState = game.gameState.copy(
-                    treasuresCollected = Treasure.values().associate { it to true }.immutable()))
+                    treasuresCollected = Treasure.values().associate { it to true }.imm()))
         }
 
         assertThat(game.gameState.result, is_(nullValue()))
@@ -65,7 +65,7 @@ class GameStateResultTest {
         val players = randomListOfPlayers(2)
         val game = Game.newRandomGameFor(players).let { game ->
             game.copy(gameState = game.gameState.copy(
-                    treasuresCollected = Treasure.values().associate { it to true }.immutable()))
+                    treasuresCollected = Treasure.values().associate { it to true }.imm()))
                 .withPlayerPosition(players[0], game.gameSetup.map.positionOf(FoolsLanding))
                 .withPlayerPosition(players[1], game.gameSetup.map.positionOf(FoolsLanding))
         }
@@ -78,10 +78,10 @@ class GameStateResultTest {
         val players = randomListOfPlayers(2)
         val game = Game.newRandomGameFor(players).let { game ->
             game.copy(gameState = game.gameState.copy(
-                    treasuresCollected = Treasure.values().associate { it to true }.immutable(),
-                    treasureDeck = (TreasureDeck.newShuffledDeck() - TreasureCard(EarthStone) - HelicopterLiftCard).immutable(),
-                    treasureDeckDiscard = immutableListOf(TreasureCard(EarthStone), HelicopterLiftCard),
-                    playerCards = players.associate { it to immutableListOf<HoldableCard>() }.immutable()
+                    treasuresCollected = Treasure.values().associate { it to true }.imm(),
+                    treasureDeck = (TreasureDeck.newShuffledDeck() - TreasureCard(EarthStone) - HelicopterLiftCard).imm(),
+                    treasureDeckDiscard = immListOf(TreasureCard(EarthStone), HelicopterLiftCard),
+                    playerCards = players.associate { it to immListOf<HoldableCard>() }.imm()
             ))
                 .withPlayerPosition(players[0], game.gameSetup.map.positionOf(FoolsLanding))
                 .withPlayerPosition(players[1], game.gameSetup.map.positionOf(TempleOfTheSun))
@@ -95,10 +95,10 @@ class GameStateResultTest {
         val players = randomListOfPlayers(2)
         val game = Game.newRandomGameFor(players).let { game ->
             game.copy(gameState = game.gameState.copy(
-                    treasuresCollected = (Treasure.values().take(3).associate { it to true } + (Treasure.values().last() to false)).immutable(),
-                    treasureDeck = (TreasureDeck.newShuffledDeck() - TreasureCard(EarthStone) - HelicopterLiftCard).immutable(),
-                    treasureDeckDiscard = immutableListOf(TreasureCard(EarthStone), HelicopterLiftCard),
-                    playerCards = players.associate { it to immutableListOf<HoldableCard>() }.immutable()
+                    treasuresCollected = (Treasure.values().take(3).associate { it to true } + (Treasure.values().last() to false)).imm(),
+                    treasureDeck = (TreasureDeck.newShuffledDeck() - TreasureCard(EarthStone) - HelicopterLiftCard).imm(),
+                    treasureDeckDiscard = immListOf(TreasureCard(EarthStone), HelicopterLiftCard),
+                    playerCards = players.associate { it to immListOf<HoldableCard>() }.imm()
             ))
                 .withPlayerPosition(players[0], game.gameSetup.map.positionOf(FoolsLanding))
                 .withPlayerPosition(players[1], game.gameSetup.map.positionOf(FoolsLanding))
@@ -110,7 +110,7 @@ class GameStateResultTest {
     @Test
     fun `game is lost when Fool's Landing sinks`() {
         val gameState = Game.newRandomGameFor(4).gameState
-                .copy(locationFloodStates = (allLocationsUnflooded + (FoolsLanding to Sunken)).immutable())
+                .copy(locationFloodStates = (allLocationsUnflooded + (FoolsLanding to Sunken)).imm())
 
         assertThat(gameState.result, is_(FoolsLandingSank as GameResult))
     }
@@ -125,7 +125,7 @@ class GameStateResultTest {
     @Test
     fun `game is lost when both pickup locations for Crystal of Fire sink`() {
         val gameState = Game.newRandomGameFor(4).gameState
-                .copy(locationFloodStates = (allLocationsUnflooded + (CaveOfEmbers to Sunken) + (CaveOfShadows to Sunken)).immutable())
+                .copy(locationFloodStates = (allLocationsUnflooded + (CaveOfEmbers to Sunken) + (CaveOfShadows to Sunken)).imm())
 
         assertThat(gameState.result,
                 is_(BothPickupLocationsSankBeforeCollectingTreasure(CrystalOfFire, CaveOfEmbers to CaveOfShadows) as GameResult))
@@ -134,7 +134,7 @@ class GameStateResultTest {
     @Test
     fun `game is lost when both pickup locations for Ocean's Chalice sink`() {
         val gameState = Game.newRandomGameFor(4).gameState
-                .copy(locationFloodStates = (allLocationsUnflooded + (CoralPalace to Sunken) + (TidalPalace to Sunken)).immutable())
+                .copy(locationFloodStates = (allLocationsUnflooded + (CoralPalace to Sunken) + (TidalPalace to Sunken)).imm())
 
         assertThat(gameState.result,
                 is_(BothPickupLocationsSankBeforeCollectingTreasure(OceansChalice, CoralPalace to TidalPalace) as GameResult))
@@ -143,7 +143,7 @@ class GameStateResultTest {
     @Test
     fun `game is lost when both pickup locations for Statue of the Wind sink`() {
         val gameState = Game.newRandomGameFor(4).gameState
-                .copy(locationFloodStates = (allLocationsUnflooded + (HowlingGarden to Sunken) + (WhisperingGarden to Sunken)).immutable())
+                .copy(locationFloodStates = (allLocationsUnflooded + (HowlingGarden to Sunken) + (WhisperingGarden to Sunken)).imm())
 
         assertThat(gameState.result,
                 is_(BothPickupLocationsSankBeforeCollectingTreasure(StatueOfTheWind, HowlingGarden to WhisperingGarden) as GameResult))
@@ -152,7 +152,7 @@ class GameStateResultTest {
     @Test
     fun `game is lost when both pickup locations for Earth Stone sink`() {
         val gameState = Game.newRandomGameFor(4).gameState
-                .copy(locationFloodStates = (allLocationsUnflooded + (TempleOfTheMoon to Sunken) + (TempleOfTheSun to Sunken)).immutable())
+                .copy(locationFloodStates = (allLocationsUnflooded + (TempleOfTheMoon to Sunken) + (TempleOfTheSun to Sunken)).imm())
 
         assertThat(gameState.result,
                 is_(BothPickupLocationsSankBeforeCollectingTreasure(EarthStone, TempleOfTheMoon to TempleOfTheSun) as GameResult))
@@ -161,7 +161,7 @@ class GameStateResultTest {
     @Test
     fun `game is not lost when one pickup locations for a Treasure has sunken`() {
         val gameState = Game.newRandomGameFor(4).gameState
-                .copy(locationFloodStates = (allLocationsUnflooded + (TempleOfTheMoon to Sunken)).immutable())
+                .copy(locationFloodStates = (allLocationsUnflooded + (TempleOfTheMoon to Sunken)).imm())
 
         assertThat(gameState.result, is_(nullValue()))
     }
@@ -169,7 +169,7 @@ class GameStateResultTest {
     @Test
     fun `game is not lost when one pickup locations for a Treasure has sunken and the other is flooded`() {
         val gameState = Game.newRandomGameFor(4).gameState
-                .copy(locationFloodStates = (allLocationsUnflooded + (TempleOfTheMoon to Sunken) + (TempleOfTheSun to Flooded)).immutable())
+                .copy(locationFloodStates = (allLocationsUnflooded + (TempleOfTheMoon to Sunken) + (TempleOfTheSun to Flooded)).imm())
 
         assertThat(gameState.result, is_(nullValue()))
     }
@@ -177,7 +177,7 @@ class GameStateResultTest {
     @Test
     fun `game is not lost when both pickup locations for a Treasure are flooded`() {
         val gameState = Game.newRandomGameFor(4).gameState
-                .copy(locationFloodStates = (allLocationsUnflooded + (TempleOfTheMoon to Flooded) + (TempleOfTheSun to Flooded)).immutable())
+                .copy(locationFloodStates = (allLocationsUnflooded + (TempleOfTheMoon to Flooded) + (TempleOfTheSun to Flooded)).imm())
 
         assertThat(gameState.result, is_(nullValue()))
     }
@@ -280,7 +280,7 @@ class GameStateResultTest {
         do {
             val gameMap = GameMap.newShuffledMap().withLocationNotAtAnyOf(FoolsLanding, positionsToSink)
 
-            game = Game.newRandomGameFor(immutableListOf(playerToStrand, otherPlayer), gameMap)
+            game = Game.newRandomGameFor(immListOf(playerToStrand, otherPlayer), gameMap)
                     .withPlayerPosition(playerToStrand, sunkPositionWithSunkSurroundings)
                     .withPlayerPosition(otherPlayer, safePosition)
                     .withLocationFloodStates(Sunken, positionsToSink)

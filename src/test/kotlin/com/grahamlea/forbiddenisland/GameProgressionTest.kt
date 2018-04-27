@@ -12,7 +12,7 @@ class GameProgressionTest {
 
     @Test
     fun `action processed on Game affects GameState`() {
-        val game = Game.newRandomGameFor(immutableListOf(Engineer, Messenger), GameMap.newShuffledMap())
+        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
                 .withPlayerPosition(Engineer, Position(4, 4))
 
         val originalGameState = game.gameState

@@ -32,7 +32,7 @@ object TreasureDeck {
          WatersRiseCard * numberOfWatersRiseCards +
          Treasure.values().flatMap { TreasureCard(it) * numberOfEachTreasureCard })
         .shuffled(random)
-        .immutable()
+        .imm()
 }
 
 infix operator fun HoldableCard.times(n: Int) = List(n, {this})
