@@ -12,7 +12,9 @@ data class GameMap(val mapSites: ImmutableList<MapSite>) {
 
     fun mapSiteAt(position: Position): MapSite = mapSites.first { it.position == position }
 
-    fun positionOf(location: Location): Position = mapSites.first { it.location == location }.position
+    fun mapSiteOf(location: Location): MapSite = mapSites.first { it.location == location }
+
+    fun positionOf(location: Location): Position = mapSiteOf(location).position
 
     fun locationAt(position: Position): Location = mapSiteAt(position).location
 
