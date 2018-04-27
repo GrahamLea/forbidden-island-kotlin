@@ -21,9 +21,9 @@ class GameStateProgressionTest {
         val event2 = Move(Engineer, game.gameSetup.map.mapSiteAt(Position(3, 3)))
         val event3 = ShoreUp(Engineer, game.gameSetup.map.mapSiteAt(Position(2, 3)))
 
-        val nextGameState = game.gameState.after(event1).after(event2).after(event3)
-
-        assertThat(nextGameState.previousEvents, is_(immListOf<GameEvent>(event1, event2, event3)))
+        after (listOf(event1, event2, event3) playedOn game) {
+            assertThat(previousEvents, is_(immListOf<GameEvent>(event1, event2, event3)))
+        }
     }
 
     @Test
@@ -37,9 +37,9 @@ class GameStateProgressionTest {
         assertThat(game.gameState.playerPositions, is_(immMapOf(Engineer to engineerOriginalSite, Messenger to messengerOriginalSite)))
 
         val engineerNewSite = game.gameSetup.map.mapSiteAt(Position(4, 3))
-        val event = Move(Engineer, engineerNewSite)
-        val nextGameState = game.gameState.after(event)
-        assertThat(nextGameState.playerPositions, is_(immMapOf(Engineer to engineerNewSite, Messenger to messengerOriginalSite)))
+        after (Move(Engineer, engineerNewSite) playedOn game) {
+            assertThat(playerPositions, is_(immMapOf(Engineer to engineerNewSite, Messenger to messengerOriginalSite)))
+        }
     }
 
     @Test
@@ -53,9 +53,9 @@ class GameStateProgressionTest {
 
         assertThat(game.gameState.locationFloodStates[mapSiteToShoreUp.location], is_(LocationFloodState.Flooded))
 
-        val event = ShoreUp(Engineer, mapSiteToShoreUp)
-        val nextGameState = game.gameState.after(event)
-        assertThat(nextGameState.locationFloodStates[mapSiteToShoreUp.location], is_(LocationFloodState.Unflooded))
+        after (ShoreUp(Engineer, mapSiteToShoreUp) playedOn game) {
+            assertThat(locationFloodStates[mapSiteToShoreUp.location], is_(LocationFloodState.Unflooded))
+        }
     }
 
     @Test
@@ -63,9 +63,9 @@ class GameStateProgressionTest {
         val game = Game.newRandomGameFor(immListOf(Messenger, Engineer), GameMap.newShuffledMap())
                 .withPlayerCards(immMapOf(Messenger to cards(earth, earth), Engineer to cards(earth, earth)))
 
-        val event = GiveTreasureCard(Messenger, Engineer, immListOf(earth))
-        val nextGameState = game.gameState.after(event)
-        assertThat(nextGameState.playerCards, is_(immMapOf(Messenger to cards(earth), Engineer to cards(earth, earth, earth))))
+        after (GiveTreasureCard(Messenger, Engineer, immListOf(earth)) playedOn game) {
+            assertThat(playerCards, is_(immMapOf(Messenger to cards(earth), Engineer to cards(earth, earth, earth))))
+        }
     }
 
     @Test
@@ -73,9 +73,9 @@ class GameStateProgressionTest {
         val game = Game.newRandomGameFor(immListOf(Messenger, Engineer), GameMap.newShuffledMap())
                 .withPlayerCards(immMapOf(Messenger to cards(earth, earth), Engineer to cards(earth, earth)))
 
-        val event = GiveTreasureCard(Messenger, Engineer, immListOf(earth, earth))
-        val nextGameState = game.gameState.after(event)
-        assertThat(nextGameState.playerCards, is_(immMapOf(Messenger to cards(), Engineer to cards(earth, earth, earth, earth))))
+        after (GiveTreasureCard(Messenger, Engineer, immListOf(earth, earth)) playedOn game) {
+            assertThat(playerCards, is_(immMapOf(Messenger to cards(), Engineer to cards(earth, earth, earth, earth))))
+        }
     }
 
     @Test
@@ -91,11 +91,15 @@ class GameStateProgressionTest {
         assertThat(game.gameState.treasuresCollected, is_(Treasure.values().associate { it to false }.imm()))
         assertThat(game.gameState.treasureDeckDiscard, is_(cards(ocean)))
 
-        val event = CaptureTreasure(Messenger, Treasure.EarthStone)
-        val nextGameState = game.gameState.after(event)
-        assertThat(nextGameState.treasuresCollected, is_(Treasure.values().associate { it to false }.imm() + (Treasure.EarthStone to true)))
-        assertThat(nextGameState.playerCards, is_(immMapOf(Messenger to cards(ocean), Engineer to cards(ocean, ocean))))
-        assertThat(nextGameState.treasureDeckDiscard, is_(cards(ocean, earth, earth, earth, earth)))
+        after (CaptureTreasure(Messenger, Treasure.EarthStone) playedOn game) {
+            assertThat(treasuresCollected, is_(Treasure.values().associate { it to false }.imm() + (Treasure.EarthStone to true)))
+            assertThat(playerCards, is_(immMapOf(Messenger to cards(ocean), Engineer to cards(ocean, ocean))))
+            assertThat(treasureDeckDiscard, is_(cards(ocean, earth, earth, earth, earth)))
+        }
     }
-
 }
+
+private inline fun <T, R> after(receiver: T, block: T.() -> R): R = with(receiver, block)
+
+private infix fun GameEvent.playedOn(game: Game): GameState = game.gameState.after(this)
+private infix fun List<GameEvent>.playedOn(game: Game): GameState = this.fold(game.gameState) { state, event -> state.after(event) }
