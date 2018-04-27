@@ -37,7 +37,16 @@ fun Game.withPlayerCards(playerCards: ImmutableMap<Adventurer, ImmutableList<Hol
     return copy(
         gameState.copy(
             playerCards = playerCards,
-            treasureDeck = (TreasureDeck.newShuffledDeck().subtract(playerCards.values.flatten()))
+            treasureDeck = TreasureDeck.newShuffledDeck().subtract(playerCards.values.flatten())
+        )
+    )
+}
+
+fun Game.withTreasureDeckDiscard(discardedCards: ImmutableList<HoldableCard>): Game {
+    return copy(
+        gameState.copy(
+            treasureDeckDiscard = discardedCards,
+            treasureDeck = gameState.treasureDeck.subtract(discardedCards)
         )
     )
 }

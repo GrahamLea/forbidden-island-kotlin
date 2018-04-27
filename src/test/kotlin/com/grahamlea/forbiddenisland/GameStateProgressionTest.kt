@@ -8,6 +8,10 @@ import org.hamcrest.CoreMatchers.`is` as is_
 
 class GameStateProgressionTest {
 
+    private val earthCard = TreasureCard(Treasure.EarthStone)
+    private val oceanCard = TreasureCard(Treasure.OceansChalice)
+    private val emptyCardList = immListOf<HoldableCard>()
+
     @Test
     fun `events on game state are recorded in previous events`() {
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
@@ -57,26 +61,42 @@ class GameStateProgressionTest {
 
     @Test
     fun `give treasure card event on game state changes player cards`() {
-        val card = TreasureCard(Treasure.EarthStone)
-        val emptyCardList = immListOf<HoldableCard>()
         val game = Game.newRandomGameFor(immListOf(Messenger, Engineer), GameMap.newShuffledMap())
-                .withPlayerCards(immMapOf(Messenger to emptyCardList + card + card, Engineer to emptyCardList + card + card))
+                .withPlayerCards(immMapOf(Messenger to emptyCardList + earthCard + earthCard, Engineer to emptyCardList + earthCard + earthCard))
 
-        val event = GiveTreasureCard(Messenger, Engineer, immListOf(card))
+        val event = GiveTreasureCard(Messenger, Engineer, immListOf(earthCard))
         val nextGameState = game.gameState.after(event)
-        assertThat(nextGameState.playerCards, is_(immMapOf(Messenger to emptyCardList + card, Engineer to emptyCardList + card + card + card)))
+        assertThat(nextGameState.playerCards, is_(immMapOf(Messenger to emptyCardList + earthCard, Engineer to emptyCardList + earthCard + earthCard + earthCard)))
     }
 
     @Test
     fun `give multiple treasure cards event on game state changes player cards`() {
-        val card = TreasureCard(Treasure.EarthStone)
-        val emptyCardList = immListOf<HoldableCard>()
         val game = Game.newRandomGameFor(immListOf(Messenger, Engineer), GameMap.newShuffledMap())
-                .withPlayerCards(immMapOf(Messenger to emptyCardList + card + card, Engineer to emptyCardList + card + card))
+                .withPlayerCards(immMapOf(Messenger to emptyCardList + earthCard + earthCard, Engineer to emptyCardList + earthCard + earthCard))
 
-        val event = GiveTreasureCard(Messenger, Engineer, immListOf(card, card))
+        val event = GiveTreasureCard(Messenger, Engineer, immListOf(earthCard, earthCard))
         val nextGameState = game.gameState.after(event)
-        assertThat(nextGameState.playerCards, is_(immMapOf(Messenger to emptyCardList, Engineer to emptyCardList + card + card + card + card)))
+        assertThat(nextGameState.playerCards, is_(immMapOf(Messenger to emptyCardList, Engineer to emptyCardList + earthCard + earthCard + earthCard + earthCard)))
+    }
+
+    @Test
+    fun `capture treasure event captures treasure, and discards treasure cards`() {
+        val gameSetup = GameSetup(immListOf(Messenger, Engineer), GameMap.newShuffledMap())
+        val game = Game.newRandomGameFor(gameSetup)
+                .withPlayerPosition(Messenger, gameSetup.map.positionOf(Location.TempleOfTheSun))
+                .withPlayerCards(
+                    immMapOf(Messenger to emptyCardList + earthCard + earthCard + earthCard + earthCard + oceanCard,
+                             Engineer to emptyCardList + oceanCard + oceanCard))
+                .withTreasureDeckDiscard(emptyCardList + oceanCard)
+
+        assertThat(game.gameState.treasuresCollected, is_(Treasure.values().associate { it to false }.imm()))
+        assertThat(game.gameState.treasureDeckDiscard, is_(emptyCardList + oceanCard))
+
+        val event = CaptureTreasure(Messenger, Treasure.EarthStone)
+        val nextGameState = game.gameState.after(event)
+        assertThat(nextGameState.treasuresCollected, is_(Treasure.values().associate { it to false }.imm() + (Treasure.EarthStone to true)))
+        assertThat(nextGameState.playerCards, is_(immMapOf(Messenger to emptyCardList + oceanCard, Engineer to emptyCardList + oceanCard + oceanCard)))
+        assertThat(nextGameState.treasureDeckDiscard, is_(emptyCardList + oceanCard + earthCard + earthCard + earthCard + earthCard))
     }
 
 }

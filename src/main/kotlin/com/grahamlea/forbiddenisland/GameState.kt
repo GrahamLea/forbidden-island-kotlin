@@ -83,17 +83,23 @@ data class GameState(
 
     fun after(event: GameEvent): GameState {
         // TODO Check that event is in list of possible events
-        return this.copy(previousEvents = previousEvents + event).let {
+        return this.copy(previousEvents = previousEvents + event).let { with (it) {
             when (event) {
-                is Move -> it.copy(playerPositions = playerPositions + (event.player to event.mapSite))
-                is ShoreUp -> it.copy(locationFloodStates = it.locationFloodStates + (event.mapSite.location to Unflooded))
-                is GiveTreasureCard -> it.copy(playerCards =
+                is Move -> copy(playerPositions = playerPositions + (event.player to event.mapSite))
+                is ShoreUp -> copy(locationFloodStates = locationFloodStates + (event.mapSite.location to Unflooded))
+                is GiveTreasureCard -> copy(playerCards =
                     playerCards + (event.player   to playerCards.getValue(event.player)  .subtract(event.cards)) +
                                   (event.receiver to playerCards.getValue(event.receiver).plus(    event.cards))
                 )
+                is CaptureTreasure -> copy(
+                    treasuresCollected = treasuresCollected + (event.treasure to true),
+                    playerCards = playerCards +
+                        (event.player to playerCards.getValue(event.player).subtract(TreasureCard(event.treasure) * 4)),
+                    treasureDeckDiscard = treasureDeckDiscard + (TreasureCard(event.treasure) * 4)
+                )
                 else -> throw IllegalArgumentException("Event type ${event::class} isn't currently handled")
             }
-        }
+        }}
     }
 
     private fun uncollectedTreasures(): Set<Treasure> = treasuresCollected.filterValues { !it }.keys
