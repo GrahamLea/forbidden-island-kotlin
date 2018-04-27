@@ -35,5 +35,7 @@ object TreasureDeck {
         .imm()
 }
 
+fun cards(vararg cards: HoldableCard): ImmutableList<HoldableCard> = immListOf(*cards)
+
 infix operator fun HoldableCard.times(n: Int) = List(n, {this})
 

@@ -8,9 +8,8 @@ import org.hamcrest.CoreMatchers.`is` as is_
 
 class GameStateProgressionTest {
 
-    private val earthCard = TreasureCard(Treasure.EarthStone)
-    private val oceanCard = TreasureCard(Treasure.OceansChalice)
-    private val emptyCardList = immListOf<HoldableCard>()
+    private val earth = TreasureCard(Treasure.EarthStone)
+    private val ocean = TreasureCard(Treasure.OceansChalice)
 
     @Test
     fun `events on game state are recorded in previous events`() {
@@ -62,21 +61,21 @@ class GameStateProgressionTest {
     @Test
     fun `give treasure card event on game state changes player cards`() {
         val game = Game.newRandomGameFor(immListOf(Messenger, Engineer), GameMap.newShuffledMap())
-                .withPlayerCards(immMapOf(Messenger to emptyCardList + earthCard + earthCard, Engineer to emptyCardList + earthCard + earthCard))
+                .withPlayerCards(immMapOf(Messenger to cards(earth, earth), Engineer to cards(earth, earth)))
 
-        val event = GiveTreasureCard(Messenger, Engineer, immListOf(earthCard))
+        val event = GiveTreasureCard(Messenger, Engineer, immListOf(earth))
         val nextGameState = game.gameState.after(event)
-        assertThat(nextGameState.playerCards, is_(immMapOf(Messenger to emptyCardList + earthCard, Engineer to emptyCardList + earthCard + earthCard + earthCard)))
+        assertThat(nextGameState.playerCards, is_(immMapOf(Messenger to cards(earth), Engineer to cards(earth, earth, earth))))
     }
 
     @Test
     fun `give multiple treasure cards event on game state changes player cards`() {
         val game = Game.newRandomGameFor(immListOf(Messenger, Engineer), GameMap.newShuffledMap())
-                .withPlayerCards(immMapOf(Messenger to emptyCardList + earthCard + earthCard, Engineer to emptyCardList + earthCard + earthCard))
+                .withPlayerCards(immMapOf(Messenger to cards(earth, earth), Engineer to cards(earth, earth)))
 
-        val event = GiveTreasureCard(Messenger, Engineer, immListOf(earthCard, earthCard))
+        val event = GiveTreasureCard(Messenger, Engineer, immListOf(earth, earth))
         val nextGameState = game.gameState.after(event)
-        assertThat(nextGameState.playerCards, is_(immMapOf(Messenger to emptyCardList, Engineer to emptyCardList + earthCard + earthCard + earthCard + earthCard)))
+        assertThat(nextGameState.playerCards, is_(immMapOf(Messenger to cards(), Engineer to cards(earth, earth, earth, earth))))
     }
 
     @Test
@@ -85,18 +84,18 @@ class GameStateProgressionTest {
         val game = Game.newRandomGameFor(gameSetup)
                 .withPlayerPosition(Messenger, gameSetup.map.positionOf(Location.TempleOfTheSun))
                 .withPlayerCards(
-                    immMapOf(Messenger to emptyCardList + earthCard + earthCard + earthCard + earthCard + oceanCard,
-                             Engineer to emptyCardList + oceanCard + oceanCard))
-                .withTreasureDeckDiscard(emptyCardList + oceanCard)
+                    immMapOf(Messenger to cards(earth, earth, earth, earth, ocean),
+                             Engineer to cards(ocean, ocean)))
+                .withTreasureDeckDiscard(cards(ocean))
 
         assertThat(game.gameState.treasuresCollected, is_(Treasure.values().associate { it to false }.imm()))
-        assertThat(game.gameState.treasureDeckDiscard, is_(emptyCardList + oceanCard))
+        assertThat(game.gameState.treasureDeckDiscard, is_(cards(ocean)))
 
         val event = CaptureTreasure(Messenger, Treasure.EarthStone)
         val nextGameState = game.gameState.after(event)
         assertThat(nextGameState.treasuresCollected, is_(Treasure.values().associate { it to false }.imm() + (Treasure.EarthStone to true)))
-        assertThat(nextGameState.playerCards, is_(immMapOf(Messenger to emptyCardList + oceanCard, Engineer to emptyCardList + oceanCard + oceanCard)))
-        assertThat(nextGameState.treasureDeckDiscard, is_(emptyCardList + oceanCard + earthCard + earthCard + earthCard + earthCard))
+        assertThat(nextGameState.playerCards, is_(immMapOf(Messenger to cards(ocean), Engineer to cards(ocean, ocean))))
+        assertThat(nextGameState.treasureDeckDiscard, is_(cards(ocean, earth, earth, earth, earth)))
     }
 
 }
