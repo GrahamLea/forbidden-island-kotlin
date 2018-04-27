@@ -10,6 +10,8 @@ infix operator fun <E> ImmutableList<E>.plus(es: Collection<E>): ImmutableList<E
 fun <E> List<E>.immutable() = this as? ImmutableList<E> ?: ImmutableList(this)
 
 data class ImmutableMap<K, out V>(private val inner: Map<K, V>) : Map<K, V> by inner
+fun <K, V> immutableMapOf(pair: Pair<K, V>): ImmutableMap<K, V> = java.util.Collections.singletonMap(pair.first, pair.second).immutable()
+fun <K, V> immutableMapOf(vararg pairs: Pair<K, V>): ImmutableMap<K, V> = mapOf(*pairs).immutable()
 fun <K, V> Map<K, V>.immutable() = this as? ImmutableMap<K, V> ?: ImmutableMap(this)
 infix operator fun <K, V> ImmutableMap<K, V>.plus(p: Pair<K, V>): ImmutableMap<K, V> = ImmutableMap(this as Map<K, V> + p)
 
