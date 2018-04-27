@@ -23,15 +23,19 @@ class GameStateProgressionTest {
     }
 
     @Test
-    fun `move played on game changes map site`() {
+    fun `move played on game changes map site of the one player`() {
         val game = Game.newRandomGameFor(immutableListOf(Engineer, Messenger), GameMap.newShuffledMap())
                 .withPlayerPosition(Engineer, Position(4, 4))
 
-        val move = game.moveEvent(Engineer, Position(4, 3))
+        val engineerOriginalSite = game.gameState.playerPositions.getValue(Engineer)
+        val messengerOriginalSite = game.gameState.playerPositions.getValue(Messenger)
 
-        val nextGameState = game.gameState.after(move)
+        assertThat(game.gameState.playerPositions, is_(immutableMapOf(Engineer to engineerOriginalSite, Messenger to messengerOriginalSite)))
 
-        assertThat(nextGameState.playerPositions[Engineer]?.position, is_(Position(4, 3)))
+        val engineerNewSite = game.gameSetup.map.mapSiteAt(Position(4, 3))
+        val event = Move(Engineer, engineerNewSite)
+        val nextGameState = game.gameState.after(event)
+        assertThat(nextGameState.playerPositions, is_(immutableMapOf(Engineer to engineerNewSite, Messenger to messengerOriginalSite)))
     }
 
     private fun Game.moveEvent(player: Adventurer, position: Position) = Move(player, gameSetup.map.mapSiteAt(position))
