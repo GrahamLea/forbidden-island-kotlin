@@ -14,11 +14,11 @@ data class ShoreUp(val player: Adventurer, val mapSite: MapSite, val mapSite2: M
 }
 
 data class GiveTreasureCard(val player: Adventurer, val receiver: Adventurer, val cards: ImmutableList<TreasureCard>): PlayerActionEvent() {
-    override fun toString() = "$player gives ${cards} to $receiver"
+    override fun toString() = "$player gives $cards to $receiver"
 }
 
-data class CaptureTreasure(val treasure: Treasure): PlayerActionEvent() {
-    override fun toString() = "$treasure is captured"
+data class CaptureTreasure(val player:Adventurer, val treasure: Treasure): PlayerActionEvent() {
+    override fun toString() = "$treasure is captured by $player"
 }
 
 sealed class PlayerSpecialActionEvent: GameEvent()
