@@ -102,7 +102,7 @@ class GameStateProgressionTest {
     fun `helicopter lift played on game changes map site of the one player and discards the card`() {
         val game = Game.newRandomGameFor(immListOf(Messenger, Engineer), GameMap.newShuffledMap())
                 .withPlayerPosition(Engineer, Position(2, 2))
-                .withPlayerCards(immMapOf(Messenger to cards(HelicopterLiftCard), Engineer to cards()))
+                .withPlayerCards(immMapOf(Messenger to cards(HelicopterLiftCard, earth), Engineer to cards(ocean)))
                 .withTreasureDeckDiscard(cards(ocean))
 
         val messengerOriginalSite = game.gameState.playerPositions.getValue(Messenger)
@@ -113,8 +113,29 @@ class GameStateProgressionTest {
         val engineerNewSite = game.gameSetup.map.mapSiteAt(Position(5, 5))
         after (HelicopterLift(Messenger, Engineer, engineerNewSite) playedOn game) {
             assertThat(playerPositions, is_(immMapOf(Messenger to messengerOriginalSite, Engineer to engineerNewSite)))
-            assertThat(playerCards, is_(immMapOf(Messenger to cards(), Engineer to cards())))
+            assertThat(playerCards, is_(immMapOf(Messenger to cards(earth), Engineer to cards(ocean))))
             assertThat(treasureDeckDiscard, is_(cards(ocean, HelicopterLiftCard)))
+        }
+    }
+
+    @Test
+    fun `sandbag played on game shores up map site and discards the card`() {
+        val positionToShoreUp = Position(2, 2)
+        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
+                .withPlayerPosition(Engineer, Position(4, 4))
+                .withPlayerPosition(Messenger, Position(3, 4))
+                .withLocationFloodStates(LocationFloodState.Flooded, listOf(positionToShoreUp))
+                .withPlayerCards(immMapOf(Engineer to cards(earth, SandbagsCard), Messenger to cards(ocean)))
+                .withTreasureDeckDiscard(cards(earth))
+
+        val mapSiteToShoreUp = game.gameSetup.map.mapSiteAt(positionToShoreUp)
+
+        assertThat(game.gameState.locationFloodStates[mapSiteToShoreUp.location], is_(LocationFloodState.Flooded))
+
+        after (Sandbag(Engineer, mapSiteToShoreUp) playedOn game) {
+            assertThat(locationFloodStates[mapSiteToShoreUp.location], is_(LocationFloodState.Unflooded))
+            assertThat(playerCards, is_(immMapOf(Engineer to cards(earth), Messenger to cards(ocean))))
+            assertThat(treasureDeckDiscard, is_(cards(earth, SandbagsCard)))
         }
     }
 }

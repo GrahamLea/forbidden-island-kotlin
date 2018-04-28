@@ -101,6 +101,11 @@ data class GameState(
                     playerCards = playerCards + (event.playerWithCard to playerCards.getValue(event.playerWithCard).subtract(immListOf(HelicopterLiftCard))),
                     treasureDeckDiscard = treasureDeckDiscard + HelicopterLiftCard
                 )
+                is Sandbag -> copy(
+                    locationFloodStates = locationFloodStates + (event.mapSite.location to Unflooded),
+                    playerCards = playerCards + (event.player to playerCards.getValue(event.player).subtract(immListOf(SandbagsCard))),
+                    treasureDeckDiscard = treasureDeckDiscard + SandbagsCard
+                )
                 else -> throw IllegalArgumentException("Event type ${event::class} isn't currently handled")
             }
         }}
