@@ -23,8 +23,8 @@ data class CaptureTreasure(val player:Adventurer, val treasure: Treasure): Playe
 
 sealed class PlayerSpecialActionEvent: GameEvent()
 
-data class HelicopterLift(val player: Adventurer, val mapSite: MapSite): PlayerSpecialActionEvent() {
-    override fun toString() = "$player is helicopter lifted to $mapSite"
+data class HelicopterLift(val playerWithCard: Adventurer, val playerBeingMoved: Adventurer, val mapSite: MapSite): PlayerSpecialActionEvent() {
+    override fun toString() = "$playerBeingMoved is helicopter lifted to $mapSite by $playerWithCard"
 }
 
 data class Sandbag(val player: Adventurer, val mapSite: MapSite): PlayerSpecialActionEvent() {

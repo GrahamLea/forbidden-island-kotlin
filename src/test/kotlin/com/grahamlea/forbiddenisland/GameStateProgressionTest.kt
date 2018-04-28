@@ -97,6 +97,26 @@ class GameStateProgressionTest {
             assertThat(treasureDeckDiscard, is_(cards(ocean, earth, earth, earth, earth)))
         }
     }
+
+    @Test
+    fun `helicopter lift played on game changes map site of the one player and discards the card`() {
+        val game = Game.newRandomGameFor(immListOf(Messenger, Engineer), GameMap.newShuffledMap())
+                .withPlayerPosition(Engineer, Position(2, 2))
+                .withPlayerCards(immMapOf(Messenger to cards(HelicopterLiftCard), Engineer to cards()))
+                .withTreasureDeckDiscard(cards(ocean))
+
+        val messengerOriginalSite = game.gameState.playerPositions.getValue(Messenger)
+        val engineerOriginalSite = game.gameState.playerPositions.getValue(Engineer)
+
+        assertThat(game.gameState.playerPositions, is_(immMapOf(Messenger to messengerOriginalSite, Engineer to engineerOriginalSite)))
+
+        val engineerNewSite = game.gameSetup.map.mapSiteAt(Position(5, 5))
+        after (HelicopterLift(Messenger, Engineer, engineerNewSite) playedOn game) {
+            assertThat(playerPositions, is_(immMapOf(Messenger to messengerOriginalSite, Engineer to engineerNewSite)))
+            assertThat(playerCards, is_(immMapOf(Messenger to cards(), Engineer to cards())))
+            assertThat(treasureDeckDiscard, is_(cards(ocean, HelicopterLiftCard)))
+        }
+    }
 }
 
 private inline fun <T, R> after(receiver: T, block: T.() -> R): R = with(receiver, block)

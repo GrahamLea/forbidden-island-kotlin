@@ -93,9 +93,13 @@ data class GameState(
                 )
                 is CaptureTreasure -> copy(
                     treasuresCollected = treasuresCollected + (event.treasure to true),
-                    playerCards = playerCards +
-                        (event.player to playerCards.getValue(event.player).subtract(TreasureCard(event.treasure) * 4)),
+                    playerCards = playerCards + (event.player to playerCards.getValue(event.player).subtract(TreasureCard(event.treasure) * 4)),
                     treasureDeckDiscard = treasureDeckDiscard + (TreasureCard(event.treasure) * 4)
+                )
+                is HelicopterLift -> copy(
+                    playerPositions = playerPositions + (event.playerBeingMoved to event.mapSite),
+                    playerCards = playerCards + (event.playerWithCard to playerCards.getValue(event.playerWithCard).subtract(immListOf(HelicopterLiftCard))),
+                    treasureDeckDiscard = treasureDeckDiscard + HelicopterLiftCard
                 )
                 else -> throw IllegalArgumentException("Event type ${event::class} isn't currently handled")
             }
