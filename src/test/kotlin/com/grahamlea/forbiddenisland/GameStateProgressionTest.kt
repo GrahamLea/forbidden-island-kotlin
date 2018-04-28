@@ -2,14 +2,18 @@ package com.grahamlea.forbiddenisland
 
 import com.grahamlea.forbiddenisland.Adventurer.Engineer
 import com.grahamlea.forbiddenisland.Adventurer.Messenger
+import org.hamcrest.CoreMatchers.not
 import org.junit.Assert.assertThat
 import org.junit.Test
+import java.util.*
 import org.hamcrest.CoreMatchers.`is` as is_
 
 class GameStateProgressionTest {
 
+    private val random = Random()
     private val earth = TreasureCard(Treasure.EarthStone)
     private val ocean = TreasureCard(Treasure.OceansChalice)
+    private val fire = TreasureCard(Treasure.CrystalOfFire)
 
     @Test
     fun `events on game state are recorded in previous events`() {
@@ -138,9 +142,42 @@ class GameStateProgressionTest {
             assertThat(treasureDeckDiscard, is_(cards(earth, SandbagsCard)))
         }
     }
+
+    @Test
+    fun `draw from treasure deck moves card from treasure deck to player`() {
+        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
+                .withPlayerCards(immMapOf(Engineer to cards(earth), Messenger to cards(ocean)))
+                .withTopOfTreasureDeck(fire, ocean, earth)
+
+        val draw = DrawFromTreasureDeck(Engineer)
+        after (draw playedOn game) {
+            assertThat(playerCards, is_(immMapOf(Engineer to cards(earth, fire), Messenger to cards(ocean))))
+        }
+
+        after (listOf(draw, draw) playedOn game) {
+            assertThat(playerCards, is_(immMapOf(Engineer to cards(earth, fire, ocean), Messenger to cards(ocean))))
+        }
+    }
+
+    @Test
+    fun `drawing last card from treasure deck shuffles treasure discard back to deck`() {
+        val treasureDeckDiscardBeforeEvent = TreasureDeck.newShuffledDeck().subtract(listOf(earth))
+        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
+                .withPlayerCards(immMapOf(Engineer to cards(), Messenger to cards()))
+                .withTreasureDeckDiscard(treasureDeckDiscardBeforeEvent)
+
+        assertThat(game.gameState.treasureDeck, is_(cards(earth)))
+
+        after (DrawFromTreasureDeck(Engineer) playedOn game) {
+            assertThat(playerCards, is_(immMapOf(Engineer to cards(earth), Messenger to cards())))
+            assertThat(treasureDeck.size, is_(TreasureDeck.newShuffledDeck().size - 1)) // One card dealt to Engineer
+            assertThat(treasureDeck, is_(not(treasureDeckDiscardBeforeEvent)))
+            assertThat(treasureDeckDiscard, is_(cards()))
+        }
+    }
+
+    private inline fun <T, R> after(receiver: T, block: T.() -> R): R = with(receiver, block)
+
+    private infix fun GameEvent.playedOn(game: Game): GameState = game.gameState.after(this, game.random)
+    private infix fun List<GameEvent>.playedOn(game: Game): GameState = this.fold(game.gameState) { state, event -> state.after(event, random) }
 }
-
-private inline fun <T, R> after(receiver: T, block: T.() -> R): R = with(receiver, block)
-
-private infix fun GameEvent.playedOn(game: Game): GameState = game.gameState.after(this)
-private infix fun List<GameEvent>.playedOn(game: Game): GameState = this.fold(game.gameState) { state, event -> state.after(event) }

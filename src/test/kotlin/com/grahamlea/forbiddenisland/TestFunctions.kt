@@ -43,6 +43,14 @@ fun Game.withPlayerCards(playerCards: ImmutableMap<Adventurer, ImmutableList<Hol
     )
 }
 
+fun Game.withTopOfTreasureDeck(vararg cards: HoldableCard): Game {
+    return copy(
+        gameState.copy(
+            treasureDeck = immListOf(*cards) + gameState.treasureDeck.subtract(cards.toList())
+        )
+    )
+}
+
 fun Game.withTreasureDeckDiscard(discardedCards: ImmutableList<HoldableCard>): Game {
     return copy(
         gameState.copy(

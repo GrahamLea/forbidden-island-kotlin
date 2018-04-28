@@ -5,6 +5,7 @@ import com.grahamlea.forbiddenisland.FloodLevel.DEAD
 import com.grahamlea.forbiddenisland.Location.FoolsLanding
 import com.grahamlea.forbiddenisland.LocationFloodState.Sunken
 import com.grahamlea.forbiddenisland.LocationFloodState.Unflooded
+import java.util.*
 
 data class GameState(
         val gameSetup: GameSetup,
@@ -81,7 +82,7 @@ data class GameState(
         }
     }
 
-    fun after(event: GameEvent): GameState {
+    fun after(event: GameEvent, random: Random): GameState {
         // TODO Check that event is in list of possible events
         return this.copy(previousEvents = previousEvents + event).let { with (it) {
             when (event) {
@@ -100,6 +101,10 @@ data class GameState(
                 is Sandbag -> (event.player discards SandbagsCard).copy(
                     locationFloodStates = locationFloodStates + (event.mapSite.location to Unflooded)
                 )
+                is DrawFromTreasureDeck -> copy(
+                        playerCards = playerCards + (event.player to playerCards.getValue(event.player).plus(treasureDeck.first())),
+                        treasureDeck = treasureDeck.drop(1).imm()
+                    ).let { if (it.treasureDeck.isEmpty()) it.copy(treasureDeck = treasureDeckDiscard.shuffled(random).imm(), treasureDeckDiscard = cards()) else it }
                 else -> throw IllegalArgumentException("Event type ${event::class} isn't currently handled")
             }
         }}

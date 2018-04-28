@@ -19,7 +19,7 @@ class GameProgressionTest {
 
         val move = Move(Engineer, game.gameSetup.map.mapSiteAt(Position(4, 3)))
 
-        val expectedState = originalGameState.after(move)
+        val expectedState = originalGameState.after(move, game.random)
 
         game.process(move)
 
