@@ -91,25 +91,27 @@ data class GameState(
                     playerCards + (event.player   to playerCards.getValue(event.player)  .subtract(event.cards)) +
                                   (event.receiver to playerCards.getValue(event.receiver).plus(    event.cards))
                 )
-                is CaptureTreasure -> copy(
-                    treasuresCollected = treasuresCollected + (event.treasure to true),
-                    playerCards = playerCards + (event.player to playerCards.getValue(event.player).subtract(TreasureCard(event.treasure) * 4)),
-                    treasureDeckDiscard = treasureDeckDiscard + (TreasureCard(event.treasure) * 4)
+                is CaptureTreasure -> event.player.discards(TreasureCard(event.treasure) * 4).copy(
+                    treasuresCollected = treasuresCollected + (event.treasure to true)
                 )
-                is HelicopterLift -> copy(
-                    playerPositions = playerPositions + (event.playerBeingMoved to event.mapSite),
-                    playerCards = playerCards + (event.playerWithCard to playerCards.getValue(event.playerWithCard).subtract(immListOf(HelicopterLiftCard))),
-                    treasureDeckDiscard = treasureDeckDiscard + HelicopterLiftCard
+                is HelicopterLift -> (event.playerWithCard discards HelicopterLiftCard).copy(
+                    playerPositions = playerPositions + (event.playerBeingMoved to event.mapSite)
                 )
-                is Sandbag -> copy(
-                    locationFloodStates = locationFloodStates + (event.mapSite.location to Unflooded),
-                    playerCards = playerCards + (event.player to playerCards.getValue(event.player).subtract(immListOf(SandbagsCard))),
-                    treasureDeckDiscard = treasureDeckDiscard + SandbagsCard
+                is Sandbag -> (event.player discards SandbagsCard).copy(
+                    locationFloodStates = locationFloodStates + (event.mapSite.location to Unflooded)
                 )
                 else -> throw IllegalArgumentException("Event type ${event::class} isn't currently handled")
             }
         }}
     }
+
+    private infix fun Adventurer.discards(card: HoldableCard) = this.discards(immListOf(card))
+
+    private fun Adventurer.discards(cardList: Collection<HoldableCard>) =
+            copy(
+                    playerCards = playerCards + (this to playerCards.getValue(this).subtract(cardList)),
+                    treasureDeckDiscard = treasureDeckDiscard + cardList
+            )
 
     private fun uncollectedTreasures(): Set<Treasure> = treasuresCollected.filterValues { !it }.keys
 
@@ -128,5 +130,6 @@ data class GameState(
             .groupBy { it.first.pickupLocationForTreasure!! }
             .filterValues { it.all { it.second == Sunken } }
             .keys
+
 
 }
