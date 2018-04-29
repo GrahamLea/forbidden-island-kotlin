@@ -3,11 +3,14 @@ package com.grahamlea.forbiddenisland
 import com.grahamlea.forbiddenisland.LocationFloodState.Sunken
 import kotlin.reflect.KClass
 
-// TODO: Change to vararg
-fun Game.withLocationFloodStates(floodState: LocationFloodState, positions: List<Position>): Game {
+fun Game.withLocationFloodStates(floodState: LocationFloodState, vararg positions: Position): Game {
     val locations = this.gameSetup.map.mapSites.filter { it.position in positions }.map { it.location }
+    return withLocationFloodStates(floodState,  *locations.toTypedArray())
+}
+
+fun Game.withLocationFloodStates(floodState: LocationFloodState, vararg locations: Location): Game {
     return copy(
-            gameState.copy(locationFloodStates = (gameState.locationFloodStates + locations.associate { it to floodState }).imm())
+        gameState.copy(locationFloodStates = (gameState.locationFloodStates + locations.associate { it to floodState }).imm())
     )
 }
 

@@ -283,7 +283,7 @@ class GameStateResultTest {
             game = Game.newRandomGameFor(immListOf(playerToStrand, otherPlayer), gameMap)
                     .withPlayerPosition(playerToStrand, sunkPositionWithSunkSurroundings)
                     .withPlayerPosition(otherPlayer, safePosition)
-                    .withLocationFloodStates(Sunken, positionsToSink)
+                    .withLocationFloodStates(Sunken, *positionsToSink.toTypedArray())
 
             // Sinking 5 Locations means we regularly trip this other end-game rule, so we iterate 'til we don't:
         } while (game.gameState.result is BothPickupLocationsSankBeforeCollectingTreasure)
