@@ -146,7 +146,7 @@ class GameStateProgressionTest {
     }
 
     @Test
-    fun `draw from treasure deck moves card from treasure deck to player`() {
+    fun `draw treasure card from treasure deck moves card from treasure deck to player`() {
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
                 .withPlayerCards(immMapOf(Engineer to cards(earth), Messenger to cards(ocean)))
                 .withTopOfTreasureDeck(fire, ocean, earth)
@@ -161,7 +161,27 @@ class GameStateProgressionTest {
         }
     }
 
-    // TODO: test special cards are dealt to players
+    @Test
+    fun `draw Sandbags from treasure deck moves card from treasure deck to player`() {
+        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
+                .withPlayerCards(immMapOf(Engineer to cards(earth), Messenger to cards(ocean)))
+                .withTopOfTreasureDeck(SandbagsCard)
+
+        after (DrawFromTreasureDeck(Engineer) playedOn game) {
+            assertThat(playerCards, is_(immMapOf(Engineer to cards(earth, SandbagsCard), Messenger to cards(ocean))))
+        }
+    }
+
+    @Test
+    fun `draw Helicopter Lift from treasure deck moves card from treasure deck to player`() {
+        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
+                .withPlayerCards(immMapOf(Engineer to cards(earth), Messenger to cards(ocean)))
+                .withTopOfTreasureDeck(HelicopterLiftCard)
+
+        after (DrawFromTreasureDeck(Engineer) playedOn game) {
+            assertThat(playerCards, is_(immMapOf(Engineer to cards(earth, HelicopterLiftCard), Messenger to cards(ocean))))
+        }
+    }
 
     @Test
     fun `drawing last card from treasure deck shuffles treasure discard back to deck`() {
