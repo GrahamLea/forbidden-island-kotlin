@@ -264,6 +264,7 @@ class GameStateProgressionTest {
                 .withLocationFloodStates(Flooded, MistyMarsh, Observatory)
                 .withFloodDeckDiscard(immListOf(MistyMarsh))
                 .withTopOfFloodDeck(CrimsonForest, Observatory)
+                .withGamePhase(AwaitingFloodDeckDraw(Engineer, 3))
 
         val draw = DrawFromFloodDeck(Engineer)
 
@@ -293,6 +294,7 @@ class GameStateProgressionTest {
                     .withLocationFloodStates(Flooded, DunesOfDeception)
                     .withLocationFloodStates(Sunken, Observatory)
                     .withFloodDeckDiscard(floodDeckDiscardBeforeEvent.imm())
+                    .withGamePhase(AwaitingFloodDeckDraw(Engineer, 3))
 
         assertThat(game.gameState.floodDeck, is_(immListOf(MistyMarsh)))
         assertThat(game.gameState.floodDeckDiscard.size, is_(Location.values().size - 2)) // Observatory is out bc its sunken

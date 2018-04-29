@@ -2,7 +2,15 @@ package com.grahamlea.forbiddenisland
 
 sealed class GamePhase {
 
-    abstract fun phaseAfter(event: GameEvent): GamePhase
+    fun phaseAfter(event: GameEvent): GamePhase =
+        if (event is OutOfTurnEvent) this
+        else calculateNextPhase(event)
+
+    protected abstract fun calculateNextPhase(event: GameEvent): GamePhase
+
+    protected fun invalidEventInPhase(event: GameEvent): Nothing {
+        throw IllegalStateException("Not expecting event '$event' during phase '$this'")
+    }
 
     companion object {
         const val maxActionsPerPlayerTurn = 3
@@ -11,31 +19,38 @@ sealed class GamePhase {
 }
 
 data class AwaitingPlayerAction(val player: Adventurer, val actionsRemaining: Int): GamePhase() {
-    override fun phaseAfter(event: GameEvent): GamePhase {
-        return this // TODO: Implement properly
+    override fun calculateNextPhase(event: GameEvent): GamePhase {
+        return when (event) {
+            is PlayerActionEvent -> when (actionsRemaining) {
+                1 -> AwaitingTreasureDeckDraw(player, treasureDeckCardsDrawnPerTurn)
+                else -> AwaitingPlayerAction(player, actionsRemaining - 1)
+            }
+            is DrawFromTreasureDeck -> AwaitingTreasureDeckDraw(player, treasureDeckCardsDrawnPerTurn - 1)
+            else -> invalidEventInPhase(event)
+        }
     }
 }
 
 data class AwaitingPlayerToDiscardExtraCards(val player: Adventurer, val cardsRemainingToBeDiscarded: Int): GamePhase() {
-    override fun phaseAfter(event: GameEvent): GamePhase {
+    override fun calculateNextPhase(event: GameEvent): GamePhase {
         return this // TODO: Implement properly
     }
 }
 
 data class AwaitingTreasureDeckDraw(val player: Adventurer, val drawsRemaining: Int): GamePhase() {
-    override fun phaseAfter(event: GameEvent): GamePhase {
+    override fun calculateNextPhase(event: GameEvent): GamePhase {
         return this // TODO: Implement properly
     }
 }
 
 data class AwaitingFloodDeckDraw(val player: Adventurer, val drawsRemaining: Int): GamePhase() {
-    override fun phaseAfter(event: GameEvent): GamePhase {
+    override fun calculateNextPhase(event: GameEvent): GamePhase {
         return this // TODO: Implement properly
     }
 }
 
 object GameOver: GamePhase() {
-    override fun phaseAfter(event: GameEvent): GamePhase {
+    override fun calculateNextPhase(event: GameEvent): GamePhase {
         return this // TODO: Implement properly
     }
 }
