@@ -2,6 +2,8 @@ package com.grahamlea.forbiddenisland
 
 import com.grahamlea.forbiddenisland.Adventurer.Engineer
 import com.grahamlea.forbiddenisland.Adventurer.Messenger
+import com.grahamlea.forbiddenisland.Location.*
+import com.grahamlea.forbiddenisland.LocationFloodState.*
 import org.hamcrest.CoreMatchers.not
 import org.junit.Assert.assertThat
 import org.junit.Test
@@ -19,7 +21,7 @@ class GameStateProgressionTest {
     fun `events on game state are recorded in previous events`() {
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
                 .withPlayerPosition(Engineer, Position(4, 4))
-                .withLocationFloodStates(LocationFloodState.Flooded, listOf(Position(2, 3)))
+                .withLocationFloodStates(Flooded, listOf(Position(2, 3)))
 
         val event1 = Move(Engineer, game.gameSetup.map.mapSiteAt(Position(4, 3)))
         val event2 = Move(Engineer, game.gameSetup.map.mapSiteAt(Position(3, 3)))
@@ -51,14 +53,14 @@ class GameStateProgressionTest {
         val positionToShoreUp = Position(3, 4)
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
                 .withPlayerPosition(Engineer, Position(4, 4))
-                .withLocationFloodStates(LocationFloodState.Flooded, listOf(positionToShoreUp))
+                .withLocationFloodStates(Flooded, listOf(positionToShoreUp))
 
         val mapSiteToShoreUp = game.gameSetup.map.mapSiteAt(positionToShoreUp)
 
-        assertThat(game.gameState.locationFloodStates[mapSiteToShoreUp.location], is_(LocationFloodState.Flooded))
+        assertThat(game.gameState.locationFloodStates[mapSiteToShoreUp.location], is_(Flooded))
 
         after (ShoreUp(Engineer, mapSiteToShoreUp) playedOn game) {
-            assertThat(locationFloodStates[mapSiteToShoreUp.location], is_(LocationFloodState.Unflooded))
+            assertThat(locationFloodStates[mapSiteToShoreUp.location], is_(Unflooded))
         }
     }
 
@@ -86,7 +88,7 @@ class GameStateProgressionTest {
     fun `capture treasure event captures treasure, and discards treasure cards`() {
         val gameSetup = GameSetup(immListOf(Messenger, Engineer), GameMap.newShuffledMap())
         val game = Game.newRandomGameFor(gameSetup)
-                .withPlayerPosition(Messenger, gameSetup.map.positionOf(Location.TempleOfTheSun))
+                .withPlayerPosition(Messenger, gameSetup.map.positionOf(TempleOfTheSun))
                 .withPlayerCards(
                     immMapOf(Messenger to cards(earth, earth, earth, earth, ocean),
                              Engineer to cards(ocean, ocean)))
@@ -128,16 +130,16 @@ class GameStateProgressionTest {
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
                 .withPlayerPosition(Engineer, Position(4, 4))
                 .withPlayerPosition(Messenger, Position(3, 4))
-                .withLocationFloodStates(LocationFloodState.Flooded, listOf(positionToShoreUp))
+                .withLocationFloodStates(Flooded, listOf(positionToShoreUp))
                 .withPlayerCards(immMapOf(Engineer to cards(earth, SandbagsCard), Messenger to cards(ocean)))
                 .withTreasureDeckDiscard(cards(earth))
 
         val mapSiteToShoreUp = game.gameSetup.map.mapSiteAt(positionToShoreUp)
 
-        assertThat(game.gameState.locationFloodStates[mapSiteToShoreUp.location], is_(LocationFloodState.Flooded))
+        assertThat(game.gameState.locationFloodStates[mapSiteToShoreUp.location], is_(Flooded))
 
         after (Sandbag(Engineer, mapSiteToShoreUp) playedOn game) {
-            assertThat(locationFloodStates[mapSiteToShoreUp.location], is_(LocationFloodState.Unflooded))
+            assertThat(locationFloodStates[mapSiteToShoreUp.location], is_(Unflooded))
             assertThat(playerCards, is_(immMapOf(Engineer to cards(earth), Messenger to cards(ocean))))
             assertThat(treasureDeckDiscard, is_(cards(earth, SandbagsCard)))
         }
@@ -173,6 +175,56 @@ class GameStateProgressionTest {
             assertThat(treasureDeck.size, is_(TreasureDeck.newShuffledDeck().size - 1)) // One card dealt to Engineer
             assertThat(treasureDeck, is_(not(treasureDeckDiscardBeforeEvent)))
             assertThat(treasureDeckDiscard, is_(cards()))
+        }
+    }
+
+    // TODO draw Waters Rise from Treasure Deck
+
+    @Test
+    fun `draw location from flood deck floods or sinks location and discards card`() {
+        val map = GameMap.newShuffledMap()
+        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), map)
+                .withLocationFloodStates(Unflooded, Position.allPositions)
+                .withLocationFloodStates(Flooded, listOf(map.positionOf(MistyMarsh), map.positionOf(Observatory)))
+                .withFloodDeckDiscard(immListOf(MistyMarsh))
+                .withTopOfFloodDeck(CrimsonForest, Observatory)
+
+        val draw = DrawFromFloodDeck(Engineer)
+
+        after (draw playedOn game) {
+            assertThat(locationFloodStates[MistyMarsh], is_(Flooded))
+            assertThat(locationFloodStates[Observatory], is_(Flooded))
+            assertThat(locationFloodStates[CrimsonForest], is_(Flooded))
+            assertThat(locationFloodStates.values.count { it == Unflooded }, is_(Location.allLocationsSet.size - 3))
+            assertThat(floodDeckDiscard, is_(immListOf(MistyMarsh, CrimsonForest)))
+        }
+
+        after (listOf(draw, draw) playedOn game) {
+            assertThat(locationFloodStates[MistyMarsh], is_(Flooded))
+            assertThat(locationFloodStates[Observatory], is_(Sunken))
+            assertThat(locationFloodStates[CrimsonForest], is_(Flooded))
+            assertThat(locationFloodStates.values.count { it == Unflooded }, is_(Location.allLocationsSet.size - 3))
+            assertThat(floodDeckDiscard, is_(immListOf(MistyMarsh, CrimsonForest))) // Sunken Locations are removed from the Flood Deck
+        }
+    }
+
+    @Test
+    fun `drawing last card from flood deck shuffles flood discard back to deck without sunken locations`() {
+        val floodDeckDiscardBeforeEvent = shuffled<Location>().subtract(listOf(MistyMarsh)) - Observatory
+        val map = GameMap.newShuffledMap()
+        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), map)
+                    .withLocationFloodStates(Unflooded, Position.allPositions)
+                    .withLocationFloodStates(Flooded, listOf(map.positionOf(DunesOfDeception)))
+                    .withLocationFloodStates(Sunken, listOf(map.positionOf(Observatory)))
+                    .withFloodDeckDiscard(floodDeckDiscardBeforeEvent.imm())
+
+        assertThat(game.gameState.floodDeck, is_(immListOf(MistyMarsh)))
+        assertThat(game.gameState.floodDeckDiscard.size, is_(Location.values().size - 2)) // Observatory is out bc its sunken
+
+        after (DrawFromFloodDeck(Engineer) playedOn game) {
+            assertThat(floodDeck.toSortedSet(), is_(Location.values().subtract(listOf(Observatory)).toSortedSet()))
+            assertThat(floodDeck.dropLast(1), is_(not(floodDeckDiscardBeforeEvent)))
+            assertThat(floodDeckDiscard, is_(immListOf()))
         }
     }
 

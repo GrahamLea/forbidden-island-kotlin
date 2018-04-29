@@ -1,7 +1,9 @@
 package com.grahamlea.forbiddenisland
 
+import com.grahamlea.forbiddenisland.LocationFloodState.Sunken
 import kotlin.reflect.KClass
 
+// TODO: Change to vararg
 fun Game.withLocationFloodStates(floodState: LocationFloodState, positions: List<Position>): Game {
     val locations = this.gameSetup.map.mapSites.filter { it.position in positions }.map { it.location }
     return copy(
@@ -60,9 +62,30 @@ fun Game.withTreasureDeckDiscard(discardedCards: ImmutableList<HoldableCard>): G
     )
 }
 
+fun Game.withTopOfFloodDeck(vararg locations: Location): Game {
+    return copy(
+            gameState.copy(
+                    floodDeck = immListOf(*locations) + gameState.floodDeck.subtract(locations.toList())
+            )
+    )
+}
+
+fun Game.withFloodDeckDiscard(discardedCards: ImmutableList<Location>): Game {
+    return copy(
+        gameState.copy(
+            floodDeckDiscard = discardedCards,
+            floodDeck = (shuffled<Location>() - discardedCards - gameState.locationsWithState(Sunken)).imm()
+        )
+    )
+}
+
 @Suppress("UNCHECKED_CAST")
 val GameState.treasureDeck: ImmutableList<HoldableCard>
     get() = GameState::class.getPrivateFieldValue("treasureDeck", this) as ImmutableList<HoldableCard>
+
+@Suppress("UNCHECKED_CAST")
+val GameState.floodDeck: ImmutableList<Location>
+    get() = GameState::class.getPrivateFieldValue("floodDeck", this) as ImmutableList<Location>
 
 fun <C: Any> KClass<C>.getPrivateFieldValue(fieldName: String, target: C): Any? {
     val field = this.java.getDeclaredField(fieldName)

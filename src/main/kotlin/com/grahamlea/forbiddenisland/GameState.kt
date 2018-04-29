@@ -34,10 +34,10 @@ data class GameState(
             ).joinToString(separator = "\n")
         }
 
-        // Cards in flood decks must make a full deck
-        require(Location.values().all { (it in floodDeck) xor (it in floodDeckDiscard ) }) {
-            // TODO: Once locations start being sunk, we remove them from the game entirely
-            "Every location must appear exactly once in either the floodDeck or the floodDeckDiscard"
+        // Cards in flood decks must make a full deck excluding sunken locations
+        require((Location.values().subtract(locationsWithState(Sunken)))
+                    .all { (it in floodDeck) xor (it in floodDeckDiscard ) }) {
+            "Every location that has not sunk must appear exactly once in either the floodDeck or the floodDeckDiscard"
         }
 
         // All treasures must have a collected flag
@@ -105,6 +105,16 @@ data class GameState(
                         playerCards = playerCards + (event.player to playerCards.getValue(event.player).plus(treasureDeck.first())),
                         treasureDeck = treasureDeck.drop(1).imm()
                     ).let { if (it.treasureDeck.isEmpty()) it.copy(treasureDeck = treasureDeckDiscard.shuffled(random).imm(), treasureDeckDiscard = cards()) else it }
+
+                is DrawFromFloodDeck -> floodDeck.first().let { floodedLocation ->
+                    locationFloodStates.getValue(floodedLocation).flooded().let { newFloodState ->
+                        copy(
+                            floodDeck = floodDeck.drop(1).imm(),
+                            locationFloodStates = locationFloodStates + (floodedLocation to newFloodState),
+                            floodDeckDiscard = if (newFloodState == Sunken) floodDeckDiscard else floodDeckDiscard + floodedLocation
+                        )
+                    }.let { if (it.floodDeck.isEmpty()) it.copy(floodDeck = it.floodDeckDiscard.shuffled().imm(), floodDeckDiscard = immListOf()) else it }
+                }
                 else -> throw IllegalArgumentException("Event type ${event::class} isn't currently handled")
             }
         }}
@@ -118,6 +128,9 @@ data class GameState(
                     treasureDeckDiscard = treasureDeckDiscard + cardList
             )
 
+    fun locationsWithState(state: LocationFloodState) = locationFloodStates.filterValues { it == state }.keys
+
+    // TODO: Move these up to where they're used
     private fun uncollectedTreasures(): Set<Treasure> = treasuresCollected.filterValues { !it }.keys
 
     private fun drownedPlayers() =

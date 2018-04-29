@@ -49,7 +49,13 @@ enum class StartingFloodLevel(val floodLevel: FloodLevel) {
 }
 
 enum class LocationFloodState {
-    Unflooded, Flooded, Sunken
+    Unflooded, Flooded, Sunken;
+
+    fun flooded(): LocationFloodState = when (this) {
+        Unflooded -> Flooded
+        Flooded -> Sunken
+        Sunken -> throw IllegalStateException("A sunken location should never be flooded again")
+    }
 }
 
 enum class Location(

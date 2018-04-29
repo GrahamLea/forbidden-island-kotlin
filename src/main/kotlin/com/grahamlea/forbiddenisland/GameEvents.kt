@@ -31,14 +31,18 @@ data class Sandbag(val player: Adventurer, val mapSite: MapSite): PlayerSpecialA
     override fun toString() = "$mapSite is sand bagged by $player"
 }
 
-object HelicopterLiftOffIsland: PlayerSpecialActionEvent() {
-    override fun toString() = "All players are lifted off the island"
+data class HelicopterLiftOffIsland(val player: Adventurer): PlayerSpecialActionEvent() {
+    override fun toString() = "All players are lifted off the island by $player"
 }
 
 sealed class PlayerObligationEvent: GameEvent()
 
-class DrawFromTreasureDeck(val player: Adventurer): PlayerObligationEvent()
+data class DrawFromTreasureDeck(val player: Adventurer): PlayerObligationEvent() {
+    override fun toString() = "$player draws from the Treasure Deck"
+}
 
-object DrawFromFloodDeck: PlayerObligationEvent()
+data class DrawFromFloodDeck(val player: Adventurer): PlayerObligationEvent() {
+    override fun toString() = "$player draws from the Flood Deck"
+}
 
 data class Swim(val strandedPlayer: Adventurer, val mapSite: MapSite): PlayerObligationEvent()
