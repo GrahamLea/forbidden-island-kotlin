@@ -85,18 +85,8 @@ class GameStateProgressionTest {
         val game = Game.newRandomGameFor(immListOf(Messenger, Engineer), GameMap.newShuffledMap())
                 .withPlayerCards(immMapOf(Messenger to cards(earth, earth), Engineer to cards(earth, earth)))
 
-        after (GiveTreasureCard(Messenger, Engineer, immListOf(earth)) playedOn game) {
+        after (GiveTreasureCard(Messenger, Engineer, earth) playedOn game) {
             assertThat(playerCards, is_(immMapOf(Messenger to cards(earth), Engineer to cards(earth, earth, earth))))
-        }
-    }
-
-    @Test
-    fun `give multiple treasure cards event on game state changes player cards`() {
-        val game = Game.newRandomGameFor(immListOf(Messenger, Engineer), GameMap.newShuffledMap())
-                .withPlayerCards(immMapOf(Messenger to cards(earth, earth), Engineer to cards(earth, earth)))
-
-        after (GiveTreasureCard(Messenger, Engineer, immListOf(earth, earth)) playedOn game) {
-            assertThat(playerCards, is_(immMapOf(Messenger to cards(), Engineer to cards(earth, earth, earth, earth))))
         }
     }
 

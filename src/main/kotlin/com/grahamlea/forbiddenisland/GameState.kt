@@ -105,8 +105,8 @@ data class GameState(
                 is Swim -> copy(playerPositions = playerPositions + (event.strandedPlayer to event.mapSite))
                 is ShoreUp -> copy(locationFloodStates = locationFloodStates + (event.mapSite.location to Unflooded))
                 is GiveTreasureCard -> copy(playerCards =
-                    playerCards + (event.player   to playerCards.getValue(event.player)  .subtract(event.cards)) +
-                                  (event.receiver to playerCards.getValue(event.receiver).plus(    event.cards))
+                    playerCards + (event.player   to playerCards.getValue(event.player)  .subtract(listOf(event.card))) +
+                                  (event.receiver to playerCards.getValue(event.receiver).plus(    listOf(event.card)))
                 )
                 is CaptureTreasure -> event.player.discards(TreasureCard(event.treasure) * 4).copy(
                     treasuresCollected = treasuresCollected + (event.treasure to true)
