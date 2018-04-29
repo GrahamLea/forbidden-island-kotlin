@@ -38,7 +38,12 @@ enum class Adventurer {
 }
 
 enum class FloodLevel(val tilesFloodingPerTurn: Int) {
-    ONE(2), TWO(2), THREE(3), FOUR(3), FIVE(3), SIX(4), SEVEN(4), EIGHT(5), NINE(5), DEAD(0)
+    ONE(2), TWO(2), THREE(3), FOUR(3), FIVE(3), SIX(4), SEVEN(4), EIGHT(5), NINE(5), DEAD(0);
+
+    fun next(): FloodLevel {
+        if (this == DEAD) throw IllegalStateException("There is no next flood level after dead")
+        return FloodLevel.values()[this.ordinal + 1]
+    }
 }
 
 enum class StartingFloodLevel(val floodLevel: FloodLevel) {

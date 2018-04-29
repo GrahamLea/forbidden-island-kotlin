@@ -101,11 +101,22 @@ data class GameState(
                 is Sandbag -> (event.player discards SandbagsCard).copy(
                     locationFloodStates = locationFloodStates + (event.mapSite.location to Unflooded)
                 )
-                is DrawFromTreasureDeck -> copy(
-                        playerCards = playerCards + (event.player to playerCards.getValue(event.player).plus(treasureDeck.first())),
-                        treasureDeck = treasureDeck.drop(1).imm()
-                    ).let { if (it.treasureDeck.isEmpty()) it.copy(treasureDeck = treasureDeckDiscard.shuffled(random).imm(), treasureDeckDiscard = cards()) else it }
-
+                is DrawFromTreasureDeck -> treasureDeck.first().let { drawnCard ->
+                    if (drawnCard == WatersRiseCard) {
+                        copy(
+                            floodLevel = floodLevel.next(),
+                            treasureDeck = treasureDeck.drop(1).imm(),
+                            treasureDeckDiscard = treasureDeckDiscard + WatersRiseCard,
+                            floodDeck = (floodDeckDiscard.shuffled() + floodDeck).imm(),
+                            floodDeckDiscard = immListOf()
+                        )
+                    } else {
+                        copy(
+                            playerCards = playerCards + (event.player to playerCards.getValue(event.player).plus(drawnCard)),
+                            treasureDeck = treasureDeck.drop(1).imm()
+                        )
+                    }.let { if (it.treasureDeck.isEmpty()) it.copy(treasureDeck = it.treasureDeckDiscard.shuffled(random).imm(), treasureDeckDiscard = cards()) else it }
+                }
                 is DrawFromFloodDeck -> floodDeck.first().let { floodedLocation ->
                     locationFloodStates.getValue(floodedLocation).flooded().let { newFloodState ->
                         copy(

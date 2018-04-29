@@ -161,6 +161,8 @@ class GameStateProgressionTest {
         }
     }
 
+    // TODO: test special cards are dealt to players
+
     @Test
     fun `drawing last card from treasure deck shuffles treasure discard back to deck`() {
         val treasureDeckDiscardBeforeEvent = TreasureDeck.newShuffledDeck().subtract(listOf(earth))
@@ -178,7 +180,55 @@ class GameStateProgressionTest {
         }
     }
 
-    // TODO draw Waters Rise from Treasure Deck
+    @Test
+    fun `drawing waters rise card from treasure deck raises flood level, discards card, and shuffles flood deck discard back to flood deck`() {
+        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
+                .withPlayerCards(immMapOf(Engineer to cards(earth), Messenger to cards(ocean)))
+                .withTopOfTreasureDeck(WatersRiseCard)
+
+        val floodDeckBeforeEvent = game.gameState.floodDeck
+        val floodDeckDiscardBeforeEvent = game.gameState.floodDeckDiscard
+
+        assertThat(game.gameState.floodLevel, is_(FloodLevel.TWO))
+        assertThat(floodDeckDiscardBeforeEvent.size, is_(6))
+
+        after (DrawFromTreasureDeck(Engineer) playedOn game) {
+            assertThat(floodLevel, is_(FloodLevel.THREE))
+            assertThat(playerCards, is_(immMapOf(Engineer to cards(earth), Messenger to cards(ocean))))
+            assertThat(treasureDeckDiscard, is_(cards(WatersRiseCard)))
+            assertThat(floodDeckDiscard, is_(immListOf()))
+            assertThat(floodDeck.take(6).toSortedSet(), is_(floodDeckDiscardBeforeEvent.toSortedSet()))
+            assertThat(floodDeck.take(6), is_(not(floodDeckDiscardBeforeEvent as List<Location>)))
+            assertThat(floodDeck.drop(6), is_(floodDeckBeforeEvent as List<Location>))
+        }
+    }
+
+    @Test
+    fun `drawing waters rise card as last card from treasure deck does all the expected things from the two test cases above`() {
+        val treasureDeckDiscardBeforeEvent = TreasureDeck.newShuffledDeck().subtract(listOf(earth, ocean, WatersRiseCard))
+        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
+                .withPlayerCards(immMapOf(Engineer to cards(earth), Messenger to cards(ocean)))
+                .withTreasureDeckDiscard(treasureDeckDiscardBeforeEvent)
+
+        val floodDeckBeforeEvent = game.gameState.floodDeck
+        val floodDeckDiscardBeforeEvent = game.gameState.floodDeckDiscard
+
+        assertThat(game.gameState.floodLevel, is_(FloodLevel.TWO))
+        assertThat(floodDeckDiscardBeforeEvent.size, is_(6))
+
+        after (DrawFromTreasureDeck(Engineer) playedOn game) {
+            assertThat(floodLevel, is_(FloodLevel.THREE))
+            assertThat(playerCards, is_(immMapOf(Engineer to cards(earth), Messenger to cards(ocean))))
+            assertThat(treasureDeckDiscard, is_(cards()))
+            assertThat(floodDeckDiscard, is_(immListOf()))
+            assertThat(floodDeck.take(6).toSortedSet(), is_(floodDeckDiscardBeforeEvent.toSortedSet()))
+            assertThat(floodDeck.take(6), is_(not(floodDeckDiscardBeforeEvent as List<Location>)))
+            assertThat(floodDeck.drop(6), is_(floodDeckBeforeEvent as List<Location>))
+            assertThat(treasureDeck.size, is_(TreasureDeck.newShuffledDeck().size - 2)) // Players have two cards
+            assertThat(treasureDeck, is_(not(treasureDeckDiscardBeforeEvent)))
+            assertThat(treasureDeckDiscard, is_(cards()))
+        }
+    }
 
     @Test
     fun `draw location from flood deck floods or sinks location and discards card`() {
