@@ -11,3 +11,4 @@ data class AwaitingPlayerAction(val player: Adventurer, val actionsRemaining: In
 data class AwaitingPlayerToDiscardExtraCards(val player: Adventurer, val cardsRemainingToBeDiscarded: Int): GamePhase()
 data class AwaitingTreasureDeckDraw(val player: Adventurer, val drawsRemaining: Int): GamePhase()
 data class AwaitingFloodDeckDraw(val player: Adventurer, val drawsRemaining: Int): GamePhase()
+object GameOver: GamePhase()
