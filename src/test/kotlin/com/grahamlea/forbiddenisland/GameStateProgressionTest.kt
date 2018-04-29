@@ -314,6 +314,25 @@ class GameStateProgressionTest {
         }
     }
 
+    @Test
+    fun `helicopter lift off island played on game goes into treasure discard pile and players stay put`() {
+        val game = Game.newRandomGameFor(immListOf(Messenger, Engineer), GameMap.newShuffledMap())
+                .withPlayerPosition(Engineer, Position(2, 2))
+                .withPlayerCards(immMapOf(Messenger to cards(HelicopterLiftCard, earth), Engineer to cards(ocean)))
+                .withTreasureDeckDiscard(cards(ocean))
+
+        val messengerOriginalSite = game.gameState.playerPositions.getValue(Messenger)
+        val engineerOriginalSite = game.gameState.playerPositions.getValue(Engineer)
+
+        assertThat(game.gameState.playerPositions, is_(immMapOf(Messenger to messengerOriginalSite, Engineer to engineerOriginalSite)))
+
+        after (HelicopterLiftOffIsland(Messenger) playedOn game) {
+            assertThat(playerPositions, is_(game.gameState.playerPositions))
+            assertThat(playerCards, is_(immMapOf(Messenger to cards(earth), Engineer to cards(ocean))))
+            assertThat(treasureDeckDiscard, is_(cards(ocean, HelicopterLiftCard)))
+        }
+    }
+
     private inline fun <T, R> after(receiver: T, block: T.() -> R): R = with(receiver, block)
 
     private infix fun GameEvent.playedOn(game: Game): GameState = game.gameState.after(this, game.random)

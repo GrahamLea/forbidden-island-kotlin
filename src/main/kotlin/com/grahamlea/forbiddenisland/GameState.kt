@@ -145,7 +145,9 @@ data class GameState(
                         )
                     }.let { if (it.floodDeck.isEmpty()) it.copy(floodDeck = it.floodDeckDiscard.shuffled().imm(), floodDeckDiscard = immListOf()) else it }
                 }
-                else -> throw IllegalArgumentException("Event type ${event::class} isn't currently handled")
+                is HelicopterLiftOffIsland -> (event.player discards HelicopterLiftCard).copy(
+                        // TODO: Update game phase
+                )
             }
         }}
     }
