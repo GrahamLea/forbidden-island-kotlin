@@ -6,7 +6,7 @@ import java.util.*
 data class GameMap(val mapSites: ImmutableList<MapSite>) {
 
     init {
-        require(mapSites.map { it.position }.toSet().containsAll(positions)) { "mapSites must include all valid Positions" }
+        require(mapSites.map { it.position }.toSet().containsAll(Position.allPositions)) { "mapSites must include all valid Positions" }
         require(mapSites.map { it.location }.toSet().containsAll(Location.values().toList())) { "mapSites must include all Locations" }
     }
 
@@ -25,16 +25,8 @@ data class GameMap(val mapSites: ImmutableList<MapSite>) {
         }.mapNotNull { position.neighbour(it) }.map { mapSiteAt(it) }
 
     companion object {
-        private val positions =
-            listOf(      3, 4      ).map { Position(it, 1) } +
-            listOf(   2, 3, 4, 5   ).map { Position(it, 2) } +
-            listOf(1, 2, 3, 4, 5, 6).map { Position(it, 3) } +
-            listOf(1, 2, 3, 4, 5, 6).map { Position(it, 4) }  +
-            listOf(   2, 3, 4, 5   ).map { Position(it, 5) }  +
-            listOf(      3, 4      ).map { Position(it, 6) }
-
         fun newShuffledMap(random: Random = Random()) =
-            GameMap(ImmutableList(positions.zip(shuffled<Location>(random)) { p, l -> MapSite(p, l) }))
+            GameMap(ImmutableList(Position.allPositions.zip(shuffled<Location>(random)) { p, l -> MapSite(p, l) }))
     }
 }
 
@@ -60,6 +52,15 @@ data class Position(val x: Int, val y: Int): Comparable<Position> {
     override fun toString() = "($x,$y)"
 
     companion object {
+        val allPositions by lazy {
+            listOf(      3, 4      ).map { Position(it, 1) } +
+            listOf(   2, 3, 4, 5   ).map { Position(it, 2) } +
+            listOf(1, 2, 3, 4, 5, 6).map { Position(it, 3) } +
+            listOf(1, 2, 3, 4, 5, 6).map { Position(it, 4) }  +
+            listOf(   2, 3, 4, 5   ).map { Position(it, 5) }  +
+            listOf(      3, 4      ).map { Position(it, 6) }
+        }
+
         private val unfilledPositions = listOf(
             Pair(1, 1), Pair(2, 1), /* ... */ Pair(5, 1), Pair(6, 1),
             Pair(1, 2),             /* ... */             Pair(6, 2),
