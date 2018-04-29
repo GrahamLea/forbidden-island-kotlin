@@ -74,10 +74,7 @@ data class GameState(
             drownedPlayers.any() -> PlayerDrowned(drownedPlayers.first())
             lostTreasures.any() -> BothPickupLocationsSankBeforeCollectingTreasure(lostTreasures.first())
             locationFloodStates[FoolsLanding] == Sunken -> FoolsLandingSank
-            treasuresCollected.all { it.value } &&
-                    playerPositions.values.all { it.location == FoolsLanding } &&
-                    treasureDeckDiscard.lastOrNull() == HelicopterLiftCard
-            -> AdventurersWon
+            previousEvents.lastOrNull() is HelicopterLiftOffIsland -> AdventurersWon
             else -> null
         }
     }

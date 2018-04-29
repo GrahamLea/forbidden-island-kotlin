@@ -29,11 +29,19 @@ class GameStateResultTest {
 
     private val allLocationsUnflooded = Location.values().associate { it to Unflooded }
 
-    // TODO: Game is won only when Helicopter Lift is played after players on Fool's Landing.
-    // TODO: Game not won when all treasures possessed, all players on Fool's Landing and Helicopter Lift was previous card played
+    @Test
+    fun `game is won when HelicopterLiftOffIsland event has been played`() {
+        val game = Game.newRandomGameFor(randomListOfPlayers(2)).let { game ->
+            game.copy(gameState = game.gameState.copy(
+                    previousEvents = immListOf(HelicopterLiftOffIsland(game.gameSetup.players[0]))
+            ))
+        }
+
+        assertThat(game.gameState.result, is_(AdventurersWon as GameResult))
+    }
 
     @Test
-    fun `game is won when all four treasures are collected and all adventurers are on fool's landing and helicopter lift has been played`() {
+    fun `game is not won when all four treasures are collected and all adventurers are on fool's landing and helicopter lift was most recent card played`() {
         val players = randomListOfPlayers(2)
         val game = Game.newRandomGameFor(players).let { game ->
             game.copy(gameState = game.gameState.copy(
@@ -46,7 +54,7 @@ class GameStateResultTest {
                 .withPlayerPosition(players[1], game.gameSetup.map.positionOf(FoolsLanding))
         }
 
-        assertThat(game.gameState.result, is_(AdventurersWon as GameResult))
+        assertThat(game.gameState.result, is_(nullValue()))
     }
 
     @Test
