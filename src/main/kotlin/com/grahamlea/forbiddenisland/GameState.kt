@@ -87,6 +87,7 @@ data class GameState(
         return this.copy(previousEvents = previousEvents + event).let { with (it) {
             when (event) {
                 is Move -> copy(playerPositions = playerPositions + (event.player to event.mapSite))
+                is Swim -> copy(playerPositions = playerPositions + (event.strandedPlayer to event.mapSite))
                 is ShoreUp -> copy(locationFloodStates = locationFloodStates + (event.mapSite.location to Unflooded))
                 is GiveTreasureCard -> copy(playerCards =
                     playerCards + (event.player   to playerCards.getValue(event.player)  .subtract(event.cards)) +

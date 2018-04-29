@@ -49,6 +49,22 @@ class GameStateProgressionTest {
     }
 
     @Test
+    fun `swim event played on game changes map site of the one player`() {
+        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
+                .withPlayerPosition(Engineer, Position(4, 4))
+
+        val engineerOriginalSite = game.gameState.playerPositions.getValue(Engineer)
+        val messengerOriginalSite = game.gameState.playerPositions.getValue(Messenger)
+
+        assertThat(game.gameState.playerPositions, is_(immMapOf(Engineer to engineerOriginalSite, Messenger to messengerOriginalSite)))
+
+        val engineerNewSite = game.gameSetup.map.mapSiteAt(Position(4, 3))
+        after (Swim(Engineer, engineerNewSite) playedOn game) {
+            assertThat(playerPositions, is_(immMapOf(Engineer to engineerNewSite, Messenger to messengerOriginalSite)))
+        }
+    }
+
+    @Test
     fun `shore up played on game changes location flood state`() {
         val positionToShoreUp = Position(3, 4)
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
