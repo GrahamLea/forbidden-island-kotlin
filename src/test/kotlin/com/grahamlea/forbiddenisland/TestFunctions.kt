@@ -82,6 +82,8 @@ fun Game.withFloodDeckDiscard(discardedCards: ImmutableList<Location>): Game {
     )
 }
 
+fun Game.withGamePhase(phase: GamePhase): Game = copy(gameState.copy(phase = phase))
+
 @Suppress("UNCHECKED_CAST")
 val GameState.treasureDeck: ImmutableList<HoldableCard>
     get() = GameState::class.getPrivateFieldValue("treasureDeck", this) as ImmutableList<HoldableCard>

@@ -99,7 +99,7 @@ data class GameState(
 
     fun after(event: GameEvent, random: Random): GameState {
         // TODO Check that event is in list of possible events
-        return this.copy(previousEvents = previousEvents + event).let { with (it) {
+        return this.copy(phase = phase.phaseAfter(event), previousEvents = previousEvents + event).let { with (it) {
             when (event) {
                 is Move -> copy(playerPositions = playerPositions + (event.player to event.mapSite))
                 is Swim -> copy(playerPositions = playerPositions + (event.strandedPlayer to event.mapSite))
