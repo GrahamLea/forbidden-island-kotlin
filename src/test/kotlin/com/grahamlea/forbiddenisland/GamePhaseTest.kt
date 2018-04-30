@@ -10,6 +10,7 @@ import org.hamcrest.CoreMatchers.`is` as is_
 class GamePhaseTest {
 
     private val mapSite = MapSite(Position(3, 3), MistyMarsh)
+    private val randomNewGameState = Game.newRandomGameFor(2).gameState
 
     @Test
     fun `awaiting player action + move = awaiting player action with one less action`() {
@@ -82,12 +83,13 @@ class GamePhaseTest {
 
         for (phase in phases) {
             for (event in events) {
-                assertThat(phase.phaseAfter(event), is_(phase))
+                assertThat(phase.phaseAfter(event, randomNewGameState), is_(phase))
             }
         }
     }
+
+    private fun checkPhaseTransition(firstPhase: GamePhase, event: GameEvent, gameState: GameState = randomNewGameState, expectedPhase: GamePhase) {
+        assertThat(firstPhase.phaseAfter(event, gameState), is_(expectedPhase))
+    }
 }
 
-private fun checkPhaseTransition(firstPhase: GamePhase, event: GameEvent, expectedPhase: GamePhase) {
-    assertThat(firstPhase.phaseAfter(event), is_(expectedPhase))
-}

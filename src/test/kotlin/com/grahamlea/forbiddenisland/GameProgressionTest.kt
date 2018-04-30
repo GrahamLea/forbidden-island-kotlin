@@ -2,9 +2,7 @@ package com.grahamlea.forbiddenisland
 
 import com.grahamlea.forbiddenisland.Adventurer.Engineer
 import com.grahamlea.forbiddenisland.Adventurer.Messenger
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockito_kotlin.*
 import org.junit.Assert.assertThat
 import org.junit.Test
 import org.hamcrest.CoreMatchers.`is` as is_
@@ -28,30 +26,33 @@ class GameProgressionTest {
     }
 
     @Test
-    fun `game phase is updated during event`() {
+    fun `game phase is updated during event with player card counts of new state`() {
 
         val map = GameMap.newShuffledMap()
 
-        val event1 = Move(Engineer, map.mapSiteAt(Position(4, 3)))
-        val event2 = Move(Engineer, map.mapSiteAt(Position(3, 3)))
+        val moveEvent = Move(Engineer, map.mapSiteAt(Position(4, 3)))
+        val drawEvent = DrawFromTreasureDeck(Engineer)
 
         val gamePhase1: GamePhase = mock()
         val gamePhase2: GamePhase = mock()
         val gamePhase3: GamePhase = mock()
 
-        whenever(gamePhase1.phaseAfter(event1)) doReturn gamePhase2
-        whenever(gamePhase2.phaseAfter(event2)) doReturn gamePhase3
-
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), map)
                 .withPlayerPosition(Engineer, Position(4, 4))
                 .withLocationFloodStates(LocationFloodState.Flooded, Position(2, 3))
+                .withTopOfTreasureDeck(TreasureCard(Treasure.EarthStone))
                 .withGamePhase(gamePhase1)
 
-        after (event1 playedOn game) {
+        val cardCountsBeforeDraw = mapOf(Engineer to 2, Messenger to 2)
+        val cardCountsAfterDraw = mapOf(Engineer to 3, Messenger to 2)
+        whenever(gamePhase1.phaseAfter(same(moveEvent), argWhere { it.playerCardCounts == cardCountsBeforeDraw })) doReturn gamePhase2
+        whenever(gamePhase2.phaseAfter(same(drawEvent), argWhere { it.playerCardCounts == cardCountsAfterDraw })) doReturn gamePhase3
+
+        after (moveEvent playedOn game) {
             assertThat(phase, is_(gamePhase2))
         }
 
-        after (listOf(event1, event2) playedOn game) {
+        after (listOf(moveEvent, drawEvent) playedOn game) {
             assertThat(phase, is_(gamePhase3))
         }
     }

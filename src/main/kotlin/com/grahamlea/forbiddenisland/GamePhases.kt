@@ -2,7 +2,7 @@ package com.grahamlea.forbiddenisland
 
 sealed class GamePhase {
 
-    fun phaseAfter(event: GameEvent): GamePhase =
+    fun phaseAfter(event: GameEvent, nextGameState: GameState): GamePhase =
         if (event is OutOfTurnEvent) this
         else calculateNextPhase(event)
 
@@ -23,7 +23,7 @@ data class AwaitingPlayerAction(val player: Adventurer, val actionsRemaining: In
         return when (event) {
             is PlayerActionEvent -> when (actionsRemaining) {
                 1 -> AwaitingTreasureDeckDraw(player, treasureDeckCardsDrawnPerTurn)
-                else -> AwaitingPlayerAction(player, actionsRemaining - 1)
+                else -> AwaitingPlayerAction(player, actionsRemaining - 1) // TODO: GiveTreasureCard could result in needing to discard a card
             }
             is DrawFromTreasureDeck -> AwaitingTreasureDeckDraw(player, treasureDeckCardsDrawnPerTurn - 1)
             else -> invalidEventInPhase(event)

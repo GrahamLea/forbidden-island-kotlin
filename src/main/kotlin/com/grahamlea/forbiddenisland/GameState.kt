@@ -99,8 +99,7 @@ data class GameState(
 
     fun after(event: GameEvent, random: Random): GameState {
         // TODO Check that event is in list of possible events
-        return this.copy(phase = phase.phaseAfter(event), previousEvents = previousEvents + event).let { with (it) {
-            when (event) {
+        return when (event) {
                 is Move -> copy(playerPositions = playerPositions + (event.player to event.mapSite))
                 is Swim -> copy(playerPositions = playerPositions + (event.strandedPlayer to event.mapSite))
                 is ShoreUp -> copy(locationFloodStates = locationFloodStates + (event.mapSite.location to Unflooded))
@@ -145,8 +144,10 @@ data class GameState(
                 is HelicopterLiftOffIsland -> (event.player discards HelicopterLiftCard).copy(
                         // TODO: Update game phase
                 )
-            }
-        }}
+            }.let { newState -> newState.copy(
+                phase = phase.phaseAfter(event, newState),
+                previousEvents = previousEvents + event
+            )}
     }
 
     private infix fun Adventurer.discards(card: HoldableCard) = this.discards(immListOf(card))
@@ -159,4 +160,5 @@ data class GameState(
 
     fun locationsWithState(state: LocationFloodState) = locationFloodStates.filterValues { it == state }.keys
 
+    val playerCardCounts: Map<Adventurer, Int> = playerCards.mapValues { it.value.size }
 }
