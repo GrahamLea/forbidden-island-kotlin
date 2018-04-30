@@ -67,6 +67,25 @@ class GamePhaseTest {
     }
 
     @Test
+    fun `awaiting treasure deck draw + treasure deck draw = awaiting one less treasure deck draw`() {
+        checkPhaseTransition(
+            firstPhase = AwaitingTreasureDeckDraw(Engineer, 2),
+            event = DrawFromTreasureDeck(Engineer),
+            expectedPhase = AwaitingTreasureDeckDraw(Engineer, 1)
+        )
+    }
+
+    @Test
+    fun `awaiting LAST treasure deck draw + treasure deck draw = awaiting flood deck draw corresponding to flood level`() {
+        checkPhaseTransition(
+            firstPhase = AwaitingTreasureDeckDraw(Engineer, 1),
+            event = DrawFromTreasureDeck(Engineer),
+            gameState = randomNewGameState.copy(floodLevel = FloodLevel.SEVEN),
+            expectedPhase = AwaitingFloodDeckDraw(Engineer, 4)
+        )
+    }
+
+    @Test
     fun `helicopter lift or sandbag or swim on any phase = no phase change`() {
         val phases = listOf(
             AwaitingPlayerAction(Engineer, 2),

@@ -37,6 +37,8 @@ data class Swim(val strandedPlayer: Adventurer, val mapSite: MapSite): OutOfTurn
     override fun toString() = "$strandedPlayer swims to $mapSite"
 }
 
+// TODO: Need a discard card event
+
 data class HelicopterLiftOffIsland(val player: Adventurer): PlayerSpecialActionEvent() {
     override fun toString() = "All players are lifted off the island by $player"
 }
