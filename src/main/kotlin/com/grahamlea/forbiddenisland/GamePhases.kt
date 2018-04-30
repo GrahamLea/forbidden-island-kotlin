@@ -2,7 +2,7 @@ package com.grahamlea.forbiddenisland
 
 sealed class GamePhase {
 
-    fun phaseAfter(event: GameEvent, nextGameState: GameState): GamePhase =
+    open fun phaseAfter(event: GameEvent, nextGameState: GameState): GamePhase =
         if (event is OutOfTurnEvent) this
         else calculateNextPhase(event, nextGameState)
 
@@ -67,7 +67,6 @@ data class AwaitingFloodDeckDraw(val player: Adventurer, val drawsRemaining: Int
 }
 
 object GameOver: GamePhase() {
-    override fun calculateNextPhase(event: GameEvent, nextGameState: GameState): GamePhase {
-        return this // TODO: Implement properly
-    }
+    override fun phaseAfter(event: GameEvent, nextGameState: GameState): GamePhase { invalidEventInPhase(event) }
+    override fun calculateNextPhase(event: GameEvent, nextGameState: GameState): GamePhase { throw IllegalStateException() }
 }

@@ -4,6 +4,7 @@ import com.grahamlea.forbiddenisland.Adventurer.*
 import com.grahamlea.forbiddenisland.Location.MistyMarsh
 import com.grahamlea.forbiddenisland.Treasure.EarthStone
 import org.junit.Assert.assertThat
+import org.junit.Assert.fail
 import org.junit.Test
 import org.hamcrest.CoreMatchers.`is` as is_
 
@@ -130,6 +131,31 @@ class GamePhaseTest {
         for (phase in phases) {
             for (event in events) {
                 assertThat(phase.phaseAfter(event, randomNewGameState), is_(phase))
+            }
+        }
+    }
+
+    @Test
+    fun `any event played on game over is an error`() {
+        val events = listOf(
+                Move(Engineer, mapSite),
+                ShoreUp(Engineer, mapSite),
+                GiveTreasureCard(Engineer, Messenger, TreasureCard(EarthStone)),
+                CaptureTreasure(Engineer, EarthStone),
+                HelicopterLift(Engineer, Diver, mapSite),
+                Sandbag(Engineer, mapSite),
+                Swim(Engineer, mapSite),
+                DrawFromTreasureDeck(Engineer),
+                DrawFromFloodDeck(Engineer),
+                HelicopterLiftOffIsland(Engineer)
+        )
+
+        for (event in events) {
+            try {
+                GameOver.phaseAfter(event, randomNewGameState)
+                fail("Expected IllegalStateException")
+            } catch (e: IllegalStateException) {
+                // expected
             }
         }
     }
