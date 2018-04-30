@@ -51,7 +51,18 @@ data class AwaitingTreasureDeckDraw(val player: Adventurer, val drawsRemaining: 
 
 data class AwaitingFloodDeckDraw(val player: Adventurer, val drawsRemaining: Int): GamePhase() {
     override fun calculateNextPhase(event: GameEvent, nextGameState: GameState): GamePhase {
-        return this // TODO: Implement properly
+        return when (event) {
+            is DrawFromFloodDeck -> when {
+                drawsRemaining > 1 -> AwaitingFloodDeckDraw(player, drawsRemaining - 1)
+                else -> {
+                    val nextPlayer =
+                        if (nextGameState.gameSetup.players.last() == player) nextGameState.gameSetup.players.first()
+                        else nextGameState.gameSetup.players[nextGameState.gameSetup.players.indexOf(player) + 1]
+                    AwaitingPlayerAction(nextPlayer, maxActionsPerPlayerTurn)
+                }
+            }
+            else -> invalidEventInPhase(event)
+        }
     }
 }
 

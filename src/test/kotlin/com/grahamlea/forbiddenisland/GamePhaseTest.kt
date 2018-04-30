@@ -10,7 +10,7 @@ import org.hamcrest.CoreMatchers.`is` as is_
 class GamePhaseTest {
 
     private val mapSite = MapSite(Position(3, 3), MistyMarsh)
-    private val randomNewGameState = Game.newRandomGameFor(2).gameState
+    private val randomNewGameState = Game.newRandomGameFor(immListOf(Engineer, Messenger, Diver, Explorer)).gameState
 
     @Test
     fun `awaiting player action + move = awaiting player action with one less action`() {
@@ -82,6 +82,33 @@ class GamePhaseTest {
             event = DrawFromTreasureDeck(Engineer),
             gameState = randomNewGameState.copy(floodLevel = FloodLevel.SEVEN),
             expectedPhase = AwaitingFloodDeckDraw(Engineer, 4)
+        )
+    }
+
+    @Test
+    fun `awaiting flood deck draw + flood deck draw = awaiting one less flood deck draw`() {
+        checkPhaseTransition(
+            firstPhase = AwaitingFloodDeckDraw(Engineer, 3),
+            event = DrawFromFloodDeck(Engineer),
+            expectedPhase = AwaitingFloodDeckDraw(Engineer, 2)
+        )
+    }
+
+    @Test
+    fun `awaiting LAST flood deck draw + flood deck draw = awaiting NEXT player action`() {
+        checkPhaseTransition(
+            firstPhase = AwaitingFloodDeckDraw(Engineer, 1),
+            event = DrawFromFloodDeck(Engineer),
+            expectedPhase = AwaitingPlayerAction(Messenger, 3)
+        )
+    }
+
+    @Test
+    fun `awaiting LAST flood deck draw of LAST player + flood deck draw = awaiting FIRST player action`() {
+        checkPhaseTransition(
+            firstPhase = AwaitingFloodDeckDraw(Explorer, 1),
+            event = DrawFromFloodDeck(Explorer),
+            expectedPhase = AwaitingPlayerAction(Engineer, 3)
         )
     }
 
