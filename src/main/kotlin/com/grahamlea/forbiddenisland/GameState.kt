@@ -141,7 +141,7 @@ data class GameState(
                         )
                     }.let { if (it.floodDeck.isEmpty()) it.copy(floodDeck = it.floodDeckDiscard.shuffled().imm(), floodDeckDiscard = immListOf()) else it }
                 }
-                is DiscardCard -> TODO() //TODO
+                is DiscardCard -> (event.player discards event.card)
                 is HelicopterLiftOffIsland -> (event.player discards HelicopterLiftCard)
             }.let { newState -> newState.copy(
                 phase = phase.phaseAfter(event, newState),

@@ -152,6 +152,20 @@ class GameStateProgressionTest {
     }
 
     @Test
+    fun `discard card on game changes just discards the card`() {
+        val game = Game.newRandomGameFor(immListOf(Messenger, Engineer), GameMap.newShuffledMap())
+                .withPlayerCards(immMapOf(Messenger to cards(HelicopterLiftCard, earth, ocean), Engineer to cards(ocean)))
+                .withTreasureDeckDiscard(cards(ocean))
+
+        after (DiscardCard(Messenger, earth) playedOn game) {
+            assertThat(playerCards, is_(immMapOf(Messenger to cards(HelicopterLiftCard, ocean), Engineer to cards(ocean))))
+            assertThat(treasureDeckDiscard, is_(cards(ocean, earth)))
+            assertThat(playerPositions, is_(game.gameState.playerPositions))
+            assertThat(treasureDeck, is_(game.gameState.treasureDeck))
+        }
+    }
+
+    @Test
     fun `draw treasure card from treasure deck moves card from treasure deck to player`() {
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
                 .withPlayerCards(immMapOf(Engineer to cards(earth), Messenger to cards(ocean)))
