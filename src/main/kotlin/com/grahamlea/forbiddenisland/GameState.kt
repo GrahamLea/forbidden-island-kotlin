@@ -16,7 +16,7 @@ data class GameState(
         val floodDeckDiscard: ImmutableList<Location>,
         val treasuresCollected: ImmutableMap<Treasure, Boolean>,
         val locationFloodStates: ImmutableMap<Location, LocationFloodState>,
-        val playerPositions: ImmutableMap<Adventurer, MapSite>,
+        val playerPositions: ImmutableMap<Adventurer, MapSite>, // TODO: Actually make it Position?
         val playerCards: ImmutableMap<Adventurer, ImmutableList<HoldableCard>>,
         val phase: GamePhase,
         val previousEvents: ImmutableList<GameEvent> = immListOf()
@@ -101,7 +101,7 @@ data class GameState(
         // TODO Check that event is in list of possible events
         return when (event) {
                 is Move -> copy(playerPositions = playerPositions + (event.player to event.mapSite))
-                is Swim -> copy(playerPositions = playerPositions + (event.strandedPlayer to event.mapSite))
+                is SwimToSafety -> copy(playerPositions = playerPositions + (event.strandedPlayer to event.mapSite))
                 is ShoreUp -> copy(locationFloodStates = locationFloodStates + (event.mapSite.location to Unflooded))
                 is GiveTreasureCard -> copy(playerCards =
                     playerCards + (event.player   to playerCards.getValue(event.player)  .subtract(listOf(event.card))) +
@@ -156,6 +156,8 @@ data class GameState(
                     playerCards = playerCards + (this to playerCards.getValue(this).subtract(cardList)),
                     treasureDeckDiscard = treasureDeckDiscard + cardList
             )
+
+    val sunkPlayers: Set<Adventurer> by lazy { playerPositions.filter { locationFloodStates.getValue(it.value.location) == Sunken }.keys }
 
     fun locationsWithState(state: LocationFloodState) = locationFloodStates.filterValues { it == state }.keys
 

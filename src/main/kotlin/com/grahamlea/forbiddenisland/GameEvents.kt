@@ -40,7 +40,7 @@ data class Sandbag(val player: Adventurer, val mapSite: MapSite): PlayerSpecialA
     override fun toString() = "$mapSite is sand bagged by $player"
 }
 
-data class Swim(val strandedPlayer: Adventurer, val mapSite: MapSite): OutOfTurnEvent() {
+data class SwimToSafety(val strandedPlayer: Adventurer, val mapSite: MapSite): OutOfTurnEvent() {
     override fun toString() = "$strandedPlayer swims to $mapSite"
 }
 

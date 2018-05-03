@@ -59,7 +59,7 @@ class GameStateProgressionTest {
         assertThat(game.gameState.playerPositions, is_(immMapOf(Engineer to engineerOriginalSite, Messenger to messengerOriginalSite)))
 
         val engineerNewSite = game.gameSetup.map.mapSiteAt(Position(4, 3))
-        after (Swim(Engineer, engineerNewSite) playedOn game) {
+        after (SwimToSafety(Engineer, engineerNewSite) playedOn game) {
             assertThat(playerPositions, is_(immMapOf(Engineer to engineerNewSite, Messenger to messengerOriginalSite)))
         }
     }

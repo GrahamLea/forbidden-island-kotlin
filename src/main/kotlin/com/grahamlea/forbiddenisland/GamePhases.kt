@@ -4,7 +4,7 @@ sealed class GamePhase {
 
     open fun phaseAfter(event: GameEvent, nextGameState: GameState): GamePhase =
             when {
-                this is AwaitingPlayerToDiscardExtraCard -> calculateNextPhase(event, nextGameState)
+                this is ForcedOutOfTurnPhase -> calculateNextPhase(event, nextGameState)
                 event is OutOfTurnEvent -> this
                 else -> calculateNextPhase(event, nextGameState)
             }
@@ -38,14 +38,12 @@ data class AwaitingPlayerAction(val player: Adventurer, val actionsRemaining: In
     }
 }
 
-data class AwaitingPlayerToDiscardExtraCard(val playerWithTooManyCards: Adventurer, val followingPhase: GamePhase): GamePhase() {
+data class AwaitingPlayerToDiscardExtraCard(val playerWithTooManyCards: Adventurer, val returningToPhase: GamePhase): ForcedOutOfTurnPhase() { // TODO: Move this down
     override fun calculateNextPhase(event: GameEvent, nextGameState: GameState): GamePhase {
-        if (event !is CardDiscardingEvent)
-            throw IllegalStateException("$event does not discard a card")
-        else if (event.playerDiscardingCard != playerWithTooManyCards)
-            throw IllegalStateException("$playerWithTooManyCards must discard a card, not ${event.playerDiscardingCard}")
+        if (event !is CardDiscardingEvent || event.playerDiscardingCard != playerWithTooManyCards)
+            invalidEventInPhase(event)
         else
-            return followingPhase
+            return returningToPhase
     }
 }
 
@@ -68,24 +66,33 @@ data class AwaitingTreasureDeckDraw(val player: Adventurer, val drawsRemaining: 
 
 data class AwaitingFloodDeckDraw(val player: Adventurer, val drawsRemaining: Int): GamePhase() {
     override fun calculateNextPhase(event: GameEvent, nextGameState: GameState): GamePhase {
-        return when (event) {
+        val nextPhase = when (event) {
             is DrawFromFloodDeck -> when {
                 drawsRemaining > 1 -> AwaitingFloodDeckDraw(player, drawsRemaining - 1)
                 else -> {
                     val nextPlayer =
-                        if (nextGameState.gameSetup.players.last() == player) nextGameState.gameSetup.players.first()
-                        else nextGameState.gameSetup.players[nextGameState.gameSetup.players.indexOf(player) + 1]
+                            if (nextGameState.gameSetup.players.last() == player) nextGameState.gameSetup.players.first()
+                            else nextGameState.gameSetup.players[nextGameState.gameSetup.players.indexOf(player) + 1]
                     AwaitingPlayerAction(nextPlayer, maxActionsPerPlayerTurn)
                 }
             }
             else -> invalidEventInPhase(event)
         }
+
+        val sunkPlayers = nextGameState.sunkPlayers.sorted() // Sorting just introduces determinism for the test
+        return if (sunkPlayers.isEmpty()) nextPhase
+        else sunkPlayers.fold(initial = nextPhase) { phase, player -> AwaitingPlayerToSwimToSafety(player, phase) }
     }
 }
 
-data class AwaitingPlayerToSwim(val player: Adventurer): GamePhase() {
+sealed class ForcedOutOfTurnPhase: GamePhase()
+
+data class AwaitingPlayerToSwimToSafety(val player: Adventurer, val returningToPhase: GamePhase): ForcedOutOfTurnPhase() {
     override fun calculateNextPhase(event: GameEvent, nextGameState: GameState): GamePhase {
-        TODO() // TODO
+        if (event !is SwimToSafety || event.strandedPlayer != player)
+            invalidEventInPhase(event)
+        else
+            return returningToPhase
     }
 }
 

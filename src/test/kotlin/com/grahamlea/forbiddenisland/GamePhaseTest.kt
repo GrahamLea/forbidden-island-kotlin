@@ -2,6 +2,7 @@ package com.grahamlea.forbiddenisland
 
 import com.grahamlea.forbiddenisland.Adventurer.*
 import com.grahamlea.forbiddenisland.Location.MistyMarsh
+import com.grahamlea.forbiddenisland.LocationFloodState.Sunken
 import com.grahamlea.forbiddenisland.Treasure.EarthStone
 import com.grahamlea.forbiddenisland.Treasure.OceansChalice
 import org.junit.Assert.assertThat
@@ -12,7 +13,8 @@ import org.hamcrest.CoreMatchers.`is` as is_
 class GamePhaseTest {
 
     private val mapSite = MapSite(Position(3, 3), MistyMarsh)
-    private val randomNewGameState = Game.newRandomGameFor(immListOf(Engineer, Messenger, Diver, Explorer)).gameState
+    private val randomNewGame = Game.newRandomGameFor(immListOf(Engineer, Messenger, Diver, Explorer))
+    private val randomNewGameState = randomNewGame.gameState
 
     val engineerHasSixCards = Game.newRandomGameFor(immListOf(Engineer, Messenger, Diver, Explorer))
             .withPlayerCards(immMapOf(
@@ -171,6 +173,63 @@ class GamePhaseTest {
     }
 
     @Test
+    fun `awaiting first flood deck draw of player + flood deck draw that sinks location of any player = awaiting swim then next treasure draw`() {
+        val sunkPosition = Position(3, 3)
+        val otherPosition = Position(3, 1)
+        val messengerIsSunk = randomNewGame
+                .withPlayerPosition(Engineer, otherPosition)
+                .withPlayerPosition(Messenger, sunkPosition)
+                .withPlayerPosition(Diver, otherPosition)
+                .withPlayerPosition(Explorer, otherPosition)
+                .withLocationFloodStates(Sunken, randomNewGame.gameSetup.map.locationAt(sunkPosition))
+
+        checkPhaseTransition(
+            firstPhase = AwaitingFloodDeckDraw(Engineer, 3),
+            event = DrawFromFloodDeck(Engineer),
+            gameStateAfterEventProcessed = messengerIsSunk.gameState,
+            expectedPhase = AwaitingPlayerToSwimToSafety(Messenger, AwaitingFloodDeckDraw(Engineer, 2))
+        )
+    }
+
+    @Test
+    fun `multiple players sunk = multiple players needing to swim before progressing`() {
+        val sunkPosition = Position(3, 3)
+        val otherPosition = Position(3, 1)
+        val messengerAndExplorerAreSunk = randomNewGame
+                .withPlayerPosition(Engineer, otherPosition)
+                .withPlayerPosition(Messenger, sunkPosition)
+                .withPlayerPosition(Diver, otherPosition)
+                .withPlayerPosition(Explorer, sunkPosition)
+                .withLocationFloodStates(Sunken, randomNewGame.gameSetup.map.locationAt(sunkPosition))
+
+        checkPhaseTransition(
+            firstPhase = AwaitingFloodDeckDraw(Engineer, 3),
+            event = DrawFromFloodDeck(Engineer),
+            gameStateAfterEventProcessed = messengerAndExplorerAreSunk.gameState,
+            expectedPhase = AwaitingPlayerToSwimToSafety(Messenger, AwaitingPlayerToSwimToSafety(Explorer, AwaitingFloodDeckDraw(Engineer, 2)))
+        )
+    }
+
+    @Test
+    fun `awaiting LAST flood deck draw of LAST player + flood deck draw that sinks location of any player = awaiting swim then awaiting FIRST player action`() {
+        val sunkPosition = Position(3, 3)
+        val otherPosition = Position(3, 1)
+        val messengerIsSunk = randomNewGame
+                .withPlayerPosition(Engineer, otherPosition)
+                .withPlayerPosition(Messenger, sunkPosition)
+                .withPlayerPosition(Diver, otherPosition)
+                .withPlayerPosition(Explorer, otherPosition)
+                .withLocationFloodStates(Sunken, randomNewGame.gameSetup.map.locationAt(sunkPosition))
+
+        checkPhaseTransition(
+            firstPhase = AwaitingFloodDeckDraw(Explorer, 1),
+            event = DrawFromFloodDeck(Explorer),
+            gameStateAfterEventProcessed = messengerIsSunk.gameState,
+            expectedPhase = AwaitingPlayerToSwimToSafety(Messenger, AwaitingPlayerAction(Engineer, 3))
+        )
+    }
+
+    @Test
     fun `awaiting player to discard card + discard card = back to play of previous phase`() {
         checkPhaseTransition(
             firstPhase = AwaitingPlayerToDiscardExtraCard(Messenger, AwaitingPlayerAction(Engineer, 2)),
@@ -210,6 +269,36 @@ class GamePhaseTest {
     }
 
     @Test
+    fun `awaiting player to swim + swim = back to play of next phase`() {
+        checkPhaseTransition(
+            firstPhase = AwaitingPlayerToSwimToSafety(Messenger, AwaitingFloodDeckDraw(Engineer, 1)),
+            event = SwimToSafety(Messenger, mapSite),
+            expectedPhase = AwaitingFloodDeckDraw(Engineer, 1)
+        )
+    }
+
+    @Test
+    fun `nested awaiting to swims are unfolded sequentially`() {
+        checkPhaseTransition(
+            firstPhase = AwaitingPlayerToSwimToSafety(Messenger, AwaitingPlayerToSwimToSafety(Explorer, AwaitingFloodDeckDraw(Engineer, 1))),
+            event = SwimToSafety(Messenger, mapSite),
+            expectedPhase = AwaitingPlayerToSwimToSafety(Explorer, AwaitingFloodDeckDraw(Engineer, 1))
+        )
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun `awaiting player to swim + non-swim event is illegal`() {
+        AwaitingPlayerToSwimToSafety(Messenger, AwaitingPlayerAction(Engineer, 1))
+                .phaseAfter(event = DrawFromTreasureDeck(Engineer), nextGameState = randomNewGameState)
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun `awaiting player to swim + swim event for another player is illegal`() {
+        AwaitingPlayerToSwimToSafety(Messenger, AwaitingPlayerAction(Engineer, 1))
+                .phaseAfter(event = SwimToSafety(Engineer, mapSite), nextGameState = randomNewGameState)
+    }
+
+    @Test
     fun `helicopter lift or sandbag or swim on most phases = no phase change`() {
         val phases = listOf(
             AwaitingPlayerAction(Engineer, 2),
@@ -221,7 +310,7 @@ class GamePhaseTest {
         val events = listOf(
             HelicopterLift(Engineer, Diver, mapSite),
             Sandbag(Engineer, mapSite),
-            Swim(Engineer, mapSite)
+            SwimToSafety(Engineer, mapSite)
         )
 
         for (phase in phases) {
@@ -240,7 +329,7 @@ class GamePhaseTest {
                 CaptureTreasure(Engineer, EarthStone),
                 HelicopterLift(Engineer, Diver, mapSite),
                 Sandbag(Engineer, mapSite),
-                Swim(Engineer, mapSite),
+                SwimToSafety(Engineer, mapSite),
                 DrawFromTreasureDeck(Engineer),
                 DrawFromFloodDeck(Engineer),
                 HelicopterLiftOffIsland(Engineer)
