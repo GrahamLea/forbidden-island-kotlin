@@ -56,13 +56,13 @@ class Game(val gameSetup: GameSetup, gameState: GameState, val random: Random = 
 
             val initialPlayerCards = mutableMapOf<Adventurer, MutableList<HoldableCard>>()
             for (player in gameSetup.players) {
-                initialPlayerCards.put(player, mutableListOf())
+                initialPlayerCards[player] = mutableListOf()
             }
             var watersRiseCardsRemoved = 0
             for (n in 1..numberOfInitialTreasureCardsPerPlayer) {
                 for (player in gameSetup.players) {
                     var card = mutableTreasureDeck.removeAt(0)
-                    while (card is WatersRiseCard) {
+                    while (card === WatersRiseCard) {
                         watersRiseCardsRemoved++
                         card = mutableTreasureDeck.removeAt(0)
                     }
