@@ -19,7 +19,7 @@ class GameStateResultTest {
     companion object {
         // Some of these tests setup fairly complex scenarios on top of random data, so we run them 100 times each
         // to ensure that the implementation passes for all cases
-        val numberOfTimesToRunTests = 100
+        private const val numberOfTimesToRunTests = 100
 
         @JvmStatic @Parameterized.Parameters
         fun data(): Array<Array<Any>> {

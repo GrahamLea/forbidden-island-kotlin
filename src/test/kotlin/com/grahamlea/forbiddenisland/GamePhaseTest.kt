@@ -16,7 +16,7 @@ class GamePhaseTest {
     private val randomNewGame = Game.newRandomGameFor(immListOf(Engineer, Messenger, Diver, Explorer))
     private val randomNewGameState = randomNewGame.gameState
 
-    val engineerHasSixCards = Game.newRandomGameFor(immListOf(Engineer, Messenger, Diver, Explorer))
+    private val engineerHasSixCards = Game.newRandomGameFor(immListOf(Engineer, Messenger, Diver, Explorer))
             .withPlayerCards(immMapOf(
                     Engineer to (TreasureCard(OceansChalice) * 5 + TreasureCard(EarthStone)).imm(),
                     Messenger to cards(),
