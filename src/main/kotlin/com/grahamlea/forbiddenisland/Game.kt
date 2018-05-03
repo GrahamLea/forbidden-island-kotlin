@@ -25,6 +25,8 @@ class Game(val gameSetup: GameSetup, gameState: GameState, val random: Random = 
 
     companion object {
 
+        const val maxCardsHoldablePerPlayer = 5
+
         private const val numberOfInitialTreasureCardsPerPlayer = 2
         private const val numberOfInitialLocationsToFlood = 6
 

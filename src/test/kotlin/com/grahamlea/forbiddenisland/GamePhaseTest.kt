@@ -3,6 +3,7 @@ package com.grahamlea.forbiddenisland
 import com.grahamlea.forbiddenisland.Adventurer.*
 import com.grahamlea.forbiddenisland.Location.MistyMarsh
 import com.grahamlea.forbiddenisland.Treasure.EarthStone
+import com.grahamlea.forbiddenisland.Treasure.OceansChalice
 import org.junit.Assert.assertThat
 import org.junit.Assert.fail
 import org.junit.Test
@@ -12,6 +13,14 @@ class GamePhaseTest {
 
     private val mapSite = MapSite(Position(3, 3), MistyMarsh)
     private val randomNewGameState = Game.newRandomGameFor(immListOf(Engineer, Messenger, Diver, Explorer)).gameState
+
+    val engineerHasSixCards = Game.newRandomGameFor(immListOf(Engineer, Messenger, Diver, Explorer))
+            .withPlayerCards(immMapOf(
+                    Engineer to (TreasureCard(OceansChalice) * 5 + TreasureCard(EarthStone)).imm(),
+                    Messenger to cards(),
+                    Diver to cards(),
+                    Explorer to cards()
+            ))
 
     @Test
     fun `awaiting player action + move = awaiting player action with one less action`() {
@@ -50,6 +59,24 @@ class GamePhaseTest {
     }
 
     @Test
+    fun `awaiting player action + give treasure card to player with 5 cards = awaiting receiving player to discard card, then back to this player`() {
+        val messengerHasSixCards = Game.newRandomGameFor(immListOf(Engineer, Messenger, Diver, Explorer))
+                .withPlayerCards(immMapOf(
+                        Engineer to cards(),
+                        Messenger to (TreasureCard(OceansChalice) * 5 + TreasureCard(EarthStone)).imm(),
+                        Diver to cards(),
+                        Explorer to cards()
+                ))
+
+        checkPhaseTransition(
+            firstPhase = AwaitingPlayerAction(Engineer, 3),
+            event = GiveTreasureCard(Engineer, Messenger, TreasureCard(EarthStone)),
+            gameStateAfterEventProcessed = messengerHasSixCards.gameState,
+            expectedPhase = AwaitingPlayerToDiscardExtraCard(Messenger, AwaitingPlayerAction(Engineer, 2))
+        )
+    }
+
+    @Test
     fun `awaiting final player action + move = awaiting draw 2 treasure cards for same player`() {
         checkPhaseTransition(
             firstPhase = AwaitingPlayerAction(Engineer, 1),
@@ -68,6 +95,16 @@ class GamePhaseTest {
     }
 
     @Test
+    fun `awaiting player action + early treasure deck draw with 5 cards = awaiting player to discard card, then continuing to draw 1 more treasure card`() {
+        checkPhaseTransition(
+                firstPhase = AwaitingPlayerAction(Engineer, 2),
+                event = DrawFromTreasureDeck(Engineer),
+                gameStateAfterEventProcessed = engineerHasSixCards.gameState,
+                expectedPhase = AwaitingPlayerToDiscardExtraCard(Engineer, AwaitingTreasureDeckDraw(Engineer, 1))
+        )
+    }
+
+    @Test
     fun `awaiting treasure deck draw + treasure deck draw = awaiting one less treasure deck draw`() {
         checkPhaseTransition(
             firstPhase = AwaitingTreasureDeckDraw(Engineer, 2),
@@ -77,12 +114,32 @@ class GamePhaseTest {
     }
 
     @Test
+    fun `awaiting treasure deck draw + treasure deck draw to have 6 cards = awaiting player to discard card, then continuing to draw 1 more treasure card`() {
+        checkPhaseTransition(
+                firstPhase = AwaitingTreasureDeckDraw(Engineer, 2),
+                event = DrawFromTreasureDeck(Engineer),
+                gameStateAfterEventProcessed = engineerHasSixCards.gameState,
+                expectedPhase = AwaitingPlayerToDiscardExtraCard(Engineer, AwaitingTreasureDeckDraw(Engineer, 1))
+        )
+    }
+
+    @Test
     fun `awaiting LAST treasure deck draw + treasure deck draw = awaiting flood deck draw corresponding to flood level`() {
         checkPhaseTransition(
             firstPhase = AwaitingTreasureDeckDraw(Engineer, 1),
             event = DrawFromTreasureDeck(Engineer),
-            gameState = randomNewGameState.copy(floodLevel = FloodLevel.SEVEN),
+            gameStateAfterEventProcessed = randomNewGameState.copy(floodLevel = FloodLevel.SEVEN),
             expectedPhase = AwaitingFloodDeckDraw(Engineer, 4)
+        )
+    }
+
+    @Test
+    fun `awaiting LAST treasure deck draw + treasure deck draw to have 6 cards = awaiting player to discard card, then continuing to awaiting flood deck draw corresponding to flood level`() {
+        checkPhaseTransition(
+            firstPhase = AwaitingTreasureDeckDraw(Engineer, 1),
+            event = DrawFromTreasureDeck(Engineer),
+            gameStateAfterEventProcessed = engineerHasSixCards.gameState.copy(floodLevel = FloodLevel.SEVEN),
+            expectedPhase = AwaitingPlayerToDiscardExtraCard(Engineer, AwaitingFloodDeckDraw(Engineer, 4))
         )
     }
 
@@ -114,12 +171,51 @@ class GamePhaseTest {
     }
 
     @Test
-    fun `helicopter lift or sandbag or swim on any phase = no phase change`() {
+    fun `awaiting player to discard card + discard card = back to play of previous phase`() {
+        checkPhaseTransition(
+            firstPhase = AwaitingPlayerToDiscardExtraCard(Messenger, AwaitingPlayerAction(Engineer, 2)),
+            event = DiscardCard(Messenger, TreasureCard(EarthStone)),
+            expectedPhase = AwaitingPlayerAction(Engineer, 2)
+        )
+    }
+
+    @Test
+    fun `awaiting player to discard card + player sandbags card = back to play of previous phase`() {
+        checkPhaseTransition(
+            firstPhase = AwaitingPlayerToDiscardExtraCard(Messenger, AwaitingPlayerAction(Diver, 3)),
+            event = Sandbag(Messenger, mapSite),
+            expectedPhase = AwaitingPlayerAction(Diver, 3)
+        )
+    }
+
+    @Test
+    fun `awaiting player to discard card + player helicopter lift card = back to play of previous phase`() {
+        checkPhaseTransition(
+            firstPhase = AwaitingPlayerToDiscardExtraCard(Messenger, AwaitingPlayerAction(Engineer, 1)),
+            event = HelicopterLift(Messenger, Pilot, mapSite),
+            expectedPhase = AwaitingPlayerAction(Engineer, 1)
+        )
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun `awaiting player to discard card + non-card-discarding event is illegal`() {
+        AwaitingPlayerToDiscardExtraCard(Messenger, AwaitingPlayerAction(Engineer, 1))
+                .phaseAfter(event = DrawFromTreasureDeck(Engineer), nextGameState = randomNewGameState)
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun `awaiting player to discard card + card-discarding event for another player is illegal`() {
+        AwaitingPlayerToDiscardExtraCard(Messenger, AwaitingPlayerAction(Engineer, 1))
+                .phaseAfter(event = DiscardCard(Engineer, TreasureCard(EarthStone)), nextGameState = randomNewGameState)
+    }
+
+    @Test
+    fun `helicopter lift or sandbag or swim on most phases = no phase change`() {
         val phases = listOf(
             AwaitingPlayerAction(Engineer, 2),
-            AwaitingPlayerToDiscardExtraCards(Engineer, 1), // Hmmmm... might need to deal with this especially?
             AwaitingTreasureDeckDraw(Engineer, 3),
             AwaitingFloodDeckDraw(Engineer, 3)
+            // AwaitingPlayerToDiscardExtraCard behaves differently
         )
 
         val events = listOf(
@@ -160,8 +256,8 @@ class GamePhaseTest {
         }
     }
 
-    private fun checkPhaseTransition(firstPhase: GamePhase, event: GameEvent, gameState: GameState = randomNewGameState, expectedPhase: GamePhase) {
-        assertThat(firstPhase.phaseAfter(event, gameState), is_(expectedPhase))
+    private fun checkPhaseTransition(firstPhase: GamePhase, event: GameEvent, gameStateAfterEventProcessed: GameState = randomNewGameState, expectedPhase: GamePhase) {
+        assertThat(firstPhase.phaseAfter(event, gameStateAfterEventProcessed), is_(expectedPhase))
     }
 }
 

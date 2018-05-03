@@ -4,6 +4,10 @@ sealed class GameEvent
 
 sealed class PlayerActionEvent: GameEvent()
 
+interface CardDiscardingEvent {
+    val playerDiscardingCard: Adventurer
+}
+
 data class Move(val player: Adventurer, val mapSite: MapSite): PlayerActionEvent() {
     override fun toString() = "$player moves to $mapSite"
 }
@@ -25,11 +29,14 @@ sealed class OutOfTurnEvent: GameEvent()
 
 sealed class PlayerSpecialActionEvent: OutOfTurnEvent()
 
-data class HelicopterLift(val playerWithCard: Adventurer, val playerBeingMoved: Adventurer, val mapSite: MapSite): PlayerSpecialActionEvent() {
+data class HelicopterLift(val playerWithCard: Adventurer, val playerBeingMoved: Adventurer, val mapSite: MapSite):
+        PlayerSpecialActionEvent(), CardDiscardingEvent {
+    override val playerDiscardingCard = playerWithCard
     override fun toString() = "$playerBeingMoved is helicopter lifted to $mapSite by $playerWithCard"
 }
 
-data class Sandbag(val player: Adventurer, val mapSite: MapSite): PlayerSpecialActionEvent() {
+data class Sandbag(val player: Adventurer, val mapSite: MapSite): PlayerSpecialActionEvent(), CardDiscardingEvent {
+    override val playerDiscardingCard = player
     override fun toString() = "$mapSite is sand bagged by $player"
 }
 
@@ -37,7 +44,10 @@ data class Swim(val strandedPlayer: Adventurer, val mapSite: MapSite): OutOfTurn
     override fun toString() = "$strandedPlayer swims to $mapSite"
 }
 
-// TODO: Need a discard card event
+data class DiscardCard(val player: Adventurer, val card: HoldableCard): OutOfTurnEvent(), CardDiscardingEvent {
+    override val playerDiscardingCard = player
+    override fun toString() = "$player discards $card"
+}
 
 data class HelicopterLiftOffIsland(val player: Adventurer): PlayerSpecialActionEvent() {
     override fun toString() = "All players are lifted off the island by $player"
