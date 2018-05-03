@@ -8,13 +8,13 @@ interface CardDiscardingEvent {
     val playerDiscardingCard: Adventurer
 }
 
-data class Move(val player: Adventurer, val mapSite: MapSite): PlayerActionEvent() {
-    override fun toString() = "$player moves to $mapSite"
+data class Move(val player: Adventurer, val position: Position): PlayerActionEvent() {
+    override fun toString() = "$player moves to $position"
 }
 
-data class ShoreUp(val player: Adventurer, val mapSite: MapSite, val mapSite2: MapSite? = null): PlayerActionEvent() {
+data class ShoreUp(val player: Adventurer, val position: Position, val position2: Position? = null): PlayerActionEvent() {
     override fun toString() =
-        "$mapSite ${if (mapSite2 == null) "is" else "and $mapSite2 are "} shored up by $player"
+        "$position ${if (position2 == null) "is" else "and $position2 are "} shored up by $player"
 }
 
 data class GiveTreasureCard(val player: Adventurer, val receiver: Adventurer, val card: TreasureCard): PlayerActionEvent() {
@@ -29,19 +29,19 @@ sealed class OutOfTurnEvent: GameEvent()
 
 sealed class PlayerSpecialActionEvent: OutOfTurnEvent()
 
-data class HelicopterLift(val playerWithCard: Adventurer, val playerBeingMoved: Adventurer, val mapSite: MapSite):
+data class HelicopterLift(val playerWithCard: Adventurer, val playerBeingMoved: Adventurer, val position: Position):
         PlayerSpecialActionEvent(), CardDiscardingEvent {
     override val playerDiscardingCard = playerWithCard
-    override fun toString() = "$playerBeingMoved is helicopter lifted to $mapSite by $playerWithCard"
+    override fun toString() = "$playerBeingMoved is helicopter lifted to $position by $playerWithCard"
 }
 
-data class Sandbag(val player: Adventurer, val mapSite: MapSite): PlayerSpecialActionEvent(), CardDiscardingEvent {
+data class Sandbag(val player: Adventurer, val position: Position): PlayerSpecialActionEvent(), CardDiscardingEvent {
     override val playerDiscardingCard = player
-    override fun toString() = "$mapSite is sand bagged by $player"
+    override fun toString() = "$position is sand bagged by $player"
 }
 
-data class SwimToSafety(val strandedPlayer: Adventurer, val mapSite: MapSite): OutOfTurnEvent() {
-    override fun toString() = "$strandedPlayer swims to $mapSite"
+data class SwimToSafety(val strandedPlayer: Adventurer, val position: Position): OutOfTurnEvent() {
+    override fun toString() = "$strandedPlayer swims to $position"
 }
 
 data class DiscardCard(val player: Adventurer, val card: HoldableCard): OutOfTurnEvent(), CardDiscardingEvent {

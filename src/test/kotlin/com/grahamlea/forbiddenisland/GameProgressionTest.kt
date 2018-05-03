@@ -15,7 +15,7 @@ class GameProgressionTest {
 
         val game = Game(GameSetup(immListOf(Engineer, Messenger), GameMap.newShuffledMap()), originalGameState)
 
-        val moveEvent = Move(Engineer, game.gameSetup.map.mapSiteAt(Position(4, 3)))
+        val moveEvent = Move(Engineer, Position(4, 3))
 
         val nextGameState: GameState = mock()
         whenever(originalGameState.after(moveEvent, game.random)) doReturn nextGameState
@@ -30,7 +30,7 @@ class GameProgressionTest {
 
         val map = GameMap.newShuffledMap()
 
-        val moveEvent = Move(Engineer, map.mapSiteAt(Position(4, 3)))
+        val moveEvent = Move(Engineer, Position(4, 3))
         val drawEvent = DrawFromTreasureDeck(Engineer)
 
         val gamePhase1: GamePhase = mock()

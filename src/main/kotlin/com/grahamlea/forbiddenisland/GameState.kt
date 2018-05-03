@@ -16,7 +16,7 @@ data class GameState(
         val floodDeckDiscard: ImmutableList<Location>,
         val treasuresCollected: ImmutableMap<Treasure, Boolean>,
         val locationFloodStates: ImmutableMap<Location, LocationFloodState>,
-        val playerPositions: ImmutableMap<Adventurer, MapSite>, // TODO: Actually make it Position?
+        val playerPositions: ImmutableMap<Adventurer, Position>,
         val playerCards: ImmutableMap<Adventurer, ImmutableList<HoldableCard>>,
         val phase: GamePhase,
         val previousEvents: ImmutableList<GameEvent> = immListOf()
@@ -55,11 +55,6 @@ data class GameState(
             "Adventurers with positions ${playerPositions.keys} must match the players in the game ${gameSetup.players.toSet()}"
         }
 
-        // MapSites of playerPositions must match GameSetup
-        require(gameSetup.map.mapSites.containsAll(playerPositions.values)) {
-            "All MapSites of playerPositions must match a MapSite in the gameSetup.map"
-        }
-
         // Players with cards must match those in the game setup
         require(playerCards.keys == gameSetup.players.toSet()) {
             "Adventurers with cards ${playerCards.keys} must match the players in the game ${gameSetup.players.toSet()}"
@@ -92,17 +87,17 @@ data class GameState(
     private fun drownedPlayers() =
             playerPositions
                     .filterKeys { it != Diver && it != Pilot }
-                    .filter { locationFloodStates.getValue(it.value.location) == Sunken }
-                    .filter { gameSetup.map.adjacentSites(it.value.position, includeDiagonals = (it.key == Explorer))
+                    .filter { locationFloodStates.getValue(gameSetup.map.locationAt(it.value)) == Sunken }
+                    .filter { gameSetup.map.adjacentSites(it.value, includeDiagonals = (it.key == Explorer))
                             .all { locationFloodStates.getValue(it.location) == Sunken } }
                     .keys
 
     fun after(event: GameEvent, random: Random): GameState {
         // TODO Check that event is in list of possible events
         return when (event) {
-                is Move -> copy(playerPositions = playerPositions + (event.player to event.mapSite))
-                is SwimToSafety -> copy(playerPositions = playerPositions + (event.strandedPlayer to event.mapSite))
-                is ShoreUp -> copy(locationFloodStates = locationFloodStates + (event.mapSite.location to Unflooded))
+                is Move -> copy(playerPositions = playerPositions + (event.player to event.position))
+                is SwimToSafety -> copy(playerPositions = playerPositions + (event.strandedPlayer to event.position))
+                is ShoreUp -> copy(locationFloodStates = locationFloodStates + (gameSetup.map.locationAt(event.position) to Unflooded))
                 is GiveTreasureCard -> copy(playerCards =
                     playerCards + (event.player   to playerCards.getValue(event.player)  .subtract(listOf(event.card))) +
                                   (event.receiver to playerCards.getValue(event.receiver).plus(    listOf(event.card)))
@@ -111,10 +106,10 @@ data class GameState(
                     treasuresCollected = treasuresCollected + (event.treasure to true)
                 )
                 is HelicopterLift -> (event.playerWithCard discards HelicopterLiftCard).copy(
-                    playerPositions = playerPositions + (event.playerBeingMoved to event.mapSite)
+                    playerPositions = playerPositions + (event.playerBeingMoved to event.position)
                 )
                 is Sandbag -> (event.player discards SandbagsCard).copy(
-                    locationFloodStates = locationFloodStates + (event.mapSite.location to Unflooded)
+                    locationFloodStates = locationFloodStates + (gameSetup.map.locationAt(event.position) to Unflooded)
                 )
                 is DrawFromTreasureDeck -> treasureDeck.first().let { drawnCard ->
                     if (drawnCard == WatersRiseCard) {
@@ -157,7 +152,7 @@ data class GameState(
                     treasureDeckDiscard = treasureDeckDiscard + cardList
             )
 
-    val sunkPlayers: Set<Adventurer> by lazy { playerPositions.filter { locationFloodStates.getValue(it.value.location) == Sunken }.keys }
+    val sunkPlayers: Set<Adventurer> by lazy { playerPositions.filter { locationFloodStates.getValue(gameSetup.map.locationAt(it.value)) == Sunken }.keys }
 
     fun locationsWithState(state: LocationFloodState) = locationFloodStates.filterValues { it == state }.keys
 

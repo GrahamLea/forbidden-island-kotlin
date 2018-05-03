@@ -1,6 +1,7 @@
 package com.grahamlea.forbiddenisland
 
-import com.grahamlea.forbiddenisland.LocationFloodState.*
+import com.grahamlea.forbiddenisland.LocationFloodState.Flooded
+import com.grahamlea.forbiddenisland.LocationFloodState.Sunken
 
 object GamePrinter {
     fun toString(game: Game) = toString(game.gameSetup.map, game.gameState.locationFloodStates, game.gameState.playerPositions)
@@ -8,18 +9,21 @@ object GamePrinter {
     fun toString(
             map: GameMap,
             locationFloodStates: ImmutableMap<Location, LocationFloodState>,
-            playerPositions: ImmutableMap<Adventurer, MapSite>
+            playerPositions: ImmutableMap<Adventurer, Position>
     ): String {
+        val playerSites = playerPositions.mapValues { map.mapSiteAt(it.value) }
+
         val maxLocationNameLengthPerColumn =
             map.mapSites.groupBy { it.position.x }.mapValues { it.value.map { it.location.toString().length }.max()!! }
+
         val maxPlayersOnSingleSitePerColumn =
-            map.mapSites.groupBy { it.position.x }.mapValues { it.value.map { site -> playerPositions.count { it.value == site } }.max() ?: 0 }
+            map.mapSites.groupBy { it.position.x }.mapValues { it.value.map { site -> playerSites.count { it.value == site } }.max() ?: 0 }
 
         val mapSiteStrings = map.mapSites.associate { site ->
             site to
                     toString(
                             site,
-                            playerPositions.filterValues { it == site }.keys,
+                            playerSites.filterValues { it == site }.keys,
                             maxPlayersOnSingleSitePerColumn.getValue(site.position.x),
                             maxLocationNameLengthPerColumn[site.position.x],
                             locationFloodStates[site.location]

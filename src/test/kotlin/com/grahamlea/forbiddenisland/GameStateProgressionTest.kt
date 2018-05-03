@@ -23,9 +23,9 @@ class GameStateProgressionTest {
                 .withPlayerPosition(Engineer, Position(4, 4))
                 .withLocationFloodStates(Flooded, Position(2, 3))
 
-        val event1 = Move(Engineer, game.gameSetup.map.mapSiteAt(Position(4, 3)))
-        val event2 = Move(Engineer, game.gameSetup.map.mapSiteAt(Position(3, 3)))
-        val event3 = ShoreUp(Engineer, game.gameSetup.map.mapSiteAt(Position(2, 3)))
+        val event1 = Move(Engineer, Position(4, 3))
+        val event2 = Move(Engineer, Position(3, 3))
+        val event3 = ShoreUp(Engineer, Position(2, 3))
 
         after (listOf(event1, event2, event3) playedOn game) {
             assertThat(previousEvents, is_(immListOf<GameEvent>(event1, event2, event3)))
@@ -33,34 +33,34 @@ class GameStateProgressionTest {
     }
 
     @Test
-    fun `move played on game changes map site of the one player`() {
+    fun `move played on game changes position of the one player`() {
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
                 .withPlayerPosition(Engineer, Position(4, 4))
 
-        val engineerOriginalSite = game.gameState.playerPositions.getValue(Engineer)
-        val messengerOriginalSite = game.gameState.playerPositions.getValue(Messenger)
+        val engineerOriginalPosition = game.gameState.playerPositions.getValue(Engineer)
+        val messengerOriginalPosition = game.gameState.playerPositions.getValue(Messenger)
 
-        assertThat(game.gameState.playerPositions, is_(immMapOf(Engineer to engineerOriginalSite, Messenger to messengerOriginalSite)))
+        assertThat(game.gameState.playerPositions, is_(immMapOf(Engineer to engineerOriginalPosition, Messenger to messengerOriginalPosition)))
 
-        val engineerNewSite = game.gameSetup.map.mapSiteAt(Position(4, 3))
-        after (Move(Engineer, engineerNewSite) playedOn game) {
-            assertThat(playerPositions, is_(immMapOf(Engineer to engineerNewSite, Messenger to messengerOriginalSite)))
+        val engineerNewPosition = Position(4, 3)
+        after (Move(Engineer, engineerNewPosition) playedOn game) {
+            assertThat(playerPositions, is_(immMapOf(Engineer to engineerNewPosition, Messenger to messengerOriginalPosition)))
         }
     }
 
     @Test
-    fun `swim event played on game changes map site of the one player`() {
+    fun `swim event played on game changes position of the one player`() {
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
                 .withPlayerPosition(Engineer, Position(4, 4))
 
-        val engineerOriginalSite = game.gameState.playerPositions.getValue(Engineer)
-        val messengerOriginalSite = game.gameState.playerPositions.getValue(Messenger)
+        val engineerOriginalPosition = game.gameState.playerPositions.getValue(Engineer)
+        val messengerOriginalPosition = game.gameState.playerPositions.getValue(Messenger)
 
-        assertThat(game.gameState.playerPositions, is_(immMapOf(Engineer to engineerOriginalSite, Messenger to messengerOriginalSite)))
+        assertThat(game.gameState.playerPositions, is_(immMapOf(Engineer to engineerOriginalPosition, Messenger to messengerOriginalPosition)))
 
-        val engineerNewSite = game.gameSetup.map.mapSiteAt(Position(4, 3))
-        after (SwimToSafety(Engineer, engineerNewSite) playedOn game) {
-            assertThat(playerPositions, is_(immMapOf(Engineer to engineerNewSite, Messenger to messengerOriginalSite)))
+        val engineerNewPosition = Position(4, 3)
+        after (SwimToSafety(Engineer, engineerNewPosition) playedOn game) {
+            assertThat(playerPositions, is_(immMapOf(Engineer to engineerNewPosition, Messenger to messengerOriginalPosition)))
         }
     }
 
@@ -75,7 +75,7 @@ class GameStateProgressionTest {
 
         assertThat(game.gameState.locationFloodStates[mapSiteToShoreUp.location], is_(Flooded))
 
-        after (ShoreUp(Engineer, mapSiteToShoreUp) playedOn game) {
+        after (ShoreUp(Engineer, positionToShoreUp) playedOn game) {
             assertThat(locationFloodStates[mapSiteToShoreUp.location], is_(Unflooded))
         }
     }
@@ -111,27 +111,28 @@ class GameStateProgressionTest {
     }
 
     @Test
-    fun `helicopter lift played on game changes map site of the one player and discards the card`() {
+    fun `helicopter lift played on game changes position of the one player and discards the card`() {
         val game = Game.newRandomGameFor(immListOf(Messenger, Engineer), GameMap.newShuffledMap())
                 .withPlayerPosition(Engineer, Position(2, 2))
                 .withPlayerCards(immMapOf(Messenger to cards(HelicopterLiftCard, earth), Engineer to cards(ocean)))
                 .withTreasureDeckDiscard(cards(ocean))
 
-        val messengerOriginalSite = game.gameState.playerPositions.getValue(Messenger)
-        val engineerOriginalSite = game.gameState.playerPositions.getValue(Engineer)
+        val messengerOriginalPosition = game.gameState.playerPositions.getValue(Messenger)
+        val engineerOriginalPosition = game.gameState.playerPositions.getValue(Engineer)
 
-        assertThat(game.gameState.playerPositions, is_(immMapOf(Messenger to messengerOriginalSite, Engineer to engineerOriginalSite)))
+        assertThat(game.gameState.playerPositions, is_(immMapOf(Messenger to messengerOriginalPosition, Engineer to engineerOriginalPosition)))
 
-        val engineerNewSite = game.gameSetup.map.mapSiteAt(Position(5, 5))
-        after (HelicopterLift(Messenger, Engineer, engineerNewSite) playedOn game) {
-            assertThat(playerPositions, is_(immMapOf(Messenger to messengerOriginalSite, Engineer to engineerNewSite)))
+        val engineerNewPosition = Position(5, 5)
+        after (HelicopterLift(Messenger, Engineer, engineerNewPosition) playedOn game) {
+            assertThat(playerPositions, is_(immMapOf(Messenger to messengerOriginalPosition, Engineer to engineerNewPosition)))
             assertThat(playerCards, is_(immMapOf(Messenger to cards(earth), Engineer to cards(ocean))))
             assertThat(treasureDeckDiscard, is_(cards(ocean, HelicopterLiftCard)))
         }
     }
 
+
     @Test
-    fun `sandbag played on game shores up map site and discards the card`() {
+    fun `sandbag played on game shores up location and discards the card`() {
         val positionToShoreUp = Position(2, 2)
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
                 .withPlayerPosition(Engineer, Position(4, 4))
@@ -144,7 +145,7 @@ class GameStateProgressionTest {
 
         assertThat(game.gameState.locationFloodStates[mapSiteToShoreUp.location], is_(Flooded))
 
-        after (Sandbag(Engineer, mapSiteToShoreUp) playedOn game) {
+        after (Sandbag(Engineer, positionToShoreUp) playedOn game) {
             assertThat(locationFloodStates[mapSiteToShoreUp.location], is_(Unflooded))
             assertThat(playerCards, is_(immMapOf(Engineer to cards(earth), Messenger to cards(ocean))))
             assertThat(treasureDeckDiscard, is_(cards(earth, SandbagsCard)))
@@ -327,10 +328,10 @@ class GameStateProgressionTest {
                 .withPlayerCards(immMapOf(Messenger to cards(HelicopterLiftCard, earth), Engineer to cards(ocean)))
                 .withTreasureDeckDiscard(cards(ocean))
 
-        val messengerOriginalSite = game.gameState.playerPositions.getValue(Messenger)
-        val engineerOriginalSite = game.gameState.playerPositions.getValue(Engineer)
+        val messengerOriginalPosition = game.gameState.playerPositions.getValue(Messenger)
+        val engineerOriginalPosition = game.gameState.playerPositions.getValue(Engineer)
 
-        assertThat(game.gameState.playerPositions, is_(immMapOf(Messenger to messengerOriginalSite, Engineer to engineerOriginalSite)))
+        assertThat(game.gameState.playerPositions, is_(immMapOf(Messenger to messengerOriginalPosition, Engineer to engineerOriginalPosition)))
 
         after (HelicopterLiftOffIsland(Messenger) playedOn game) {
             assertThat(playerPositions, is_(game.gameState.playerPositions))

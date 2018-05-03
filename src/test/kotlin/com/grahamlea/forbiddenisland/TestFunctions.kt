@@ -32,9 +32,9 @@ fun GameMap.withLocationNotAtAnyOf(locationToEvict: Location, positions: List<Po
 
 fun Game.withPlayerPosition(player: Adventurer, newPosition: Position): Game {
     return copy(
-            gameState.copy(
-                    playerPositions = gameState.playerPositions + (player to gameSetup.map.mapSites.first { it.position == newPosition })
-            )
+        gameState.copy(
+            playerPositions = gameState.playerPositions + (player to newPosition)
+        )
     )
 }
 

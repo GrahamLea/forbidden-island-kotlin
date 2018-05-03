@@ -77,7 +77,7 @@ class Game(val gameSetup: GameSetup, gameState: GameState, val random: Random = 
             val initialPlayerPositions = gameSetup.players.associate { player ->
                 player to
                         (Location.values().first { it.startingLocationForAdventurer == player }
-                                .let { location -> gameSetup.map.mapSites.first { it.location == location } })
+                                .let { location -> gameSetup.map.mapSites.first { it.location == location }.position })
             }
 
             val gameState = GameState(
@@ -107,6 +107,7 @@ data class GameSetup(val players: ImmutableList<Adventurer>, val map: GameMap) {
     }
 
     companion object {
+        @Suppress("RemoveExplicitTypeArguments")
         fun newRandomGameSetupFor(numberOfPlayers: Int, random: Random = Random()) =
                 GameSetup(shuffled<Adventurer>(random, numberOfPlayers), GameMap.newShuffledMap(random))
     }

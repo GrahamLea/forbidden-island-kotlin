@@ -70,7 +70,7 @@ class GameInitialisationTest {
             val game = Game.newRandomGameFor(4)
             for (player in game.gameSetup.players) {
                 val expectedStartingLocation = Location.values().first { it.startingLocationForAdventurer == player }
-                assertThat(game.gameState.playerPositions[player]?.location, is_(expectedStartingLocation))
+                assertThat(game.gameSetup.map.locationAt(game.gameState.playerPositions[player]!!), is_(expectedStartingLocation))
                 checksPerAdventurer[player] = checksPerAdventurer[player]!! + 1
             }
         }
