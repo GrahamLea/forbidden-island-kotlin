@@ -1,0 +1,1890 @@
+Diver moves to (3,1)
+Diver moves to (4,1)
+Diver moves to (2,2)
+Diver moves to (3,2)
+Diver moves to (4,2)
+Diver moves to (5,2)
+Diver moves to (1,3)
+Diver moves to (2,3)
+Diver moves to (3,3)
+Diver moves to (4,3)
+Diver moves to (5,3)
+Diver moves to (6,3)
+Diver moves to (1,4)
+Diver moves to (2,4)
+Diver moves to (3,4)
+Diver moves to (4,4)
+Diver moves to (5,4)
+Diver moves to (6,4)
+Diver moves to (2,5)
+Diver moves to (3,5)
+Diver moves to (4,5)
+Diver moves to (5,5)
+Diver moves to (3,6)
+Diver moves to (4,6)
+Engineer moves to (3,1)
+Engineer moves to (4,1)
+Engineer moves to (2,2)
+Engineer moves to (3,2)
+Engineer moves to (4,2)
+Engineer moves to (5,2)
+Engineer moves to (1,3)
+Engineer moves to (2,3)
+Engineer moves to (3,3)
+Engineer moves to (4,3)
+Engineer moves to (5,3)
+Engineer moves to (6,3)
+Engineer moves to (1,4)
+Engineer moves to (2,4)
+Engineer moves to (3,4)
+Engineer moves to (4,4)
+Engineer moves to (5,4)
+Engineer moves to (6,4)
+Engineer moves to (2,5)
+Engineer moves to (3,5)
+Engineer moves to (4,5)
+Engineer moves to (5,5)
+Engineer moves to (3,6)
+Engineer moves to (4,6)
+Explorer moves to (3,1)
+Explorer moves to (4,1)
+Explorer moves to (2,2)
+Explorer moves to (3,2)
+Explorer moves to (4,2)
+Explorer moves to (5,2)
+Explorer moves to (1,3)
+Explorer moves to (2,3)
+Explorer moves to (3,3)
+Explorer moves to (4,3)
+Explorer moves to (5,3)
+Explorer moves to (6,3)
+Explorer moves to (1,4)
+Explorer moves to (2,4)
+Explorer moves to (3,4)
+Explorer moves to (4,4)
+Explorer moves to (5,4)
+Explorer moves to (6,4)
+Explorer moves to (2,5)
+Explorer moves to (3,5)
+Explorer moves to (4,5)
+Explorer moves to (5,5)
+Explorer moves to (3,6)
+Explorer moves to (4,6)
+Messenger moves to (3,1)
+Messenger moves to (4,1)
+Messenger moves to (2,2)
+Messenger moves to (3,2)
+Messenger moves to (4,2)
+Messenger moves to (5,2)
+Messenger moves to (1,3)
+Messenger moves to (2,3)
+Messenger moves to (3,3)
+Messenger moves to (4,3)
+Messenger moves to (5,3)
+Messenger moves to (6,3)
+Messenger moves to (1,4)
+Messenger moves to (2,4)
+Messenger moves to (3,4)
+Messenger moves to (4,4)
+Messenger moves to (5,4)
+Messenger moves to (6,4)
+Messenger moves to (2,5)
+Messenger moves to (3,5)
+Messenger moves to (4,5)
+Messenger moves to (5,5)
+Messenger moves to (3,6)
+Messenger moves to (4,6)
+Navigator moves to (3,1)
+Navigator moves to (4,1)
+Navigator moves to (2,2)
+Navigator moves to (3,2)
+Navigator moves to (4,2)
+Navigator moves to (5,2)
+Navigator moves to (1,3)
+Navigator moves to (2,3)
+Navigator moves to (3,3)
+Navigator moves to (4,3)
+Navigator moves to (5,3)
+Navigator moves to (6,3)
+Navigator moves to (1,4)
+Navigator moves to (2,4)
+Navigator moves to (3,4)
+Navigator moves to (4,4)
+Navigator moves to (5,4)
+Navigator moves to (6,4)
+Navigator moves to (2,5)
+Navigator moves to (3,5)
+Navigator moves to (4,5)
+Navigator moves to (5,5)
+Navigator moves to (3,6)
+Navigator moves to (4,6)
+Pilot moves to (3,1)
+Pilot moves to (4,1)
+Pilot moves to (2,2)
+Pilot moves to (3,2)
+Pilot moves to (4,2)
+Pilot moves to (5,2)
+Pilot moves to (1,3)
+Pilot moves to (2,3)
+Pilot moves to (3,3)
+Pilot moves to (4,3)
+Pilot moves to (5,3)
+Pilot moves to (6,3)
+Pilot moves to (1,4)
+Pilot moves to (2,4)
+Pilot moves to (3,4)
+Pilot moves to (4,4)
+Pilot moves to (5,4)
+Pilot moves to (6,4)
+Pilot moves to (2,5)
+Pilot moves to (3,5)
+Pilot moves to (4,5)
+Pilot moves to (5,5)
+Pilot moves to (3,6)
+Pilot moves to (4,6)
+(3,1) is shored up by Diver
+(4,1) is shored up by Diver
+(2,2) is shored up by Diver
+(3,2) is shored up by Diver
+(4,2) is shored up by Diver
+(5,2) is shored up by Diver
+(1,3) is shored up by Diver
+(2,3) is shored up by Diver
+(3,3) is shored up by Diver
+(4,3) is shored up by Diver
+(5,3) is shored up by Diver
+(6,3) is shored up by Diver
+(1,4) is shored up by Diver
+(2,4) is shored up by Diver
+(3,4) is shored up by Diver
+(4,4) is shored up by Diver
+(5,4) is shored up by Diver
+(6,4) is shored up by Diver
+(2,5) is shored up by Diver
+(3,5) is shored up by Diver
+(4,5) is shored up by Diver
+(5,5) is shored up by Diver
+(3,6) is shored up by Diver
+(4,6) is shored up by Diver
+(3,1) is shored up by Engineer
+(4,1) is shored up by Engineer
+(2,2) is shored up by Engineer
+(3,2) is shored up by Engineer
+(4,2) is shored up by Engineer
+(5,2) is shored up by Engineer
+(1,3) is shored up by Engineer
+(2,3) is shored up by Engineer
+(3,3) is shored up by Engineer
+(4,3) is shored up by Engineer
+(5,3) is shored up by Engineer
+(6,3) is shored up by Engineer
+(1,4) is shored up by Engineer
+(2,4) is shored up by Engineer
+(3,4) is shored up by Engineer
+(4,4) is shored up by Engineer
+(5,4) is shored up by Engineer
+(6,4) is shored up by Engineer
+(2,5) is shored up by Engineer
+(3,5) is shored up by Engineer
+(4,5) is shored up by Engineer
+(5,5) is shored up by Engineer
+(3,6) is shored up by Engineer
+(4,6) is shored up by Engineer
+(3,1) is shored up by Explorer
+(4,1) is shored up by Explorer
+(2,2) is shored up by Explorer
+(3,2) is shored up by Explorer
+(4,2) is shored up by Explorer
+(5,2) is shored up by Explorer
+(1,3) is shored up by Explorer
+(2,3) is shored up by Explorer
+(3,3) is shored up by Explorer
+(4,3) is shored up by Explorer
+(5,3) is shored up by Explorer
+(6,3) is shored up by Explorer
+(1,4) is shored up by Explorer
+(2,4) is shored up by Explorer
+(3,4) is shored up by Explorer
+(4,4) is shored up by Explorer
+(5,4) is shored up by Explorer
+(6,4) is shored up by Explorer
+(2,5) is shored up by Explorer
+(3,5) is shored up by Explorer
+(4,5) is shored up by Explorer
+(5,5) is shored up by Explorer
+(3,6) is shored up by Explorer
+(4,6) is shored up by Explorer
+(3,1) is shored up by Messenger
+(4,1) is shored up by Messenger
+(2,2) is shored up by Messenger
+(3,2) is shored up by Messenger
+(4,2) is shored up by Messenger
+(5,2) is shored up by Messenger
+(1,3) is shored up by Messenger
+(2,3) is shored up by Messenger
+(3,3) is shored up by Messenger
+(4,3) is shored up by Messenger
+(5,3) is shored up by Messenger
+(6,3) is shored up by Messenger
+(1,4) is shored up by Messenger
+(2,4) is shored up by Messenger
+(3,4) is shored up by Messenger
+(4,4) is shored up by Messenger
+(5,4) is shored up by Messenger
+(6,4) is shored up by Messenger
+(2,5) is shored up by Messenger
+(3,5) is shored up by Messenger
+(4,5) is shored up by Messenger
+(5,5) is shored up by Messenger
+(3,6) is shored up by Messenger
+(4,6) is shored up by Messenger
+(3,1) is shored up by Navigator
+(4,1) is shored up by Navigator
+(2,2) is shored up by Navigator
+(3,2) is shored up by Navigator
+(4,2) is shored up by Navigator
+(5,2) is shored up by Navigator
+(1,3) is shored up by Navigator
+(2,3) is shored up by Navigator
+(3,3) is shored up by Navigator
+(4,3) is shored up by Navigator
+(5,3) is shored up by Navigator
+(6,3) is shored up by Navigator
+(1,4) is shored up by Navigator
+(2,4) is shored up by Navigator
+(3,4) is shored up by Navigator
+(4,4) is shored up by Navigator
+(5,4) is shored up by Navigator
+(6,4) is shored up by Navigator
+(2,5) is shored up by Navigator
+(3,5) is shored up by Navigator
+(4,5) is shored up by Navigator
+(5,5) is shored up by Navigator
+(3,6) is shored up by Navigator
+(4,6) is shored up by Navigator
+(3,1) is shored up by Pilot
+(4,1) is shored up by Pilot
+(2,2) is shored up by Pilot
+(3,2) is shored up by Pilot
+(4,2) is shored up by Pilot
+(5,2) is shored up by Pilot
+(1,3) is shored up by Pilot
+(2,3) is shored up by Pilot
+(3,3) is shored up by Pilot
+(4,3) is shored up by Pilot
+(5,3) is shored up by Pilot
+(6,3) is shored up by Pilot
+(1,4) is shored up by Pilot
+(2,4) is shored up by Pilot
+(3,4) is shored up by Pilot
+(4,4) is shored up by Pilot
+(5,4) is shored up by Pilot
+(6,4) is shored up by Pilot
+(2,5) is shored up by Pilot
+(3,5) is shored up by Pilot
+(4,5) is shored up by Pilot
+(5,5) is shored up by Pilot
+(3,6) is shored up by Pilot
+(4,6) is shored up by Pilot
+(3,1) and (4,1) are shored up by Engineer
+(3,1) and (2,2) are shored up by Engineer
+(3,1) and (3,2) are shored up by Engineer
+(3,1) and (4,2) are shored up by Engineer
+(3,1) and (5,2) are shored up by Engineer
+(3,1) and (1,3) are shored up by Engineer
+(3,1) and (2,3) are shored up by Engineer
+(3,1) and (3,3) are shored up by Engineer
+(3,1) and (4,3) are shored up by Engineer
+(3,1) and (5,3) are shored up by Engineer
+(3,1) and (6,3) are shored up by Engineer
+(3,1) and (1,4) are shored up by Engineer
+(3,1) and (2,4) are shored up by Engineer
+(3,1) and (3,4) are shored up by Engineer
+(3,1) and (4,4) are shored up by Engineer
+(3,1) and (5,4) are shored up by Engineer
+(3,1) and (6,4) are shored up by Engineer
+(3,1) and (2,5) are shored up by Engineer
+(3,1) and (3,5) are shored up by Engineer
+(3,1) and (4,5) are shored up by Engineer
+(3,1) and (5,5) are shored up by Engineer
+(3,1) and (3,6) are shored up by Engineer
+(3,1) and (4,6) are shored up by Engineer
+(4,1) and (2,2) are shored up by Engineer
+(4,1) and (3,2) are shored up by Engineer
+(4,1) and (4,2) are shored up by Engineer
+(4,1) and (5,2) are shored up by Engineer
+(4,1) and (1,3) are shored up by Engineer
+(4,1) and (2,3) are shored up by Engineer
+(4,1) and (3,3) are shored up by Engineer
+(4,1) and (4,3) are shored up by Engineer
+(4,1) and (5,3) are shored up by Engineer
+(4,1) and (6,3) are shored up by Engineer
+(4,1) and (1,4) are shored up by Engineer
+(4,1) and (2,4) are shored up by Engineer
+(4,1) and (3,4) are shored up by Engineer
+(4,1) and (4,4) are shored up by Engineer
+(4,1) and (5,4) are shored up by Engineer
+(4,1) and (6,4) are shored up by Engineer
+(4,1) and (2,5) are shored up by Engineer
+(4,1) and (3,5) are shored up by Engineer
+(4,1) and (4,5) are shored up by Engineer
+(4,1) and (5,5) are shored up by Engineer
+(4,1) and (3,6) are shored up by Engineer
+(4,1) and (4,6) are shored up by Engineer
+(2,2) and (3,2) are shored up by Engineer
+(2,2) and (4,2) are shored up by Engineer
+(2,2) and (5,2) are shored up by Engineer
+(2,2) and (1,3) are shored up by Engineer
+(2,2) and (2,3) are shored up by Engineer
+(2,2) and (3,3) are shored up by Engineer
+(2,2) and (4,3) are shored up by Engineer
+(2,2) and (5,3) are shored up by Engineer
+(2,2) and (6,3) are shored up by Engineer
+(2,2) and (1,4) are shored up by Engineer
+(2,2) and (2,4) are shored up by Engineer
+(2,2) and (3,4) are shored up by Engineer
+(2,2) and (4,4) are shored up by Engineer
+(2,2) and (5,4) are shored up by Engineer
+(2,2) and (6,4) are shored up by Engineer
+(2,2) and (2,5) are shored up by Engineer
+(2,2) and (3,5) are shored up by Engineer
+(2,2) and (4,5) are shored up by Engineer
+(2,2) and (5,5) are shored up by Engineer
+(2,2) and (3,6) are shored up by Engineer
+(2,2) and (4,6) are shored up by Engineer
+(3,2) and (4,2) are shored up by Engineer
+(3,2) and (5,2) are shored up by Engineer
+(3,2) and (1,3) are shored up by Engineer
+(3,2) and (2,3) are shored up by Engineer
+(3,2) and (3,3) are shored up by Engineer
+(3,2) and (4,3) are shored up by Engineer
+(3,2) and (5,3) are shored up by Engineer
+(3,2) and (6,3) are shored up by Engineer
+(3,2) and (1,4) are shored up by Engineer
+(3,2) and (2,4) are shored up by Engineer
+(3,2) and (3,4) are shored up by Engineer
+(3,2) and (4,4) are shored up by Engineer
+(3,2) and (5,4) are shored up by Engineer
+(3,2) and (6,4) are shored up by Engineer
+(3,2) and (2,5) are shored up by Engineer
+(3,2) and (3,5) are shored up by Engineer
+(3,2) and (4,5) are shored up by Engineer
+(3,2) and (5,5) are shored up by Engineer
+(3,2) and (3,6) are shored up by Engineer
+(3,2) and (4,6) are shored up by Engineer
+(4,2) and (5,2) are shored up by Engineer
+(4,2) and (1,3) are shored up by Engineer
+(4,2) and (2,3) are shored up by Engineer
+(4,2) and (3,3) are shored up by Engineer
+(4,2) and (4,3) are shored up by Engineer
+(4,2) and (5,3) are shored up by Engineer
+(4,2) and (6,3) are shored up by Engineer
+(4,2) and (1,4) are shored up by Engineer
+(4,2) and (2,4) are shored up by Engineer
+(4,2) and (3,4) are shored up by Engineer
+(4,2) and (4,4) are shored up by Engineer
+(4,2) and (5,4) are shored up by Engineer
+(4,2) and (6,4) are shored up by Engineer
+(4,2) and (2,5) are shored up by Engineer
+(4,2) and (3,5) are shored up by Engineer
+(4,2) and (4,5) are shored up by Engineer
+(4,2) and (5,5) are shored up by Engineer
+(4,2) and (3,6) are shored up by Engineer
+(4,2) and (4,6) are shored up by Engineer
+(5,2) and (1,3) are shored up by Engineer
+(5,2) and (2,3) are shored up by Engineer
+(5,2) and (3,3) are shored up by Engineer
+(5,2) and (4,3) are shored up by Engineer
+(5,2) and (5,3) are shored up by Engineer
+(5,2) and (6,3) are shored up by Engineer
+(5,2) and (1,4) are shored up by Engineer
+(5,2) and (2,4) are shored up by Engineer
+(5,2) and (3,4) are shored up by Engineer
+(5,2) and (4,4) are shored up by Engineer
+(5,2) and (5,4) are shored up by Engineer
+(5,2) and (6,4) are shored up by Engineer
+(5,2) and (2,5) are shored up by Engineer
+(5,2) and (3,5) are shored up by Engineer
+(5,2) and (4,5) are shored up by Engineer
+(5,2) and (5,5) are shored up by Engineer
+(5,2) and (3,6) are shored up by Engineer
+(5,2) and (4,6) are shored up by Engineer
+(1,3) and (2,3) are shored up by Engineer
+(1,3) and (3,3) are shored up by Engineer
+(1,3) and (4,3) are shored up by Engineer
+(1,3) and (5,3) are shored up by Engineer
+(1,3) and (6,3) are shored up by Engineer
+(1,3) and (1,4) are shored up by Engineer
+(1,3) and (2,4) are shored up by Engineer
+(1,3) and (3,4) are shored up by Engineer
+(1,3) and (4,4) are shored up by Engineer
+(1,3) and (5,4) are shored up by Engineer
+(1,3) and (6,4) are shored up by Engineer
+(1,3) and (2,5) are shored up by Engineer
+(1,3) and (3,5) are shored up by Engineer
+(1,3) and (4,5) are shored up by Engineer
+(1,3) and (5,5) are shored up by Engineer
+(1,3) and (3,6) are shored up by Engineer
+(1,3) and (4,6) are shored up by Engineer
+(2,3) and (3,3) are shored up by Engineer
+(2,3) and (4,3) are shored up by Engineer
+(2,3) and (5,3) are shored up by Engineer
+(2,3) and (6,3) are shored up by Engineer
+(2,3) and (1,4) are shored up by Engineer
+(2,3) and (2,4) are shored up by Engineer
+(2,3) and (3,4) are shored up by Engineer
+(2,3) and (4,4) are shored up by Engineer
+(2,3) and (5,4) are shored up by Engineer
+(2,3) and (6,4) are shored up by Engineer
+(2,3) and (2,5) are shored up by Engineer
+(2,3) and (3,5) are shored up by Engineer
+(2,3) and (4,5) are shored up by Engineer
+(2,3) and (5,5) are shored up by Engineer
+(2,3) and (3,6) are shored up by Engineer
+(2,3) and (4,6) are shored up by Engineer
+(3,3) and (4,3) are shored up by Engineer
+(3,3) and (5,3) are shored up by Engineer
+(3,3) and (6,3) are shored up by Engineer
+(3,3) and (1,4) are shored up by Engineer
+(3,3) and (2,4) are shored up by Engineer
+(3,3) and (3,4) are shored up by Engineer
+(3,3) and (4,4) are shored up by Engineer
+(3,3) and (5,4) are shored up by Engineer
+(3,3) and (6,4) are shored up by Engineer
+(3,3) and (2,5) are shored up by Engineer
+(3,3) and (3,5) are shored up by Engineer
+(3,3) and (4,5) are shored up by Engineer
+(3,3) and (5,5) are shored up by Engineer
+(3,3) and (3,6) are shored up by Engineer
+(3,3) and (4,6) are shored up by Engineer
+(4,3) and (5,3) are shored up by Engineer
+(4,3) and (6,3) are shored up by Engineer
+(4,3) and (1,4) are shored up by Engineer
+(4,3) and (2,4) are shored up by Engineer
+(4,3) and (3,4) are shored up by Engineer
+(4,3) and (4,4) are shored up by Engineer
+(4,3) and (5,4) are shored up by Engineer
+(4,3) and (6,4) are shored up by Engineer
+(4,3) and (2,5) are shored up by Engineer
+(4,3) and (3,5) are shored up by Engineer
+(4,3) and (4,5) are shored up by Engineer
+(4,3) and (5,5) are shored up by Engineer
+(4,3) and (3,6) are shored up by Engineer
+(4,3) and (4,6) are shored up by Engineer
+(5,3) and (6,3) are shored up by Engineer
+(5,3) and (1,4) are shored up by Engineer
+(5,3) and (2,4) are shored up by Engineer
+(5,3) and (3,4) are shored up by Engineer
+(5,3) and (4,4) are shored up by Engineer
+(5,3) and (5,4) are shored up by Engineer
+(5,3) and (6,4) are shored up by Engineer
+(5,3) and (2,5) are shored up by Engineer
+(5,3) and (3,5) are shored up by Engineer
+(5,3) and (4,5) are shored up by Engineer
+(5,3) and (5,5) are shored up by Engineer
+(5,3) and (3,6) are shored up by Engineer
+(5,3) and (4,6) are shored up by Engineer
+(6,3) and (1,4) are shored up by Engineer
+(6,3) and (2,4) are shored up by Engineer
+(6,3) and (3,4) are shored up by Engineer
+(6,3) and (4,4) are shored up by Engineer
+(6,3) and (5,4) are shored up by Engineer
+(6,3) and (6,4) are shored up by Engineer
+(6,3) and (2,5) are shored up by Engineer
+(6,3) and (3,5) are shored up by Engineer
+(6,3) and (4,5) are shored up by Engineer
+(6,3) and (5,5) are shored up by Engineer
+(6,3) and (3,6) are shored up by Engineer
+(6,3) and (4,6) are shored up by Engineer
+(1,4) and (2,4) are shored up by Engineer
+(1,4) and (3,4) are shored up by Engineer
+(1,4) and (4,4) are shored up by Engineer
+(1,4) and (5,4) are shored up by Engineer
+(1,4) and (6,4) are shored up by Engineer
+(1,4) and (2,5) are shored up by Engineer
+(1,4) and (3,5) are shored up by Engineer
+(1,4) and (4,5) are shored up by Engineer
+(1,4) and (5,5) are shored up by Engineer
+(1,4) and (3,6) are shored up by Engineer
+(1,4) and (4,6) are shored up by Engineer
+(2,4) and (3,4) are shored up by Engineer
+(2,4) and (4,4) are shored up by Engineer
+(2,4) and (5,4) are shored up by Engineer
+(2,4) and (6,4) are shored up by Engineer
+(2,4) and (2,5) are shored up by Engineer
+(2,4) and (3,5) are shored up by Engineer
+(2,4) and (4,5) are shored up by Engineer
+(2,4) and (5,5) are shored up by Engineer
+(2,4) and (3,6) are shored up by Engineer
+(2,4) and (4,6) are shored up by Engineer
+(3,4) and (4,4) are shored up by Engineer
+(3,4) and (5,4) are shored up by Engineer
+(3,4) and (6,4) are shored up by Engineer
+(3,4) and (2,5) are shored up by Engineer
+(3,4) and (3,5) are shored up by Engineer
+(3,4) and (4,5) are shored up by Engineer
+(3,4) and (5,5) are shored up by Engineer
+(3,4) and (3,6) are shored up by Engineer
+(3,4) and (4,6) are shored up by Engineer
+(4,4) and (5,4) are shored up by Engineer
+(4,4) and (6,4) are shored up by Engineer
+(4,4) and (2,5) are shored up by Engineer
+(4,4) and (3,5) are shored up by Engineer
+(4,4) and (4,5) are shored up by Engineer
+(4,4) and (5,5) are shored up by Engineer
+(4,4) and (3,6) are shored up by Engineer
+(4,4) and (4,6) are shored up by Engineer
+(5,4) and (6,4) are shored up by Engineer
+(5,4) and (2,5) are shored up by Engineer
+(5,4) and (3,5) are shored up by Engineer
+(5,4) and (4,5) are shored up by Engineer
+(5,4) and (5,5) are shored up by Engineer
+(5,4) and (3,6) are shored up by Engineer
+(5,4) and (4,6) are shored up by Engineer
+(6,4) and (2,5) are shored up by Engineer
+(6,4) and (3,5) are shored up by Engineer
+(6,4) and (4,5) are shored up by Engineer
+(6,4) and (5,5) are shored up by Engineer
+(6,4) and (3,6) are shored up by Engineer
+(6,4) and (4,6) are shored up by Engineer
+(2,5) and (3,5) are shored up by Engineer
+(2,5) and (4,5) are shored up by Engineer
+(2,5) and (5,5) are shored up by Engineer
+(2,5) and (3,6) are shored up by Engineer
+(2,5) and (4,6) are shored up by Engineer
+(3,5) and (4,5) are shored up by Engineer
+(3,5) and (5,5) are shored up by Engineer
+(3,5) and (3,6) are shored up by Engineer
+(3,5) and (4,6) are shored up by Engineer
+(4,5) and (5,5) are shored up by Engineer
+(4,5) and (3,6) are shored up by Engineer
+(4,5) and (4,6) are shored up by Engineer
+(5,5) and (3,6) are shored up by Engineer
+(5,5) and (4,6) are shored up by Engineer
+(3,6) and (4,6) are shored up by Engineer
+Diver gives one 'The Crystal of Fire' card to Engineer
+Diver gives one 'The Earth Stone' card to Engineer
+Diver gives one 'The Ocean's Chalice' card to Engineer
+Diver gives one 'The Statue of the Wind' card to Engineer
+Diver gives one 'The Crystal of Fire' card to Explorer
+Diver gives one 'The Earth Stone' card to Explorer
+Diver gives one 'The Ocean's Chalice' card to Explorer
+Diver gives one 'The Statue of the Wind' card to Explorer
+Diver gives one 'The Crystal of Fire' card to Messenger
+Diver gives one 'The Earth Stone' card to Messenger
+Diver gives one 'The Ocean's Chalice' card to Messenger
+Diver gives one 'The Statue of the Wind' card to Messenger
+Diver gives one 'The Crystal of Fire' card to Navigator
+Diver gives one 'The Earth Stone' card to Navigator
+Diver gives one 'The Ocean's Chalice' card to Navigator
+Diver gives one 'The Statue of the Wind' card to Navigator
+Diver gives one 'The Crystal of Fire' card to Pilot
+Diver gives one 'The Earth Stone' card to Pilot
+Diver gives one 'The Ocean's Chalice' card to Pilot
+Diver gives one 'The Statue of the Wind' card to Pilot
+Engineer gives one 'The Crystal of Fire' card to Diver
+Engineer gives one 'The Earth Stone' card to Diver
+Engineer gives one 'The Ocean's Chalice' card to Diver
+Engineer gives one 'The Statue of the Wind' card to Diver
+Engineer gives one 'The Crystal of Fire' card to Explorer
+Engineer gives one 'The Earth Stone' card to Explorer
+Engineer gives one 'The Ocean's Chalice' card to Explorer
+Engineer gives one 'The Statue of the Wind' card to Explorer
+Engineer gives one 'The Crystal of Fire' card to Messenger
+Engineer gives one 'The Earth Stone' card to Messenger
+Engineer gives one 'The Ocean's Chalice' card to Messenger
+Engineer gives one 'The Statue of the Wind' card to Messenger
+Engineer gives one 'The Crystal of Fire' card to Navigator
+Engineer gives one 'The Earth Stone' card to Navigator
+Engineer gives one 'The Ocean's Chalice' card to Navigator
+Engineer gives one 'The Statue of the Wind' card to Navigator
+Engineer gives one 'The Crystal of Fire' card to Pilot
+Engineer gives one 'The Earth Stone' card to Pilot
+Engineer gives one 'The Ocean's Chalice' card to Pilot
+Engineer gives one 'The Statue of the Wind' card to Pilot
+Explorer gives one 'The Crystal of Fire' card to Diver
+Explorer gives one 'The Earth Stone' card to Diver
+Explorer gives one 'The Ocean's Chalice' card to Diver
+Explorer gives one 'The Statue of the Wind' card to Diver
+Explorer gives one 'The Crystal of Fire' card to Engineer
+Explorer gives one 'The Earth Stone' card to Engineer
+Explorer gives one 'The Ocean's Chalice' card to Engineer
+Explorer gives one 'The Statue of the Wind' card to Engineer
+Explorer gives one 'The Crystal of Fire' card to Messenger
+Explorer gives one 'The Earth Stone' card to Messenger
+Explorer gives one 'The Ocean's Chalice' card to Messenger
+Explorer gives one 'The Statue of the Wind' card to Messenger
+Explorer gives one 'The Crystal of Fire' card to Navigator
+Explorer gives one 'The Earth Stone' card to Navigator
+Explorer gives one 'The Ocean's Chalice' card to Navigator
+Explorer gives one 'The Statue of the Wind' card to Navigator
+Explorer gives one 'The Crystal of Fire' card to Pilot
+Explorer gives one 'The Earth Stone' card to Pilot
+Explorer gives one 'The Ocean's Chalice' card to Pilot
+Explorer gives one 'The Statue of the Wind' card to Pilot
+Messenger gives one 'The Crystal of Fire' card to Diver
+Messenger gives one 'The Earth Stone' card to Diver
+Messenger gives one 'The Ocean's Chalice' card to Diver
+Messenger gives one 'The Statue of the Wind' card to Diver
+Messenger gives one 'The Crystal of Fire' card to Engineer
+Messenger gives one 'The Earth Stone' card to Engineer
+Messenger gives one 'The Ocean's Chalice' card to Engineer
+Messenger gives one 'The Statue of the Wind' card to Engineer
+Messenger gives one 'The Crystal of Fire' card to Explorer
+Messenger gives one 'The Earth Stone' card to Explorer
+Messenger gives one 'The Ocean's Chalice' card to Explorer
+Messenger gives one 'The Statue of the Wind' card to Explorer
+Messenger gives one 'The Crystal of Fire' card to Navigator
+Messenger gives one 'The Earth Stone' card to Navigator
+Messenger gives one 'The Ocean's Chalice' card to Navigator
+Messenger gives one 'The Statue of the Wind' card to Navigator
+Messenger gives one 'The Crystal of Fire' card to Pilot
+Messenger gives one 'The Earth Stone' card to Pilot
+Messenger gives one 'The Ocean's Chalice' card to Pilot
+Messenger gives one 'The Statue of the Wind' card to Pilot
+Navigator gives one 'The Crystal of Fire' card to Diver
+Navigator gives one 'The Earth Stone' card to Diver
+Navigator gives one 'The Ocean's Chalice' card to Diver
+Navigator gives one 'The Statue of the Wind' card to Diver
+Navigator gives one 'The Crystal of Fire' card to Engineer
+Navigator gives one 'The Earth Stone' card to Engineer
+Navigator gives one 'The Ocean's Chalice' card to Engineer
+Navigator gives one 'The Statue of the Wind' card to Engineer
+Navigator gives one 'The Crystal of Fire' card to Explorer
+Navigator gives one 'The Earth Stone' card to Explorer
+Navigator gives one 'The Ocean's Chalice' card to Explorer
+Navigator gives one 'The Statue of the Wind' card to Explorer
+Navigator gives one 'The Crystal of Fire' card to Messenger
+Navigator gives one 'The Earth Stone' card to Messenger
+Navigator gives one 'The Ocean's Chalice' card to Messenger
+Navigator gives one 'The Statue of the Wind' card to Messenger
+Navigator gives one 'The Crystal of Fire' card to Pilot
+Navigator gives one 'The Earth Stone' card to Pilot
+Navigator gives one 'The Ocean's Chalice' card to Pilot
+Navigator gives one 'The Statue of the Wind' card to Pilot
+Pilot gives one 'The Crystal of Fire' card to Diver
+Pilot gives one 'The Earth Stone' card to Diver
+Pilot gives one 'The Ocean's Chalice' card to Diver
+Pilot gives one 'The Statue of the Wind' card to Diver
+Pilot gives one 'The Crystal of Fire' card to Engineer
+Pilot gives one 'The Earth Stone' card to Engineer
+Pilot gives one 'The Ocean's Chalice' card to Engineer
+Pilot gives one 'The Statue of the Wind' card to Engineer
+Pilot gives one 'The Crystal of Fire' card to Explorer
+Pilot gives one 'The Earth Stone' card to Explorer
+Pilot gives one 'The Ocean's Chalice' card to Explorer
+Pilot gives one 'The Statue of the Wind' card to Explorer
+Pilot gives one 'The Crystal of Fire' card to Messenger
+Pilot gives one 'The Earth Stone' card to Messenger
+Pilot gives one 'The Ocean's Chalice' card to Messenger
+Pilot gives one 'The Statue of the Wind' card to Messenger
+Pilot gives one 'The Crystal of Fire' card to Navigator
+Pilot gives one 'The Earth Stone' card to Navigator
+Pilot gives one 'The Ocean's Chalice' card to Navigator
+Pilot gives one 'The Statue of the Wind' card to Navigator
+Diver is helicopter lifted to (3,1) by Diver
+Diver is helicopter lifted to (4,1) by Diver
+Diver is helicopter lifted to (2,2) by Diver
+Diver is helicopter lifted to (3,2) by Diver
+Diver is helicopter lifted to (4,2) by Diver
+Diver is helicopter lifted to (5,2) by Diver
+Diver is helicopter lifted to (1,3) by Diver
+Diver is helicopter lifted to (2,3) by Diver
+Diver is helicopter lifted to (3,3) by Diver
+Diver is helicopter lifted to (4,3) by Diver
+Diver is helicopter lifted to (5,3) by Diver
+Diver is helicopter lifted to (6,3) by Diver
+Diver is helicopter lifted to (1,4) by Diver
+Diver is helicopter lifted to (2,4) by Diver
+Diver is helicopter lifted to (3,4) by Diver
+Diver is helicopter lifted to (4,4) by Diver
+Diver is helicopter lifted to (5,4) by Diver
+Diver is helicopter lifted to (6,4) by Diver
+Diver is helicopter lifted to (2,5) by Diver
+Diver is helicopter lifted to (3,5) by Diver
+Diver is helicopter lifted to (4,5) by Diver
+Diver is helicopter lifted to (5,5) by Diver
+Diver is helicopter lifted to (3,6) by Diver
+Diver is helicopter lifted to (4,6) by Diver
+Engineer is helicopter lifted to (3,1) by Diver
+Engineer is helicopter lifted to (4,1) by Diver
+Engineer is helicopter lifted to (2,2) by Diver
+Engineer is helicopter lifted to (3,2) by Diver
+Engineer is helicopter lifted to (4,2) by Diver
+Engineer is helicopter lifted to (5,2) by Diver
+Engineer is helicopter lifted to (1,3) by Diver
+Engineer is helicopter lifted to (2,3) by Diver
+Engineer is helicopter lifted to (3,3) by Diver
+Engineer is helicopter lifted to (4,3) by Diver
+Engineer is helicopter lifted to (5,3) by Diver
+Engineer is helicopter lifted to (6,3) by Diver
+Engineer is helicopter lifted to (1,4) by Diver
+Engineer is helicopter lifted to (2,4) by Diver
+Engineer is helicopter lifted to (3,4) by Diver
+Engineer is helicopter lifted to (4,4) by Diver
+Engineer is helicopter lifted to (5,4) by Diver
+Engineer is helicopter lifted to (6,4) by Diver
+Engineer is helicopter lifted to (2,5) by Diver
+Engineer is helicopter lifted to (3,5) by Diver
+Engineer is helicopter lifted to (4,5) by Diver
+Engineer is helicopter lifted to (5,5) by Diver
+Engineer is helicopter lifted to (3,6) by Diver
+Engineer is helicopter lifted to (4,6) by Diver
+Explorer is helicopter lifted to (3,1) by Diver
+Explorer is helicopter lifted to (4,1) by Diver
+Explorer is helicopter lifted to (2,2) by Diver
+Explorer is helicopter lifted to (3,2) by Diver
+Explorer is helicopter lifted to (4,2) by Diver
+Explorer is helicopter lifted to (5,2) by Diver
+Explorer is helicopter lifted to (1,3) by Diver
+Explorer is helicopter lifted to (2,3) by Diver
+Explorer is helicopter lifted to (3,3) by Diver
+Explorer is helicopter lifted to (4,3) by Diver
+Explorer is helicopter lifted to (5,3) by Diver
+Explorer is helicopter lifted to (6,3) by Diver
+Explorer is helicopter lifted to (1,4) by Diver
+Explorer is helicopter lifted to (2,4) by Diver
+Explorer is helicopter lifted to (3,4) by Diver
+Explorer is helicopter lifted to (4,4) by Diver
+Explorer is helicopter lifted to (5,4) by Diver
+Explorer is helicopter lifted to (6,4) by Diver
+Explorer is helicopter lifted to (2,5) by Diver
+Explorer is helicopter lifted to (3,5) by Diver
+Explorer is helicopter lifted to (4,5) by Diver
+Explorer is helicopter lifted to (5,5) by Diver
+Explorer is helicopter lifted to (3,6) by Diver
+Explorer is helicopter lifted to (4,6) by Diver
+Messenger is helicopter lifted to (3,1) by Diver
+Messenger is helicopter lifted to (4,1) by Diver
+Messenger is helicopter lifted to (2,2) by Diver
+Messenger is helicopter lifted to (3,2) by Diver
+Messenger is helicopter lifted to (4,2) by Diver
+Messenger is helicopter lifted to (5,2) by Diver
+Messenger is helicopter lifted to (1,3) by Diver
+Messenger is helicopter lifted to (2,3) by Diver
+Messenger is helicopter lifted to (3,3) by Diver
+Messenger is helicopter lifted to (4,3) by Diver
+Messenger is helicopter lifted to (5,3) by Diver
+Messenger is helicopter lifted to (6,3) by Diver
+Messenger is helicopter lifted to (1,4) by Diver
+Messenger is helicopter lifted to (2,4) by Diver
+Messenger is helicopter lifted to (3,4) by Diver
+Messenger is helicopter lifted to (4,4) by Diver
+Messenger is helicopter lifted to (5,4) by Diver
+Messenger is helicopter lifted to (6,4) by Diver
+Messenger is helicopter lifted to (2,5) by Diver
+Messenger is helicopter lifted to (3,5) by Diver
+Messenger is helicopter lifted to (4,5) by Diver
+Messenger is helicopter lifted to (5,5) by Diver
+Messenger is helicopter lifted to (3,6) by Diver
+Messenger is helicopter lifted to (4,6) by Diver
+Navigator is helicopter lifted to (3,1) by Diver
+Navigator is helicopter lifted to (4,1) by Diver
+Navigator is helicopter lifted to (2,2) by Diver
+Navigator is helicopter lifted to (3,2) by Diver
+Navigator is helicopter lifted to (4,2) by Diver
+Navigator is helicopter lifted to (5,2) by Diver
+Navigator is helicopter lifted to (1,3) by Diver
+Navigator is helicopter lifted to (2,3) by Diver
+Navigator is helicopter lifted to (3,3) by Diver
+Navigator is helicopter lifted to (4,3) by Diver
+Navigator is helicopter lifted to (5,3) by Diver
+Navigator is helicopter lifted to (6,3) by Diver
+Navigator is helicopter lifted to (1,4) by Diver
+Navigator is helicopter lifted to (2,4) by Diver
+Navigator is helicopter lifted to (3,4) by Diver
+Navigator is helicopter lifted to (4,4) by Diver
+Navigator is helicopter lifted to (5,4) by Diver
+Navigator is helicopter lifted to (6,4) by Diver
+Navigator is helicopter lifted to (2,5) by Diver
+Navigator is helicopter lifted to (3,5) by Diver
+Navigator is helicopter lifted to (4,5) by Diver
+Navigator is helicopter lifted to (5,5) by Diver
+Navigator is helicopter lifted to (3,6) by Diver
+Navigator is helicopter lifted to (4,6) by Diver
+Pilot is helicopter lifted to (3,1) by Diver
+Pilot is helicopter lifted to (4,1) by Diver
+Pilot is helicopter lifted to (2,2) by Diver
+Pilot is helicopter lifted to (3,2) by Diver
+Pilot is helicopter lifted to (4,2) by Diver
+Pilot is helicopter lifted to (5,2) by Diver
+Pilot is helicopter lifted to (1,3) by Diver
+Pilot is helicopter lifted to (2,3) by Diver
+Pilot is helicopter lifted to (3,3) by Diver
+Pilot is helicopter lifted to (4,3) by Diver
+Pilot is helicopter lifted to (5,3) by Diver
+Pilot is helicopter lifted to (6,3) by Diver
+Pilot is helicopter lifted to (1,4) by Diver
+Pilot is helicopter lifted to (2,4) by Diver
+Pilot is helicopter lifted to (3,4) by Diver
+Pilot is helicopter lifted to (4,4) by Diver
+Pilot is helicopter lifted to (5,4) by Diver
+Pilot is helicopter lifted to (6,4) by Diver
+Pilot is helicopter lifted to (2,5) by Diver
+Pilot is helicopter lifted to (3,5) by Diver
+Pilot is helicopter lifted to (4,5) by Diver
+Pilot is helicopter lifted to (5,5) by Diver
+Pilot is helicopter lifted to (3,6) by Diver
+Pilot is helicopter lifted to (4,6) by Diver
+Diver is helicopter lifted to (3,1) by Engineer
+Diver is helicopter lifted to (4,1) by Engineer
+Diver is helicopter lifted to (2,2) by Engineer
+Diver is helicopter lifted to (3,2) by Engineer
+Diver is helicopter lifted to (4,2) by Engineer
+Diver is helicopter lifted to (5,2) by Engineer
+Diver is helicopter lifted to (1,3) by Engineer
+Diver is helicopter lifted to (2,3) by Engineer
+Diver is helicopter lifted to (3,3) by Engineer
+Diver is helicopter lifted to (4,3) by Engineer
+Diver is helicopter lifted to (5,3) by Engineer
+Diver is helicopter lifted to (6,3) by Engineer
+Diver is helicopter lifted to (1,4) by Engineer
+Diver is helicopter lifted to (2,4) by Engineer
+Diver is helicopter lifted to (3,4) by Engineer
+Diver is helicopter lifted to (4,4) by Engineer
+Diver is helicopter lifted to (5,4) by Engineer
+Diver is helicopter lifted to (6,4) by Engineer
+Diver is helicopter lifted to (2,5) by Engineer
+Diver is helicopter lifted to (3,5) by Engineer
+Diver is helicopter lifted to (4,5) by Engineer
+Diver is helicopter lifted to (5,5) by Engineer
+Diver is helicopter lifted to (3,6) by Engineer
+Diver is helicopter lifted to (4,6) by Engineer
+Engineer is helicopter lifted to (3,1) by Engineer
+Engineer is helicopter lifted to (4,1) by Engineer
+Engineer is helicopter lifted to (2,2) by Engineer
+Engineer is helicopter lifted to (3,2) by Engineer
+Engineer is helicopter lifted to (4,2) by Engineer
+Engineer is helicopter lifted to (5,2) by Engineer
+Engineer is helicopter lifted to (1,3) by Engineer
+Engineer is helicopter lifted to (2,3) by Engineer
+Engineer is helicopter lifted to (3,3) by Engineer
+Engineer is helicopter lifted to (4,3) by Engineer
+Engineer is helicopter lifted to (5,3) by Engineer
+Engineer is helicopter lifted to (6,3) by Engineer
+Engineer is helicopter lifted to (1,4) by Engineer
+Engineer is helicopter lifted to (2,4) by Engineer
+Engineer is helicopter lifted to (3,4) by Engineer
+Engineer is helicopter lifted to (4,4) by Engineer
+Engineer is helicopter lifted to (5,4) by Engineer
+Engineer is helicopter lifted to (6,4) by Engineer
+Engineer is helicopter lifted to (2,5) by Engineer
+Engineer is helicopter lifted to (3,5) by Engineer
+Engineer is helicopter lifted to (4,5) by Engineer
+Engineer is helicopter lifted to (5,5) by Engineer
+Engineer is helicopter lifted to (3,6) by Engineer
+Engineer is helicopter lifted to (4,6) by Engineer
+Explorer is helicopter lifted to (3,1) by Engineer
+Explorer is helicopter lifted to (4,1) by Engineer
+Explorer is helicopter lifted to (2,2) by Engineer
+Explorer is helicopter lifted to (3,2) by Engineer
+Explorer is helicopter lifted to (4,2) by Engineer
+Explorer is helicopter lifted to (5,2) by Engineer
+Explorer is helicopter lifted to (1,3) by Engineer
+Explorer is helicopter lifted to (2,3) by Engineer
+Explorer is helicopter lifted to (3,3) by Engineer
+Explorer is helicopter lifted to (4,3) by Engineer
+Explorer is helicopter lifted to (5,3) by Engineer
+Explorer is helicopter lifted to (6,3) by Engineer
+Explorer is helicopter lifted to (1,4) by Engineer
+Explorer is helicopter lifted to (2,4) by Engineer
+Explorer is helicopter lifted to (3,4) by Engineer
+Explorer is helicopter lifted to (4,4) by Engineer
+Explorer is helicopter lifted to (5,4) by Engineer
+Explorer is helicopter lifted to (6,4) by Engineer
+Explorer is helicopter lifted to (2,5) by Engineer
+Explorer is helicopter lifted to (3,5) by Engineer
+Explorer is helicopter lifted to (4,5) by Engineer
+Explorer is helicopter lifted to (5,5) by Engineer
+Explorer is helicopter lifted to (3,6) by Engineer
+Explorer is helicopter lifted to (4,6) by Engineer
+Messenger is helicopter lifted to (3,1) by Engineer
+Messenger is helicopter lifted to (4,1) by Engineer
+Messenger is helicopter lifted to (2,2) by Engineer
+Messenger is helicopter lifted to (3,2) by Engineer
+Messenger is helicopter lifted to (4,2) by Engineer
+Messenger is helicopter lifted to (5,2) by Engineer
+Messenger is helicopter lifted to (1,3) by Engineer
+Messenger is helicopter lifted to (2,3) by Engineer
+Messenger is helicopter lifted to (3,3) by Engineer
+Messenger is helicopter lifted to (4,3) by Engineer
+Messenger is helicopter lifted to (5,3) by Engineer
+Messenger is helicopter lifted to (6,3) by Engineer
+Messenger is helicopter lifted to (1,4) by Engineer
+Messenger is helicopter lifted to (2,4) by Engineer
+Messenger is helicopter lifted to (3,4) by Engineer
+Messenger is helicopter lifted to (4,4) by Engineer
+Messenger is helicopter lifted to (5,4) by Engineer
+Messenger is helicopter lifted to (6,4) by Engineer
+Messenger is helicopter lifted to (2,5) by Engineer
+Messenger is helicopter lifted to (3,5) by Engineer
+Messenger is helicopter lifted to (4,5) by Engineer
+Messenger is helicopter lifted to (5,5) by Engineer
+Messenger is helicopter lifted to (3,6) by Engineer
+Messenger is helicopter lifted to (4,6) by Engineer
+Navigator is helicopter lifted to (3,1) by Engineer
+Navigator is helicopter lifted to (4,1) by Engineer
+Navigator is helicopter lifted to (2,2) by Engineer
+Navigator is helicopter lifted to (3,2) by Engineer
+Navigator is helicopter lifted to (4,2) by Engineer
+Navigator is helicopter lifted to (5,2) by Engineer
+Navigator is helicopter lifted to (1,3) by Engineer
+Navigator is helicopter lifted to (2,3) by Engineer
+Navigator is helicopter lifted to (3,3) by Engineer
+Navigator is helicopter lifted to (4,3) by Engineer
+Navigator is helicopter lifted to (5,3) by Engineer
+Navigator is helicopter lifted to (6,3) by Engineer
+Navigator is helicopter lifted to (1,4) by Engineer
+Navigator is helicopter lifted to (2,4) by Engineer
+Navigator is helicopter lifted to (3,4) by Engineer
+Navigator is helicopter lifted to (4,4) by Engineer
+Navigator is helicopter lifted to (5,4) by Engineer
+Navigator is helicopter lifted to (6,4) by Engineer
+Navigator is helicopter lifted to (2,5) by Engineer
+Navigator is helicopter lifted to (3,5) by Engineer
+Navigator is helicopter lifted to (4,5) by Engineer
+Navigator is helicopter lifted to (5,5) by Engineer
+Navigator is helicopter lifted to (3,6) by Engineer
+Navigator is helicopter lifted to (4,6) by Engineer
+Pilot is helicopter lifted to (3,1) by Engineer
+Pilot is helicopter lifted to (4,1) by Engineer
+Pilot is helicopter lifted to (2,2) by Engineer
+Pilot is helicopter lifted to (3,2) by Engineer
+Pilot is helicopter lifted to (4,2) by Engineer
+Pilot is helicopter lifted to (5,2) by Engineer
+Pilot is helicopter lifted to (1,3) by Engineer
+Pilot is helicopter lifted to (2,3) by Engineer
+Pilot is helicopter lifted to (3,3) by Engineer
+Pilot is helicopter lifted to (4,3) by Engineer
+Pilot is helicopter lifted to (5,3) by Engineer
+Pilot is helicopter lifted to (6,3) by Engineer
+Pilot is helicopter lifted to (1,4) by Engineer
+Pilot is helicopter lifted to (2,4) by Engineer
+Pilot is helicopter lifted to (3,4) by Engineer
+Pilot is helicopter lifted to (4,4) by Engineer
+Pilot is helicopter lifted to (5,4) by Engineer
+Pilot is helicopter lifted to (6,4) by Engineer
+Pilot is helicopter lifted to (2,5) by Engineer
+Pilot is helicopter lifted to (3,5) by Engineer
+Pilot is helicopter lifted to (4,5) by Engineer
+Pilot is helicopter lifted to (5,5) by Engineer
+Pilot is helicopter lifted to (3,6) by Engineer
+Pilot is helicopter lifted to (4,6) by Engineer
+Diver is helicopter lifted to (3,1) by Explorer
+Diver is helicopter lifted to (4,1) by Explorer
+Diver is helicopter lifted to (2,2) by Explorer
+Diver is helicopter lifted to (3,2) by Explorer
+Diver is helicopter lifted to (4,2) by Explorer
+Diver is helicopter lifted to (5,2) by Explorer
+Diver is helicopter lifted to (1,3) by Explorer
+Diver is helicopter lifted to (2,3) by Explorer
+Diver is helicopter lifted to (3,3) by Explorer
+Diver is helicopter lifted to (4,3) by Explorer
+Diver is helicopter lifted to (5,3) by Explorer
+Diver is helicopter lifted to (6,3) by Explorer
+Diver is helicopter lifted to (1,4) by Explorer
+Diver is helicopter lifted to (2,4) by Explorer
+Diver is helicopter lifted to (3,4) by Explorer
+Diver is helicopter lifted to (4,4) by Explorer
+Diver is helicopter lifted to (5,4) by Explorer
+Diver is helicopter lifted to (6,4) by Explorer
+Diver is helicopter lifted to (2,5) by Explorer
+Diver is helicopter lifted to (3,5) by Explorer
+Diver is helicopter lifted to (4,5) by Explorer
+Diver is helicopter lifted to (5,5) by Explorer
+Diver is helicopter lifted to (3,6) by Explorer
+Diver is helicopter lifted to (4,6) by Explorer
+Engineer is helicopter lifted to (3,1) by Explorer
+Engineer is helicopter lifted to (4,1) by Explorer
+Engineer is helicopter lifted to (2,2) by Explorer
+Engineer is helicopter lifted to (3,2) by Explorer
+Engineer is helicopter lifted to (4,2) by Explorer
+Engineer is helicopter lifted to (5,2) by Explorer
+Engineer is helicopter lifted to (1,3) by Explorer
+Engineer is helicopter lifted to (2,3) by Explorer
+Engineer is helicopter lifted to (3,3) by Explorer
+Engineer is helicopter lifted to (4,3) by Explorer
+Engineer is helicopter lifted to (5,3) by Explorer
+Engineer is helicopter lifted to (6,3) by Explorer
+Engineer is helicopter lifted to (1,4) by Explorer
+Engineer is helicopter lifted to (2,4) by Explorer
+Engineer is helicopter lifted to (3,4) by Explorer
+Engineer is helicopter lifted to (4,4) by Explorer
+Engineer is helicopter lifted to (5,4) by Explorer
+Engineer is helicopter lifted to (6,4) by Explorer
+Engineer is helicopter lifted to (2,5) by Explorer
+Engineer is helicopter lifted to (3,5) by Explorer
+Engineer is helicopter lifted to (4,5) by Explorer
+Engineer is helicopter lifted to (5,5) by Explorer
+Engineer is helicopter lifted to (3,6) by Explorer
+Engineer is helicopter lifted to (4,6) by Explorer
+Explorer is helicopter lifted to (3,1) by Explorer
+Explorer is helicopter lifted to (4,1) by Explorer
+Explorer is helicopter lifted to (2,2) by Explorer
+Explorer is helicopter lifted to (3,2) by Explorer
+Explorer is helicopter lifted to (4,2) by Explorer
+Explorer is helicopter lifted to (5,2) by Explorer
+Explorer is helicopter lifted to (1,3) by Explorer
+Explorer is helicopter lifted to (2,3) by Explorer
+Explorer is helicopter lifted to (3,3) by Explorer
+Explorer is helicopter lifted to (4,3) by Explorer
+Explorer is helicopter lifted to (5,3) by Explorer
+Explorer is helicopter lifted to (6,3) by Explorer
+Explorer is helicopter lifted to (1,4) by Explorer
+Explorer is helicopter lifted to (2,4) by Explorer
+Explorer is helicopter lifted to (3,4) by Explorer
+Explorer is helicopter lifted to (4,4) by Explorer
+Explorer is helicopter lifted to (5,4) by Explorer
+Explorer is helicopter lifted to (6,4) by Explorer
+Explorer is helicopter lifted to (2,5) by Explorer
+Explorer is helicopter lifted to (3,5) by Explorer
+Explorer is helicopter lifted to (4,5) by Explorer
+Explorer is helicopter lifted to (5,5) by Explorer
+Explorer is helicopter lifted to (3,6) by Explorer
+Explorer is helicopter lifted to (4,6) by Explorer
+Messenger is helicopter lifted to (3,1) by Explorer
+Messenger is helicopter lifted to (4,1) by Explorer
+Messenger is helicopter lifted to (2,2) by Explorer
+Messenger is helicopter lifted to (3,2) by Explorer
+Messenger is helicopter lifted to (4,2) by Explorer
+Messenger is helicopter lifted to (5,2) by Explorer
+Messenger is helicopter lifted to (1,3) by Explorer
+Messenger is helicopter lifted to (2,3) by Explorer
+Messenger is helicopter lifted to (3,3) by Explorer
+Messenger is helicopter lifted to (4,3) by Explorer
+Messenger is helicopter lifted to (5,3) by Explorer
+Messenger is helicopter lifted to (6,3) by Explorer
+Messenger is helicopter lifted to (1,4) by Explorer
+Messenger is helicopter lifted to (2,4) by Explorer
+Messenger is helicopter lifted to (3,4) by Explorer
+Messenger is helicopter lifted to (4,4) by Explorer
+Messenger is helicopter lifted to (5,4) by Explorer
+Messenger is helicopter lifted to (6,4) by Explorer
+Messenger is helicopter lifted to (2,5) by Explorer
+Messenger is helicopter lifted to (3,5) by Explorer
+Messenger is helicopter lifted to (4,5) by Explorer
+Messenger is helicopter lifted to (5,5) by Explorer
+Messenger is helicopter lifted to (3,6) by Explorer
+Messenger is helicopter lifted to (4,6) by Explorer
+Navigator is helicopter lifted to (3,1) by Explorer
+Navigator is helicopter lifted to (4,1) by Explorer
+Navigator is helicopter lifted to (2,2) by Explorer
+Navigator is helicopter lifted to (3,2) by Explorer
+Navigator is helicopter lifted to (4,2) by Explorer
+Navigator is helicopter lifted to (5,2) by Explorer
+Navigator is helicopter lifted to (1,3) by Explorer
+Navigator is helicopter lifted to (2,3) by Explorer
+Navigator is helicopter lifted to (3,3) by Explorer
+Navigator is helicopter lifted to (4,3) by Explorer
+Navigator is helicopter lifted to (5,3) by Explorer
+Navigator is helicopter lifted to (6,3) by Explorer
+Navigator is helicopter lifted to (1,4) by Explorer
+Navigator is helicopter lifted to (2,4) by Explorer
+Navigator is helicopter lifted to (3,4) by Explorer
+Navigator is helicopter lifted to (4,4) by Explorer
+Navigator is helicopter lifted to (5,4) by Explorer
+Navigator is helicopter lifted to (6,4) by Explorer
+Navigator is helicopter lifted to (2,5) by Explorer
+Navigator is helicopter lifted to (3,5) by Explorer
+Navigator is helicopter lifted to (4,5) by Explorer
+Navigator is helicopter lifted to (5,5) by Explorer
+Navigator is helicopter lifted to (3,6) by Explorer
+Navigator is helicopter lifted to (4,6) by Explorer
+Pilot is helicopter lifted to (3,1) by Explorer
+Pilot is helicopter lifted to (4,1) by Explorer
+Pilot is helicopter lifted to (2,2) by Explorer
+Pilot is helicopter lifted to (3,2) by Explorer
+Pilot is helicopter lifted to (4,2) by Explorer
+Pilot is helicopter lifted to (5,2) by Explorer
+Pilot is helicopter lifted to (1,3) by Explorer
+Pilot is helicopter lifted to (2,3) by Explorer
+Pilot is helicopter lifted to (3,3) by Explorer
+Pilot is helicopter lifted to (4,3) by Explorer
+Pilot is helicopter lifted to (5,3) by Explorer
+Pilot is helicopter lifted to (6,3) by Explorer
+Pilot is helicopter lifted to (1,4) by Explorer
+Pilot is helicopter lifted to (2,4) by Explorer
+Pilot is helicopter lifted to (3,4) by Explorer
+Pilot is helicopter lifted to (4,4) by Explorer
+Pilot is helicopter lifted to (5,4) by Explorer
+Pilot is helicopter lifted to (6,4) by Explorer
+Pilot is helicopter lifted to (2,5) by Explorer
+Pilot is helicopter lifted to (3,5) by Explorer
+Pilot is helicopter lifted to (4,5) by Explorer
+Pilot is helicopter lifted to (5,5) by Explorer
+Pilot is helicopter lifted to (3,6) by Explorer
+Pilot is helicopter lifted to (4,6) by Explorer
+Diver is helicopter lifted to (3,1) by Messenger
+Diver is helicopter lifted to (4,1) by Messenger
+Diver is helicopter lifted to (2,2) by Messenger
+Diver is helicopter lifted to (3,2) by Messenger
+Diver is helicopter lifted to (4,2) by Messenger
+Diver is helicopter lifted to (5,2) by Messenger
+Diver is helicopter lifted to (1,3) by Messenger
+Diver is helicopter lifted to (2,3) by Messenger
+Diver is helicopter lifted to (3,3) by Messenger
+Diver is helicopter lifted to (4,3) by Messenger
+Diver is helicopter lifted to (5,3) by Messenger
+Diver is helicopter lifted to (6,3) by Messenger
+Diver is helicopter lifted to (1,4) by Messenger
+Diver is helicopter lifted to (2,4) by Messenger
+Diver is helicopter lifted to (3,4) by Messenger
+Diver is helicopter lifted to (4,4) by Messenger
+Diver is helicopter lifted to (5,4) by Messenger
+Diver is helicopter lifted to (6,4) by Messenger
+Diver is helicopter lifted to (2,5) by Messenger
+Diver is helicopter lifted to (3,5) by Messenger
+Diver is helicopter lifted to (4,5) by Messenger
+Diver is helicopter lifted to (5,5) by Messenger
+Diver is helicopter lifted to (3,6) by Messenger
+Diver is helicopter lifted to (4,6) by Messenger
+Engineer is helicopter lifted to (3,1) by Messenger
+Engineer is helicopter lifted to (4,1) by Messenger
+Engineer is helicopter lifted to (2,2) by Messenger
+Engineer is helicopter lifted to (3,2) by Messenger
+Engineer is helicopter lifted to (4,2) by Messenger
+Engineer is helicopter lifted to (5,2) by Messenger
+Engineer is helicopter lifted to (1,3) by Messenger
+Engineer is helicopter lifted to (2,3) by Messenger
+Engineer is helicopter lifted to (3,3) by Messenger
+Engineer is helicopter lifted to (4,3) by Messenger
+Engineer is helicopter lifted to (5,3) by Messenger
+Engineer is helicopter lifted to (6,3) by Messenger
+Engineer is helicopter lifted to (1,4) by Messenger
+Engineer is helicopter lifted to (2,4) by Messenger
+Engineer is helicopter lifted to (3,4) by Messenger
+Engineer is helicopter lifted to (4,4) by Messenger
+Engineer is helicopter lifted to (5,4) by Messenger
+Engineer is helicopter lifted to (6,4) by Messenger
+Engineer is helicopter lifted to (2,5) by Messenger
+Engineer is helicopter lifted to (3,5) by Messenger
+Engineer is helicopter lifted to (4,5) by Messenger
+Engineer is helicopter lifted to (5,5) by Messenger
+Engineer is helicopter lifted to (3,6) by Messenger
+Engineer is helicopter lifted to (4,6) by Messenger
+Explorer is helicopter lifted to (3,1) by Messenger
+Explorer is helicopter lifted to (4,1) by Messenger
+Explorer is helicopter lifted to (2,2) by Messenger
+Explorer is helicopter lifted to (3,2) by Messenger
+Explorer is helicopter lifted to (4,2) by Messenger
+Explorer is helicopter lifted to (5,2) by Messenger
+Explorer is helicopter lifted to (1,3) by Messenger
+Explorer is helicopter lifted to (2,3) by Messenger
+Explorer is helicopter lifted to (3,3) by Messenger
+Explorer is helicopter lifted to (4,3) by Messenger
+Explorer is helicopter lifted to (5,3) by Messenger
+Explorer is helicopter lifted to (6,3) by Messenger
+Explorer is helicopter lifted to (1,4) by Messenger
+Explorer is helicopter lifted to (2,4) by Messenger
+Explorer is helicopter lifted to (3,4) by Messenger
+Explorer is helicopter lifted to (4,4) by Messenger
+Explorer is helicopter lifted to (5,4) by Messenger
+Explorer is helicopter lifted to (6,4) by Messenger
+Explorer is helicopter lifted to (2,5) by Messenger
+Explorer is helicopter lifted to (3,5) by Messenger
+Explorer is helicopter lifted to (4,5) by Messenger
+Explorer is helicopter lifted to (5,5) by Messenger
+Explorer is helicopter lifted to (3,6) by Messenger
+Explorer is helicopter lifted to (4,6) by Messenger
+Messenger is helicopter lifted to (3,1) by Messenger
+Messenger is helicopter lifted to (4,1) by Messenger
+Messenger is helicopter lifted to (2,2) by Messenger
+Messenger is helicopter lifted to (3,2) by Messenger
+Messenger is helicopter lifted to (4,2) by Messenger
+Messenger is helicopter lifted to (5,2) by Messenger
+Messenger is helicopter lifted to (1,3) by Messenger
+Messenger is helicopter lifted to (2,3) by Messenger
+Messenger is helicopter lifted to (3,3) by Messenger
+Messenger is helicopter lifted to (4,3) by Messenger
+Messenger is helicopter lifted to (5,3) by Messenger
+Messenger is helicopter lifted to (6,3) by Messenger
+Messenger is helicopter lifted to (1,4) by Messenger
+Messenger is helicopter lifted to (2,4) by Messenger
+Messenger is helicopter lifted to (3,4) by Messenger
+Messenger is helicopter lifted to (4,4) by Messenger
+Messenger is helicopter lifted to (5,4) by Messenger
+Messenger is helicopter lifted to (6,4) by Messenger
+Messenger is helicopter lifted to (2,5) by Messenger
+Messenger is helicopter lifted to (3,5) by Messenger
+Messenger is helicopter lifted to (4,5) by Messenger
+Messenger is helicopter lifted to (5,5) by Messenger
+Messenger is helicopter lifted to (3,6) by Messenger
+Messenger is helicopter lifted to (4,6) by Messenger
+Navigator is helicopter lifted to (3,1) by Messenger
+Navigator is helicopter lifted to (4,1) by Messenger
+Navigator is helicopter lifted to (2,2) by Messenger
+Navigator is helicopter lifted to (3,2) by Messenger
+Navigator is helicopter lifted to (4,2) by Messenger
+Navigator is helicopter lifted to (5,2) by Messenger
+Navigator is helicopter lifted to (1,3) by Messenger
+Navigator is helicopter lifted to (2,3) by Messenger
+Navigator is helicopter lifted to (3,3) by Messenger
+Navigator is helicopter lifted to (4,3) by Messenger
+Navigator is helicopter lifted to (5,3) by Messenger
+Navigator is helicopter lifted to (6,3) by Messenger
+Navigator is helicopter lifted to (1,4) by Messenger
+Navigator is helicopter lifted to (2,4) by Messenger
+Navigator is helicopter lifted to (3,4) by Messenger
+Navigator is helicopter lifted to (4,4) by Messenger
+Navigator is helicopter lifted to (5,4) by Messenger
+Navigator is helicopter lifted to (6,4) by Messenger
+Navigator is helicopter lifted to (2,5) by Messenger
+Navigator is helicopter lifted to (3,5) by Messenger
+Navigator is helicopter lifted to (4,5) by Messenger
+Navigator is helicopter lifted to (5,5) by Messenger
+Navigator is helicopter lifted to (3,6) by Messenger
+Navigator is helicopter lifted to (4,6) by Messenger
+Pilot is helicopter lifted to (3,1) by Messenger
+Pilot is helicopter lifted to (4,1) by Messenger
+Pilot is helicopter lifted to (2,2) by Messenger
+Pilot is helicopter lifted to (3,2) by Messenger
+Pilot is helicopter lifted to (4,2) by Messenger
+Pilot is helicopter lifted to (5,2) by Messenger
+Pilot is helicopter lifted to (1,3) by Messenger
+Pilot is helicopter lifted to (2,3) by Messenger
+Pilot is helicopter lifted to (3,3) by Messenger
+Pilot is helicopter lifted to (4,3) by Messenger
+Pilot is helicopter lifted to (5,3) by Messenger
+Pilot is helicopter lifted to (6,3) by Messenger
+Pilot is helicopter lifted to (1,4) by Messenger
+Pilot is helicopter lifted to (2,4) by Messenger
+Pilot is helicopter lifted to (3,4) by Messenger
+Pilot is helicopter lifted to (4,4) by Messenger
+Pilot is helicopter lifted to (5,4) by Messenger
+Pilot is helicopter lifted to (6,4) by Messenger
+Pilot is helicopter lifted to (2,5) by Messenger
+Pilot is helicopter lifted to (3,5) by Messenger
+Pilot is helicopter lifted to (4,5) by Messenger
+Pilot is helicopter lifted to (5,5) by Messenger
+Pilot is helicopter lifted to (3,6) by Messenger
+Pilot is helicopter lifted to (4,6) by Messenger
+Diver is helicopter lifted to (3,1) by Navigator
+Diver is helicopter lifted to (4,1) by Navigator
+Diver is helicopter lifted to (2,2) by Navigator
+Diver is helicopter lifted to (3,2) by Navigator
+Diver is helicopter lifted to (4,2) by Navigator
+Diver is helicopter lifted to (5,2) by Navigator
+Diver is helicopter lifted to (1,3) by Navigator
+Diver is helicopter lifted to (2,3) by Navigator
+Diver is helicopter lifted to (3,3) by Navigator
+Diver is helicopter lifted to (4,3) by Navigator
+Diver is helicopter lifted to (5,3) by Navigator
+Diver is helicopter lifted to (6,3) by Navigator
+Diver is helicopter lifted to (1,4) by Navigator
+Diver is helicopter lifted to (2,4) by Navigator
+Diver is helicopter lifted to (3,4) by Navigator
+Diver is helicopter lifted to (4,4) by Navigator
+Diver is helicopter lifted to (5,4) by Navigator
+Diver is helicopter lifted to (6,4) by Navigator
+Diver is helicopter lifted to (2,5) by Navigator
+Diver is helicopter lifted to (3,5) by Navigator
+Diver is helicopter lifted to (4,5) by Navigator
+Diver is helicopter lifted to (5,5) by Navigator
+Diver is helicopter lifted to (3,6) by Navigator
+Diver is helicopter lifted to (4,6) by Navigator
+Engineer is helicopter lifted to (3,1) by Navigator
+Engineer is helicopter lifted to (4,1) by Navigator
+Engineer is helicopter lifted to (2,2) by Navigator
+Engineer is helicopter lifted to (3,2) by Navigator
+Engineer is helicopter lifted to (4,2) by Navigator
+Engineer is helicopter lifted to (5,2) by Navigator
+Engineer is helicopter lifted to (1,3) by Navigator
+Engineer is helicopter lifted to (2,3) by Navigator
+Engineer is helicopter lifted to (3,3) by Navigator
+Engineer is helicopter lifted to (4,3) by Navigator
+Engineer is helicopter lifted to (5,3) by Navigator
+Engineer is helicopter lifted to (6,3) by Navigator
+Engineer is helicopter lifted to (1,4) by Navigator
+Engineer is helicopter lifted to (2,4) by Navigator
+Engineer is helicopter lifted to (3,4) by Navigator
+Engineer is helicopter lifted to (4,4) by Navigator
+Engineer is helicopter lifted to (5,4) by Navigator
+Engineer is helicopter lifted to (6,4) by Navigator
+Engineer is helicopter lifted to (2,5) by Navigator
+Engineer is helicopter lifted to (3,5) by Navigator
+Engineer is helicopter lifted to (4,5) by Navigator
+Engineer is helicopter lifted to (5,5) by Navigator
+Engineer is helicopter lifted to (3,6) by Navigator
+Engineer is helicopter lifted to (4,6) by Navigator
+Explorer is helicopter lifted to (3,1) by Navigator
+Explorer is helicopter lifted to (4,1) by Navigator
+Explorer is helicopter lifted to (2,2) by Navigator
+Explorer is helicopter lifted to (3,2) by Navigator
+Explorer is helicopter lifted to (4,2) by Navigator
+Explorer is helicopter lifted to (5,2) by Navigator
+Explorer is helicopter lifted to (1,3) by Navigator
+Explorer is helicopter lifted to (2,3) by Navigator
+Explorer is helicopter lifted to (3,3) by Navigator
+Explorer is helicopter lifted to (4,3) by Navigator
+Explorer is helicopter lifted to (5,3) by Navigator
+Explorer is helicopter lifted to (6,3) by Navigator
+Explorer is helicopter lifted to (1,4) by Navigator
+Explorer is helicopter lifted to (2,4) by Navigator
+Explorer is helicopter lifted to (3,4) by Navigator
+Explorer is helicopter lifted to (4,4) by Navigator
+Explorer is helicopter lifted to (5,4) by Navigator
+Explorer is helicopter lifted to (6,4) by Navigator
+Explorer is helicopter lifted to (2,5) by Navigator
+Explorer is helicopter lifted to (3,5) by Navigator
+Explorer is helicopter lifted to (4,5) by Navigator
+Explorer is helicopter lifted to (5,5) by Navigator
+Explorer is helicopter lifted to (3,6) by Navigator
+Explorer is helicopter lifted to (4,6) by Navigator
+Messenger is helicopter lifted to (3,1) by Navigator
+Messenger is helicopter lifted to (4,1) by Navigator
+Messenger is helicopter lifted to (2,2) by Navigator
+Messenger is helicopter lifted to (3,2) by Navigator
+Messenger is helicopter lifted to (4,2) by Navigator
+Messenger is helicopter lifted to (5,2) by Navigator
+Messenger is helicopter lifted to (1,3) by Navigator
+Messenger is helicopter lifted to (2,3) by Navigator
+Messenger is helicopter lifted to (3,3) by Navigator
+Messenger is helicopter lifted to (4,3) by Navigator
+Messenger is helicopter lifted to (5,3) by Navigator
+Messenger is helicopter lifted to (6,3) by Navigator
+Messenger is helicopter lifted to (1,4) by Navigator
+Messenger is helicopter lifted to (2,4) by Navigator
+Messenger is helicopter lifted to (3,4) by Navigator
+Messenger is helicopter lifted to (4,4) by Navigator
+Messenger is helicopter lifted to (5,4) by Navigator
+Messenger is helicopter lifted to (6,4) by Navigator
+Messenger is helicopter lifted to (2,5) by Navigator
+Messenger is helicopter lifted to (3,5) by Navigator
+Messenger is helicopter lifted to (4,5) by Navigator
+Messenger is helicopter lifted to (5,5) by Navigator
+Messenger is helicopter lifted to (3,6) by Navigator
+Messenger is helicopter lifted to (4,6) by Navigator
+Navigator is helicopter lifted to (3,1) by Navigator
+Navigator is helicopter lifted to (4,1) by Navigator
+Navigator is helicopter lifted to (2,2) by Navigator
+Navigator is helicopter lifted to (3,2) by Navigator
+Navigator is helicopter lifted to (4,2) by Navigator
+Navigator is helicopter lifted to (5,2) by Navigator
+Navigator is helicopter lifted to (1,3) by Navigator
+Navigator is helicopter lifted to (2,3) by Navigator
+Navigator is helicopter lifted to (3,3) by Navigator
+Navigator is helicopter lifted to (4,3) by Navigator
+Navigator is helicopter lifted to (5,3) by Navigator
+Navigator is helicopter lifted to (6,3) by Navigator
+Navigator is helicopter lifted to (1,4) by Navigator
+Navigator is helicopter lifted to (2,4) by Navigator
+Navigator is helicopter lifted to (3,4) by Navigator
+Navigator is helicopter lifted to (4,4) by Navigator
+Navigator is helicopter lifted to (5,4) by Navigator
+Navigator is helicopter lifted to (6,4) by Navigator
+Navigator is helicopter lifted to (2,5) by Navigator
+Navigator is helicopter lifted to (3,5) by Navigator
+Navigator is helicopter lifted to (4,5) by Navigator
+Navigator is helicopter lifted to (5,5) by Navigator
+Navigator is helicopter lifted to (3,6) by Navigator
+Navigator is helicopter lifted to (4,6) by Navigator
+Pilot is helicopter lifted to (3,1) by Navigator
+Pilot is helicopter lifted to (4,1) by Navigator
+Pilot is helicopter lifted to (2,2) by Navigator
+Pilot is helicopter lifted to (3,2) by Navigator
+Pilot is helicopter lifted to (4,2) by Navigator
+Pilot is helicopter lifted to (5,2) by Navigator
+Pilot is helicopter lifted to (1,3) by Navigator
+Pilot is helicopter lifted to (2,3) by Navigator
+Pilot is helicopter lifted to (3,3) by Navigator
+Pilot is helicopter lifted to (4,3) by Navigator
+Pilot is helicopter lifted to (5,3) by Navigator
+Pilot is helicopter lifted to (6,3) by Navigator
+Pilot is helicopter lifted to (1,4) by Navigator
+Pilot is helicopter lifted to (2,4) by Navigator
+Pilot is helicopter lifted to (3,4) by Navigator
+Pilot is helicopter lifted to (4,4) by Navigator
+Pilot is helicopter lifted to (5,4) by Navigator
+Pilot is helicopter lifted to (6,4) by Navigator
+Pilot is helicopter lifted to (2,5) by Navigator
+Pilot is helicopter lifted to (3,5) by Navigator
+Pilot is helicopter lifted to (4,5) by Navigator
+Pilot is helicopter lifted to (5,5) by Navigator
+Pilot is helicopter lifted to (3,6) by Navigator
+Pilot is helicopter lifted to (4,6) by Navigator
+Diver is helicopter lifted to (3,1) by Pilot
+Diver is helicopter lifted to (4,1) by Pilot
+Diver is helicopter lifted to (2,2) by Pilot
+Diver is helicopter lifted to (3,2) by Pilot
+Diver is helicopter lifted to (4,2) by Pilot
+Diver is helicopter lifted to (5,2) by Pilot
+Diver is helicopter lifted to (1,3) by Pilot
+Diver is helicopter lifted to (2,3) by Pilot
+Diver is helicopter lifted to (3,3) by Pilot
+Diver is helicopter lifted to (4,3) by Pilot
+Diver is helicopter lifted to (5,3) by Pilot
+Diver is helicopter lifted to (6,3) by Pilot
+Diver is helicopter lifted to (1,4) by Pilot
+Diver is helicopter lifted to (2,4) by Pilot
+Diver is helicopter lifted to (3,4) by Pilot
+Diver is helicopter lifted to (4,4) by Pilot
+Diver is helicopter lifted to (5,4) by Pilot
+Diver is helicopter lifted to (6,4) by Pilot
+Diver is helicopter lifted to (2,5) by Pilot
+Diver is helicopter lifted to (3,5) by Pilot
+Diver is helicopter lifted to (4,5) by Pilot
+Diver is helicopter lifted to (5,5) by Pilot
+Diver is helicopter lifted to (3,6) by Pilot
+Diver is helicopter lifted to (4,6) by Pilot
+Engineer is helicopter lifted to (3,1) by Pilot
+Engineer is helicopter lifted to (4,1) by Pilot
+Engineer is helicopter lifted to (2,2) by Pilot
+Engineer is helicopter lifted to (3,2) by Pilot
+Engineer is helicopter lifted to (4,2) by Pilot
+Engineer is helicopter lifted to (5,2) by Pilot
+Engineer is helicopter lifted to (1,3) by Pilot
+Engineer is helicopter lifted to (2,3) by Pilot
+Engineer is helicopter lifted to (3,3) by Pilot
+Engineer is helicopter lifted to (4,3) by Pilot
+Engineer is helicopter lifted to (5,3) by Pilot
+Engineer is helicopter lifted to (6,3) by Pilot
+Engineer is helicopter lifted to (1,4) by Pilot
+Engineer is helicopter lifted to (2,4) by Pilot
+Engineer is helicopter lifted to (3,4) by Pilot
+Engineer is helicopter lifted to (4,4) by Pilot
+Engineer is helicopter lifted to (5,4) by Pilot
+Engineer is helicopter lifted to (6,4) by Pilot
+Engineer is helicopter lifted to (2,5) by Pilot
+Engineer is helicopter lifted to (3,5) by Pilot
+Engineer is helicopter lifted to (4,5) by Pilot
+Engineer is helicopter lifted to (5,5) by Pilot
+Engineer is helicopter lifted to (3,6) by Pilot
+Engineer is helicopter lifted to (4,6) by Pilot
+Explorer is helicopter lifted to (3,1) by Pilot
+Explorer is helicopter lifted to (4,1) by Pilot
+Explorer is helicopter lifted to (2,2) by Pilot
+Explorer is helicopter lifted to (3,2) by Pilot
+Explorer is helicopter lifted to (4,2) by Pilot
+Explorer is helicopter lifted to (5,2) by Pilot
+Explorer is helicopter lifted to (1,3) by Pilot
+Explorer is helicopter lifted to (2,3) by Pilot
+Explorer is helicopter lifted to (3,3) by Pilot
+Explorer is helicopter lifted to (4,3) by Pilot
+Explorer is helicopter lifted to (5,3) by Pilot
+Explorer is helicopter lifted to (6,3) by Pilot
+Explorer is helicopter lifted to (1,4) by Pilot
+Explorer is helicopter lifted to (2,4) by Pilot
+Explorer is helicopter lifted to (3,4) by Pilot
+Explorer is helicopter lifted to (4,4) by Pilot
+Explorer is helicopter lifted to (5,4) by Pilot
+Explorer is helicopter lifted to (6,4) by Pilot
+Explorer is helicopter lifted to (2,5) by Pilot
+Explorer is helicopter lifted to (3,5) by Pilot
+Explorer is helicopter lifted to (4,5) by Pilot
+Explorer is helicopter lifted to (5,5) by Pilot
+Explorer is helicopter lifted to (3,6) by Pilot
+Explorer is helicopter lifted to (4,6) by Pilot
+Messenger is helicopter lifted to (3,1) by Pilot
+Messenger is helicopter lifted to (4,1) by Pilot
+Messenger is helicopter lifted to (2,2) by Pilot
+Messenger is helicopter lifted to (3,2) by Pilot
+Messenger is helicopter lifted to (4,2) by Pilot
+Messenger is helicopter lifted to (5,2) by Pilot
+Messenger is helicopter lifted to (1,3) by Pilot
+Messenger is helicopter lifted to (2,3) by Pilot
+Messenger is helicopter lifted to (3,3) by Pilot
+Messenger is helicopter lifted to (4,3) by Pilot
+Messenger is helicopter lifted to (5,3) by Pilot
+Messenger is helicopter lifted to (6,3) by Pilot
+Messenger is helicopter lifted to (1,4) by Pilot
+Messenger is helicopter lifted to (2,4) by Pilot
+Messenger is helicopter lifted to (3,4) by Pilot
+Messenger is helicopter lifted to (4,4) by Pilot
+Messenger is helicopter lifted to (5,4) by Pilot
+Messenger is helicopter lifted to (6,4) by Pilot
+Messenger is helicopter lifted to (2,5) by Pilot
+Messenger is helicopter lifted to (3,5) by Pilot
+Messenger is helicopter lifted to (4,5) by Pilot
+Messenger is helicopter lifted to (5,5) by Pilot
+Messenger is helicopter lifted to (3,6) by Pilot
+Messenger is helicopter lifted to (4,6) by Pilot
+Navigator is helicopter lifted to (3,1) by Pilot
+Navigator is helicopter lifted to (4,1) by Pilot
+Navigator is helicopter lifted to (2,2) by Pilot
+Navigator is helicopter lifted to (3,2) by Pilot
+Navigator is helicopter lifted to (4,2) by Pilot
+Navigator is helicopter lifted to (5,2) by Pilot
+Navigator is helicopter lifted to (1,3) by Pilot
+Navigator is helicopter lifted to (2,3) by Pilot
+Navigator is helicopter lifted to (3,3) by Pilot
+Navigator is helicopter lifted to (4,3) by Pilot
+Navigator is helicopter lifted to (5,3) by Pilot
+Navigator is helicopter lifted to (6,3) by Pilot
+Navigator is helicopter lifted to (1,4) by Pilot
+Navigator is helicopter lifted to (2,4) by Pilot
+Navigator is helicopter lifted to (3,4) by Pilot
+Navigator is helicopter lifted to (4,4) by Pilot
+Navigator is helicopter lifted to (5,4) by Pilot
+Navigator is helicopter lifted to (6,4) by Pilot
+Navigator is helicopter lifted to (2,5) by Pilot
+Navigator is helicopter lifted to (3,5) by Pilot
+Navigator is helicopter lifted to (4,5) by Pilot
+Navigator is helicopter lifted to (5,5) by Pilot
+Navigator is helicopter lifted to (3,6) by Pilot
+Navigator is helicopter lifted to (4,6) by Pilot
+Pilot is helicopter lifted to (3,1) by Pilot
+Pilot is helicopter lifted to (4,1) by Pilot
+Pilot is helicopter lifted to (2,2) by Pilot
+Pilot is helicopter lifted to (3,2) by Pilot
+Pilot is helicopter lifted to (4,2) by Pilot
+Pilot is helicopter lifted to (5,2) by Pilot
+Pilot is helicopter lifted to (1,3) by Pilot
+Pilot is helicopter lifted to (2,3) by Pilot
+Pilot is helicopter lifted to (3,3) by Pilot
+Pilot is helicopter lifted to (4,3) by Pilot
+Pilot is helicopter lifted to (5,3) by Pilot
+Pilot is helicopter lifted to (6,3) by Pilot
+Pilot is helicopter lifted to (1,4) by Pilot
+Pilot is helicopter lifted to (2,4) by Pilot
+Pilot is helicopter lifted to (3,4) by Pilot
+Pilot is helicopter lifted to (4,4) by Pilot
+Pilot is helicopter lifted to (5,4) by Pilot
+Pilot is helicopter lifted to (6,4) by Pilot
+Pilot is helicopter lifted to (2,5) by Pilot
+Pilot is helicopter lifted to (3,5) by Pilot
+Pilot is helicopter lifted to (4,5) by Pilot
+Pilot is helicopter lifted to (5,5) by Pilot
+Pilot is helicopter lifted to (3,6) by Pilot
+Pilot is helicopter lifted to (4,6) by Pilot
+(3,1) is sand bagged by Diver
+(4,1) is sand bagged by Diver
+(2,2) is sand bagged by Diver
+(3,2) is sand bagged by Diver
+(4,2) is sand bagged by Diver
+(5,2) is sand bagged by Diver
+(1,3) is sand bagged by Diver
+(2,3) is sand bagged by Diver
+(3,3) is sand bagged by Diver
+(4,3) is sand bagged by Diver
+(5,3) is sand bagged by Diver
+(6,3) is sand bagged by Diver
+(1,4) is sand bagged by Diver
+(2,4) is sand bagged by Diver
+(3,4) is sand bagged by Diver
+(4,4) is sand bagged by Diver
+(5,4) is sand bagged by Diver
+(6,4) is sand bagged by Diver
+(2,5) is sand bagged by Diver
+(3,5) is sand bagged by Diver
+(4,5) is sand bagged by Diver
+(5,5) is sand bagged by Diver
+(3,6) is sand bagged by Diver
+(4,6) is sand bagged by Diver
+(3,1) is sand bagged by Engineer
+(4,1) is sand bagged by Engineer
+(2,2) is sand bagged by Engineer
+(3,2) is sand bagged by Engineer
+(4,2) is sand bagged by Engineer
+(5,2) is sand bagged by Engineer
+(1,3) is sand bagged by Engineer
+(2,3) is sand bagged by Engineer
+(3,3) is sand bagged by Engineer
+(4,3) is sand bagged by Engineer
+(5,3) is sand bagged by Engineer
+(6,3) is sand bagged by Engineer
+(1,4) is sand bagged by Engineer
+(2,4) is sand bagged by Engineer
+(3,4) is sand bagged by Engineer
+(4,4) is sand bagged by Engineer
+(5,4) is sand bagged by Engineer
+(6,4) is sand bagged by Engineer
+(2,5) is sand bagged by Engineer
+(3,5) is sand bagged by Engineer
+(4,5) is sand bagged by Engineer
+(5,5) is sand bagged by Engineer
+(3,6) is sand bagged by Engineer
+(4,6) is sand bagged by Engineer
+(3,1) is sand bagged by Explorer
+(4,1) is sand bagged by Explorer
+(2,2) is sand bagged by Explorer
+(3,2) is sand bagged by Explorer
+(4,2) is sand bagged by Explorer
+(5,2) is sand bagged by Explorer
+(1,3) is sand bagged by Explorer
+(2,3) is sand bagged by Explorer
+(3,3) is sand bagged by Explorer
+(4,3) is sand bagged by Explorer
+(5,3) is sand bagged by Explorer
+(6,3) is sand bagged by Explorer
+(1,4) is sand bagged by Explorer
+(2,4) is sand bagged by Explorer
+(3,4) is sand bagged by Explorer
+(4,4) is sand bagged by Explorer
+(5,4) is sand bagged by Explorer
+(6,4) is sand bagged by Explorer
+(2,5) is sand bagged by Explorer
+(3,5) is sand bagged by Explorer
+(4,5) is sand bagged by Explorer
+(5,5) is sand bagged by Explorer
+(3,6) is sand bagged by Explorer
+(4,6) is sand bagged by Explorer
+(3,1) is sand bagged by Messenger
+(4,1) is sand bagged by Messenger
+(2,2) is sand bagged by Messenger
+(3,2) is sand bagged by Messenger
+(4,2) is sand bagged by Messenger
+(5,2) is sand bagged by Messenger
+(1,3) is sand bagged by Messenger
+(2,3) is sand bagged by Messenger
+(3,3) is sand bagged by Messenger
+(4,3) is sand bagged by Messenger
+(5,3) is sand bagged by Messenger
+(6,3) is sand bagged by Messenger
+(1,4) is sand bagged by Messenger
+(2,4) is sand bagged by Messenger
+(3,4) is sand bagged by Messenger
+(4,4) is sand bagged by Messenger
+(5,4) is sand bagged by Messenger
+(6,4) is sand bagged by Messenger
+(2,5) is sand bagged by Messenger
+(3,5) is sand bagged by Messenger
+(4,5) is sand bagged by Messenger
+(5,5) is sand bagged by Messenger
+(3,6) is sand bagged by Messenger
+(4,6) is sand bagged by Messenger
+(3,1) is sand bagged by Navigator
+(4,1) is sand bagged by Navigator
+(2,2) is sand bagged by Navigator
+(3,2) is sand bagged by Navigator
+(4,2) is sand bagged by Navigator
+(5,2) is sand bagged by Navigator
+(1,3) is sand bagged by Navigator
+(2,3) is sand bagged by Navigator
+(3,3) is sand bagged by Navigator
+(4,3) is sand bagged by Navigator
+(5,3) is sand bagged by Navigator
+(6,3) is sand bagged by Navigator
+(1,4) is sand bagged by Navigator
+(2,4) is sand bagged by Navigator
+(3,4) is sand bagged by Navigator
+(4,4) is sand bagged by Navigator
+(5,4) is sand bagged by Navigator
+(6,4) is sand bagged by Navigator
+(2,5) is sand bagged by Navigator
+(3,5) is sand bagged by Navigator
+(4,5) is sand bagged by Navigator
+(5,5) is sand bagged by Navigator
+(3,6) is sand bagged by Navigator
+(4,6) is sand bagged by Navigator
+(3,1) is sand bagged by Pilot
+(4,1) is sand bagged by Pilot
+(2,2) is sand bagged by Pilot
+(3,2) is sand bagged by Pilot
+(4,2) is sand bagged by Pilot
+(5,2) is sand bagged by Pilot
+(1,3) is sand bagged by Pilot
+(2,3) is sand bagged by Pilot
+(3,3) is sand bagged by Pilot
+(4,3) is sand bagged by Pilot
+(5,3) is sand bagged by Pilot
+(6,3) is sand bagged by Pilot
+(1,4) is sand bagged by Pilot
+(2,4) is sand bagged by Pilot
+(3,4) is sand bagged by Pilot
+(4,4) is sand bagged by Pilot
+(5,4) is sand bagged by Pilot
+(6,4) is sand bagged by Pilot
+(2,5) is sand bagged by Pilot
+(3,5) is sand bagged by Pilot
+(4,5) is sand bagged by Pilot
+(5,5) is sand bagged by Pilot
+(3,6) is sand bagged by Pilot
+(4,6) is sand bagged by Pilot
+Diver swims to safety at (3,1)
+Diver swims to safety at (4,1)
+Diver swims to safety at (2,2)
+Diver swims to safety at (3,2)
+Diver swims to safety at (4,2)
+Diver swims to safety at (5,2)
+Diver swims to safety at (1,3)
+Diver swims to safety at (2,3)
+Diver swims to safety at (3,3)
+Diver swims to safety at (4,3)
+Diver swims to safety at (5,3)
+Diver swims to safety at (6,3)
+Diver swims to safety at (1,4)
+Diver swims to safety at (2,4)
+Diver swims to safety at (3,4)
+Diver swims to safety at (4,4)
+Diver swims to safety at (5,4)
+Diver swims to safety at (6,4)
+Diver swims to safety at (2,5)
+Diver swims to safety at (3,5)
+Diver swims to safety at (4,5)
+Diver swims to safety at (5,5)
+Diver swims to safety at (3,6)
+Diver swims to safety at (4,6)
+Engineer swims to safety at (3,1)
+Engineer swims to safety at (4,1)
+Engineer swims to safety at (2,2)
+Engineer swims to safety at (3,2)
+Engineer swims to safety at (4,2)
+Engineer swims to safety at (5,2)
+Engineer swims to safety at (1,3)
+Engineer swims to safety at (2,3)
+Engineer swims to safety at (3,3)
+Engineer swims to safety at (4,3)
+Engineer swims to safety at (5,3)
+Engineer swims to safety at (6,3)
+Engineer swims to safety at (1,4)
+Engineer swims to safety at (2,4)
+Engineer swims to safety at (3,4)
+Engineer swims to safety at (4,4)
+Engineer swims to safety at (5,4)
+Engineer swims to safety at (6,4)
+Engineer swims to safety at (2,5)
+Engineer swims to safety at (3,5)
+Engineer swims to safety at (4,5)
+Engineer swims to safety at (5,5)
+Engineer swims to safety at (3,6)
+Engineer swims to safety at (4,6)
+Explorer swims to safety at (3,1)
+Explorer swims to safety at (4,1)
+Explorer swims to safety at (2,2)
+Explorer swims to safety at (3,2)
+Explorer swims to safety at (4,2)
+Explorer swims to safety at (5,2)
+Explorer swims to safety at (1,3)
+Explorer swims to safety at (2,3)
+Explorer swims to safety at (3,3)
+Explorer swims to safety at (4,3)
+Explorer swims to safety at (5,3)
+Explorer swims to safety at (6,3)
+Explorer swims to safety at (1,4)
+Explorer swims to safety at (2,4)
+Explorer swims to safety at (3,4)
+Explorer swims to safety at (4,4)
+Explorer swims to safety at (5,4)
+Explorer swims to safety at (6,4)
+Explorer swims to safety at (2,5)
+Explorer swims to safety at (3,5)
+Explorer swims to safety at (4,5)
+Explorer swims to safety at (5,5)
+Explorer swims to safety at (3,6)
+Explorer swims to safety at (4,6)
+Messenger swims to safety at (3,1)
+Messenger swims to safety at (4,1)
+Messenger swims to safety at (2,2)
+Messenger swims to safety at (3,2)
+Messenger swims to safety at (4,2)
+Messenger swims to safety at (5,2)
+Messenger swims to safety at (1,3)
+Messenger swims to safety at (2,3)
+Messenger swims to safety at (3,3)
+Messenger swims to safety at (4,3)
+Messenger swims to safety at (5,3)
+Messenger swims to safety at (6,3)
+Messenger swims to safety at (1,4)
+Messenger swims to safety at (2,4)
+Messenger swims to safety at (3,4)
+Messenger swims to safety at (4,4)
+Messenger swims to safety at (5,4)
+Messenger swims to safety at (6,4)
+Messenger swims to safety at (2,5)
+Messenger swims to safety at (3,5)
+Messenger swims to safety at (4,5)
+Messenger swims to safety at (5,5)
+Messenger swims to safety at (3,6)
+Messenger swims to safety at (4,6)
+Navigator swims to safety at (3,1)
+Navigator swims to safety at (4,1)
+Navigator swims to safety at (2,2)
+Navigator swims to safety at (3,2)
+Navigator swims to safety at (4,2)
+Navigator swims to safety at (5,2)
+Navigator swims to safety at (1,3)
+Navigator swims to safety at (2,3)
+Navigator swims to safety at (3,3)
+Navigator swims to safety at (4,3)
+Navigator swims to safety at (5,3)
+Navigator swims to safety at (6,3)
+Navigator swims to safety at (1,4)
+Navigator swims to safety at (2,4)
+Navigator swims to safety at (3,4)
+Navigator swims to safety at (4,4)
+Navigator swims to safety at (5,4)
+Navigator swims to safety at (6,4)
+Navigator swims to safety at (2,5)
+Navigator swims to safety at (3,5)
+Navigator swims to safety at (4,5)
+Navigator swims to safety at (5,5)
+Navigator swims to safety at (3,6)
+Navigator swims to safety at (4,6)
+Pilot swims to safety at (3,1)
+Pilot swims to safety at (4,1)
+Pilot swims to safety at (2,2)
+Pilot swims to safety at (3,2)
+Pilot swims to safety at (4,2)
+Pilot swims to safety at (5,2)
+Pilot swims to safety at (1,3)
+Pilot swims to safety at (2,3)
+Pilot swims to safety at (3,3)
+Pilot swims to safety at (4,3)
+Pilot swims to safety at (5,3)
+Pilot swims to safety at (6,3)
+Pilot swims to safety at (1,4)
+Pilot swims to safety at (2,4)
+Pilot swims to safety at (3,4)
+Pilot swims to safety at (4,4)
+Pilot swims to safety at (5,4)
+Pilot swims to safety at (6,4)
+Pilot swims to safety at (2,5)
+Pilot swims to safety at (3,5)
+Pilot swims to safety at (4,5)
+Pilot swims to safety at (5,5)
+Pilot swims to safety at (3,6)
+Pilot swims to safety at (4,6)
+Diver discards Helicopter Lift
+Diver discards Sandbags
+Diver discards The Crystal of Fire
+Diver discards The Earth Stone
+Diver discards The Ocean's Chalice
+Diver discards The Statue of the Wind
+Engineer discards Helicopter Lift
+Engineer discards Sandbags
+Engineer discards The Crystal of Fire
+Engineer discards The Earth Stone
+Engineer discards The Ocean's Chalice
+Engineer discards The Statue of the Wind
+Explorer discards Helicopter Lift
+Explorer discards Sandbags
+Explorer discards The Crystal of Fire
+Explorer discards The Earth Stone
+Explorer discards The Ocean's Chalice
+Explorer discards The Statue of the Wind
+Messenger discards Helicopter Lift
+Messenger discards Sandbags
+Messenger discards The Crystal of Fire
+Messenger discards The Earth Stone
+Messenger discards The Ocean's Chalice
+Messenger discards The Statue of the Wind
+Navigator discards Helicopter Lift
+Navigator discards Sandbags
+Navigator discards The Crystal of Fire
+Navigator discards The Earth Stone
+Navigator discards The Ocean's Chalice
+Navigator discards The Statue of the Wind
+Pilot discards Helicopter Lift
+Pilot discards Sandbags
+Pilot discards The Crystal of Fire
+Pilot discards The Earth Stone
+Pilot discards The Ocean's Chalice
+Pilot discards The Statue of the Wind
+All players are lifted off the island by Diver
+All players are lifted off the island by Engineer
+All players are lifted off the island by Explorer
+All players are lifted off the island by Messenger
+All players are lifted off the island by Navigator
+All players are lifted off the island by Pilot
+Diver draws from the Treasure Deck
+Engineer draws from the Treasure Deck
+Explorer draws from the Treasure Deck
+Messenger draws from the Treasure Deck
+Navigator draws from the Treasure Deck
+Pilot draws from the Treasure Deck
+Diver draws from the Flood Deck
+Engineer draws from the Flood Deck
+Explorer draws from the Flood Deck
+Messenger draws from the Flood Deck
+Navigator draws from the Flood Deck
+Pilot draws from the Flood Deck

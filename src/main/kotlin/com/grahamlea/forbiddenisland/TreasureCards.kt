@@ -7,6 +7,10 @@ sealed class HoldableCard(val displayName: String): Comparable<HoldableCard> {
     override fun compareTo(other: HoldableCard) = this.displayName.compareTo(other.displayName)
 
     override fun toString() = displayName
+
+    companion object {
+        val allCardTypes by lazy { TreasureDeck.newShuffledDeck().toSet() }
+    }
 }
 
 object HelicopterLiftCard : HoldableCard("Helicopter Lift")
@@ -24,7 +28,8 @@ object TreasureDeck {
     private const val numberOfSandbagsCards = 2
     private const val numberOfWatersRiseCards = 3
     private const val numberOfEachTreasureCard = 5
-    val totalCardCounts = newShuffledDeck().groupingBy { it }.eachCount()
+
+    val totalCardCounts by lazy { newShuffledDeck().groupingBy { it }.eachCount() }
 
     fun newShuffledDeck(random: Random = Random()): ImmutableList<HoldableCard> =
         (HelicopterLiftCard * numberOfHelicopterLiftCards +
