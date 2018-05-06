@@ -3,6 +3,8 @@ package com.grahamlea.forbiddenisland
 import com.grahamlea.forbiddenisland.LocationFloodState.Sunken
 import kotlin.reflect.KClass
 
+fun game(vararg players: Adventurer) = Game.newRandomGameFor(immListOf(*players), GameMap.newShuffledMap())
+
 fun Game.withLocationFloodStates(floodState: LocationFloodState, vararg positions: Position): Game {
     val locations = this.gameSetup.map.mapSites.filter { it.position in positions }.map { it.location }
     return withLocationFloodStates(floodState,  *locations.toTypedArray())

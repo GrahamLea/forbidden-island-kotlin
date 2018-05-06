@@ -100,9 +100,10 @@ data class GameState(
         }
     }
 
-    private fun possibleMoveActions(player: Adventurer): List<GameEvent> {
-        return (gameSetup.map.adjacentSites(playerPositions.getValue(player))).map { Move(player, it.position) }
-    }
+    private fun possibleMoveActions(player: Adventurer): List<GameEvent> =
+        gameSetup.map.adjacentSites(playerPositions.getValue(player))
+            .filterNot { locationFloodStates.getValue(it.location) == Sunken }
+            .map { Move(player, it.position) }
 
     fun after(event: GameEvent, random: Random): GameState {
         // TODO Check that event is in list of possible events
