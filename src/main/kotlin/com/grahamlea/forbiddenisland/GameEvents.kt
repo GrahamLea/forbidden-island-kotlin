@@ -30,11 +30,6 @@ sealed class GameEvent {
 
         private fun <A, B, C, T: GameEvent> generateAll(o1s: Iterable<A>, o2s: Iterable<B>, o3s: Iterable<C>, function: Triple<A, B, C>.() -> T): List<T> =
             o1s.flatMap { o1 -> o2s.flatMap { o2 -> o3s.map { o3 -> with(Triple(o1, o2, o3), function) } } }
-
-        @JvmStatic
-        fun main(args: Array<String>) {
-            println("allPossibleEvents:\n${allPossibleEvents.joinToString("\n")}")
-        }
     }
 }
 

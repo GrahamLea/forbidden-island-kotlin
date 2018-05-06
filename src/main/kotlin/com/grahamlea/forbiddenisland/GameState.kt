@@ -92,6 +92,18 @@ data class GameState(
                             .all { locationFloodStates.getValue(it.location) == Sunken } }
                     .keys
 
+    val availableActions: List<GameEvent> by lazy {
+        when (phase) {
+            is AwaitingPlayerAction ->
+                possibleMoveActions(phase.player)
+            else -> emptyList()
+        }
+    }
+
+    private fun possibleMoveActions(player: Adventurer): List<GameEvent> {
+        return (gameSetup.map.adjacentSites(playerPositions.getValue(player))).map { Move(player, it.position) }
+    }
+
     fun after(event: GameEvent, random: Random): GameState {
         // TODO Check that event is in list of possible events
         return when (event) {
