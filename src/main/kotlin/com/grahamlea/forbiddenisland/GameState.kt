@@ -94,21 +94,27 @@ data class GameState(
 
     val availableActions: List<GameEvent> by lazy {
         when (phase) {
-            is AwaitingPlayerAction ->
-                possibleMoveActions(phase.player)
+            is AwaitingPlayerAction -> possibleMoveAndFlyActions(phase.player)
             else -> emptyList()
         }
     }
 
-    private fun possibleMoveActions(player: Adventurer): List<GameEvent> =
-        gameSetup.map.adjacentSites(playerPositions.getValue(player))
-            .filterNot { locationFloodStates.getValue(it.location) == Sunken }
-            .map { Move(player, it.position) }
+    private fun possibleMoveAndFlyActions(player: Adventurer): List<GameEvent> {
+        val playerPosition = playerPositions.getValue(player)
+        val playerSite = gameSetup.map.mapSiteAt(playerPosition)
+        val adjacentSites = gameSetup.map.adjacentSites(playerPosition, includeDiagonals = player == Explorer)
+        val moves = adjacentSites.filterNot { locationFloodStates.getValue(it.location) == Sunken }.map { Move(player, it.position) }
+        val flights = if (player == Pilot && !previousEvents.takeLastWhile { it !is DrawFromFloodDeck }.any { it is Fly }) {
+            (gameSetup.map.mapSites - adjacentSites - playerSite).map { Fly(player, it.position) }
+        } else emptyList()
+        return moves + flights
+    }
 
     fun after(event: GameEvent, random: Random): GameState {
         // TODO Check that event is in list of possible events
         return when (event) {
                 is Move -> copy(playerPositions = playerPositions + (event.player to event.position))
+                is Fly -> copy(playerPositions = playerPositions + (event.player to event.position))
                 is SwimToSafety -> copy(playerPositions = playerPositions + (event.strandedPlayer to event.position))
                 is ShoreUp -> copy(locationFloodStates = locationFloodStates + (gameSetup.map.locationAt(event.position) to Unflooded))
                 is GiveTreasureCard -> copy(playerCards =

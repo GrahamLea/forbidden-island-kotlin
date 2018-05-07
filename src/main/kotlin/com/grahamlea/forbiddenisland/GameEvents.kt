@@ -1,9 +1,11 @@
 package com.grahamlea.forbiddenisland
 
+import com.grahamlea.forbiddenisland.Adventurer.*
+
 sealed class GameEvent {
     companion object {
         val allPossibleEvents: List<GameEvent> by lazy {
-            val players = Adventurer.values().sorted()
+            val players = values().sorted()
             val positions = Position.allPositions.sorted()
             val treasures = Treasure.values().sorted()
             val cardTypes = HoldableCard.allCardTypes.sorted()
@@ -12,7 +14,7 @@ sealed class GameEvent {
                 generateAll(players, positions) { Move(first, second) },
                 generateAll(players, positions) { ShoreUp(first, second) },
                 generateAll(positions, positions)
-                    { ShoreUp(Adventurer.Engineer, first, second) }.filterNot { it.position >= it.position2!! },
+                    { ShoreUp(Engineer, first, second) }.filterNot { it.position >= it.position2!! },
                 generateAll(players, players, treasures)
                     { GiveTreasureCard(first, second, TreasureCard(third)) }.filterNot { it.player == it.receiver },
                 generateAll(players, players, positions) { HelicopterLift(first, second, third) },
@@ -41,6 +43,11 @@ interface CardDiscardingEvent {
 
 data class Move(val player: Adventurer, val position: Position): PlayerActionEvent() {
     override fun toString() = "$player moves to $position"
+}
+
+data class Fly(val player: Adventurer, val position: Position): PlayerActionEvent() {
+    init { require(player == Pilot) { "Only the Pilot is able to fly" } }
+    override fun toString() = "$player flies to $position"
 }
 
 data class ShoreUp(val player: Adventurer, val position: Position, val position2: Position? = null): PlayerActionEvent() {

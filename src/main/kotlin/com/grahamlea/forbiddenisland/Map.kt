@@ -19,10 +19,7 @@ data class GameMap(val mapSites: ImmutableList<MapSite>) {
     fun locationAt(position: Position): Location = mapSiteAt(position).location
 
     fun adjacentSites(position: Position, includeDiagonals: Boolean = false): List<MapSite> =
-        when (includeDiagonals) {
-            false -> listOf(North, South, East, West)
-            true -> Direction.values().toList()
-        }.mapNotNull { position.neighbour(it) }.map { mapSiteAt(it) }
+        Position.adjacentPositions(position, includeDiagonals).map { mapSiteAt(it) }
 
     companion object {
         fun newShuffledMap(random: Random = Random()) =
@@ -70,6 +67,13 @@ data class Position(val x: Int, val y: Int): Comparable<Position> {
         )
 
         fun isValid(x: Int, y: Int) = x in 1..6 && y in 1..6 && Pair(x, y) !in unfilledPositions
+
+        fun adjacentPositions(position: Position, includeDiagonals: Boolean = false): List<Position> =
+            when (includeDiagonals) {
+                false -> listOf(North, South, East, West)
+                true -> Direction.values().toList()
+            }.mapNotNull { position.neighbour(it) }
+
     }
 }
 

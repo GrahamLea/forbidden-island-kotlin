@@ -33,6 +33,15 @@ class GamePhaseTest {
     }
 
     @Test
+    fun `awaiting player action + fly = awaiting player action with one less action`() {
+        checkPhaseTransition(
+            firstPhase = AwaitingPlayerAction(Pilot, 3),
+            event = Fly(Pilot, position33),
+            expectedPhase = AwaitingPlayerAction(Pilot, 2)
+        )
+    }
+
+    @Test
     fun `awaiting player action + shore up = awaiting player action with one less action`() {
         checkPhaseTransition(
             firstPhase = AwaitingPlayerAction(Engineer, 2),

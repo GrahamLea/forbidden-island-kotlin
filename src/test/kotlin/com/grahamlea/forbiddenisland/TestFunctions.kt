@@ -84,6 +84,14 @@ fun Game.withFloodDeckDiscard(discardedCards: ImmutableList<Location>): Game {
     )
 }
 
+fun Game.withPreviousEvents(vararg events: GameEvent): Game {
+    return copy(
+        gameState.copy(
+            previousEvents = immListOf(*events)
+        )
+    )
+}
+
 fun Game.withGamePhase(phase: GamePhase): Game = copy(gameState.copy(phase = phase))
 
 @Suppress("UNCHECKED_CAST")

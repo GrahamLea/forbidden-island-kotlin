@@ -1,7 +1,6 @@
 package com.grahamlea.forbiddenisland
 
-import com.grahamlea.forbiddenisland.Adventurer.Engineer
-import com.grahamlea.forbiddenisland.Adventurer.Messenger
+import com.grahamlea.forbiddenisland.Adventurer.*
 import com.grahamlea.forbiddenisland.Location.*
 import com.grahamlea.forbiddenisland.LocationFloodState.*
 import org.hamcrest.CoreMatchers.not
@@ -45,6 +44,20 @@ class GameStateProgressionTest {
         val engineerNewPosition = Position(4, 3)
         after (Move(Engineer, engineerNewPosition) playedOn game) {
             assertThat(playerPositions, is_(immMapOf(Engineer to engineerNewPosition, Messenger to messengerOriginalPosition)))
+        }
+    }
+
+    @Test
+    fun `fly played on game changes position of the Pilot`() {
+        val pilotOriginalPosition = Position(4, 4)
+        val game = Game.newRandomGameFor(immListOf(Pilot, Messenger), GameMap.newShuffledMap())
+                .withPlayerPosition(Pilot, pilotOriginalPosition)
+
+        val messengerOriginalPosition = game.gameState.playerPositions.getValue(Messenger)
+
+        val pilotNewPosition = Position(1, 3)
+        after (Fly(Pilot, pilotNewPosition) playedOn game) {
+            assertThat(playerPositions, is_(immMapOf(Pilot to pilotNewPosition, Messenger to messengerOriginalPosition)))
         }
     }
 

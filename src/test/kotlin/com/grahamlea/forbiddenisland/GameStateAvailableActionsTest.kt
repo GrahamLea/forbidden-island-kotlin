@@ -16,8 +16,8 @@ class GameStateAvailableActionsTest {
     private val fire = TreasureCard(Treasure.CrystalOfFire)
 
     @Test
-    fun `Engineer, Messenger and Diver can walk to any adjacent positions`() {
-        val game = game(Engineer, Messenger, Diver).withLocationFloodStates(Unflooded, *Location.values())
+    fun `Engineer, Messenger, Diver and Pilot can walk to any adjacent positions`() {
+        val game = game(Engineer, Messenger, Diver, Pilot).withLocationFloodStates(Unflooded, *Location.values())
 
         for (player in game.gameSetup.players) {
             val availableActions =
@@ -60,22 +60,83 @@ class GameStateAvailableActionsTest {
         }
     }
 
-    @Ignore
     @Test
     fun `Explorer can walk to diagonal positions as well as adjacent`() {
-        TODO()
+        val game = game(Explorer, Pilot)
+            .withPlayerPosition(Explorer, Position(4, 4))
+
+        assertThat(game.gameState.availableActions.filter { it is Move }).containsOnlyElementsOf(
+            listOf(
+                Position(3, 3), Position(4, 3), Position(5, 3),
+                Position(3, 4),                 Position(5, 4),
+                Position(3, 5), Position(4, 5), Position(5, 5)
+            ).map { Move(Explorer, it) as GameEvent }
+        )
     }
 
-    @Ignore
     @Test
-    fun `Pilot can move to any tile`() {
-        TODO()
+    fun `Explorer can move to flooded diagonal location but not sunken`() {
+        val floodedPosition = Position(3, 5)
+        val sunkenPosition = Position(5, 3)
+        val game = game(Explorer, Messenger)
+                    .withPlayerPosition(Explorer, Position(4, 4))
+                    .withLocationFloodStates(Flooded, floodedPosition)
+                    .withLocationFloodStates(Sunken, sunkenPosition)
+
+        assertThat(game.gameState.availableActions)
+            .contains(Move(Explorer, floodedPosition))
+            .doesNotContain(Move(Explorer, sunkenPosition))
     }
 
-    @Ignore
     @Test
-    fun `Pilot cannot move to any tile more than once per turn`() {
-        TODO()
+    fun `Pilot can fly to any tile that's not adjacent`() {
+        val game = game(Pilot, Explorer)
+                        .withPlayerPosition(Pilot, Position(4, 4))
+
+        val allNonAdjacentPositions = listOf(
+            listOf(      3, 4      ).map { Position(it, 1) },
+            listOf(   2, 3, 4, 5   ).map { Position(it, 2) },
+            listOf(1, 2, 3,    5, 6).map { Position(it, 3) },
+            listOf(1, 2,  /*@*/   6).map { Position(it, 4) },
+            listOf(   2, 3,    5   ).map { Position(it, 5) },
+            listOf(      3, 4      ).map { Position(it, 6) }
+        ).flatten()
+
+        assertThat(game.gameState.availableActions.filter { it is Fly }).containsOnlyElementsOf(
+            allNonAdjacentPositions.map { Fly(Pilot, it) as GameEvent }
+        )
+    }
+
+    @Test
+    fun `Pilot cannot fly to any tile a second time in the same turn`() {
+        val game = game(Pilot, Explorer)
+            .withPlayerPosition(Pilot, Position(4, 4))
+            .withPreviousEvents(Fly(Pilot, Position(4, 4)))
+
+        assertThat(game.gameState.availableActions.filter { it is Fly }).isEmpty()
+    }
+
+    @Test
+    fun `Pilot can fly to any tile one the turn after having moved to any tile`() {
+        val game = game(Pilot, Explorer)
+            .withPlayerPosition(Pilot, Position(4, 4))
+            .withPreviousEvents(
+                Fly(Pilot, Position(3, 4)), DrawFromTreasureDeck(Pilot), DrawFromFloodDeck(Pilot),
+                Move(Explorer, Position(4, 4)), DrawFromTreasureDeck(Explorer), DrawFromFloodDeck(Explorer),
+                Move(Pilot, Position(4, 4)))
+
+        val allNonAdjacentPositions = listOf(
+            listOf(      3, 4      ).map { Position(it, 1) },
+            listOf(   2, 3, 4, 5   ).map { Position(it, 2) },
+            listOf(1, 2, 3,    5, 6).map { Position(it, 3) },
+            listOf(1, 2,  /*@*/   6).map { Position(it, 4) },
+            listOf(   2, 3,    5   ).map { Position(it, 5) },
+            listOf(      3, 4      ).map { Position(it, 6) }
+        ).flatten()
+
+        assertThat(game.gameState.availableActions.filter { it is Fly }).containsOnlyElementsOf(
+            allNonAdjacentPositions.map { Fly(Pilot, it) as GameEvent }
+        )
     }
 
     @Ignore
