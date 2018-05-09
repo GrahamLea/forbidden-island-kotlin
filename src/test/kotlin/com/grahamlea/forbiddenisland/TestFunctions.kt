@@ -107,3 +107,16 @@ fun <C: Any> KClass<C>.getPrivateFieldValue(fieldName: String, target: C): Any? 
     field.isAccessible = true
     return field.get(target)
 }
+
+fun <T> time(block: () -> T): T {
+    val start = System.currentTimeMillis()
+    try {
+        return block()
+    } finally {
+        val end = System.currentTimeMillis()
+        val time = end - start
+        val caller = Thread.currentThread().stackTrace[2]
+        System.err.println("(${time}ms) ${caller.lineNumber}: ${caller.methodName}")
+    }
+}
+
