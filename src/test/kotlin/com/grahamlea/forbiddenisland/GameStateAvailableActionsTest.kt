@@ -200,6 +200,15 @@ class GameStateAvailableActionsTest {
     }
 
     @Test
+    fun `Navigator cannot move the Diver through more than 1 sunken tile`() {
+        val game = game(Navigator, Diver)
+            .withPlayerPosition(Diver, Position(3, 3))
+            .withLocationFloodStates(Sunken, Position(4, 3), Position(5, 3))
+
+        assertThat(game.gameState.availableActions).doesNotContain(Move(Diver, Position(6, 3)))
+    }
+
+    @Test
     fun `Navigator cannot land the anyone (incl the Diver) on flooded tiles`() {
         val game = game(Navigator, Diver)
             .withPlayerPosition(Diver, Position(3, 3))
