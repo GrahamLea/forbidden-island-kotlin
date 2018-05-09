@@ -139,10 +139,24 @@ class GameStateAvailableActionsTest {
         )
     }
 
-    @Ignore
     @Test
     fun `Navigator can move other players up to 2 tiles, including changing directions`() {
-        TODO()
+        val game = game(Navigator, Engineer)
+            .withPlayerPosition(Navigator, Position(4, 4))
+            .withPlayerPosition(Engineer, Position(3, 3))
+
+
+        assertThat(game.gameState.availableActions.mapNotNull {
+            if (it is Move && it.player == Engineer) it.position else null
+        }).containsOnlyElementsOf(
+            listOf(
+                                                Position(3, 1),
+                                Position(2, 2), Position(3, 2), Position(4, 2),
+                Position(1, 3), Position(2, 3), /*     @     */ Position(4, 3), Position(5, 3),
+                                Position(2, 4), Position(3, 4), Position(4, 4),
+                                                Position(3, 5)
+            )
+        )
     }
 
     @Ignore
@@ -165,7 +179,7 @@ class GameStateAvailableActionsTest {
 
     @Ignore
     @Test
-    fun `Navigator cannot land the Diver on flooded tiles`() {
+    fun `Navigator cannot land the anyone (incl the Diver) on flooded tiles`() {
         TODO()
     }
 

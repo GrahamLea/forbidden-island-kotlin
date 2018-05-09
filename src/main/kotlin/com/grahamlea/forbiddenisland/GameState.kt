@@ -102,13 +102,27 @@ data class GameState(
     private fun possibleMoveAndFlyActions(player: Adventurer): List<GameEvent> {
         val playerPosition = playerPositions.getValue(player)
         val playerSite = gameSetup.map.mapSiteAt(playerPosition)
-        val adjacentSites = gameSetup.map.adjacentSites(playerPosition, includeDiagonals = player == Explorer)
-        val moves = adjacentSites.filterNot { locationFloodStates.getValue(it.location) == Sunken }.map { Move(player, it.position) }
+        val moves = accessiblePositionsAdjacentTo(playerPosition, includeDiagonals = player == Explorer).map { Move(player, it) }
         val flights = if (player == Pilot && !previousEvents.takeLastWhile { it !is DrawFromFloodDeck }.any { it is Fly }) {
-            (gameSetup.map.mapSites - adjacentSites - playerSite).map { Fly(player, it.position) }
+            (gameSetup.map.mapSites.map(MapSite::position) - moves.map(Move::position) - playerSite.position).map { Fly(player, it) }
         } else emptyList()
-        return moves + flights
+        val navigatorAssists = if (player == Navigator) {
+            gameSetup.players.filterNot { it == Navigator }
+                .associate { it to navigablePositionsFrom(playerPositions.getValue(it)) }
+                .flatMap { (otherPlayer, positions) -> positions.map { Move(otherPlayer, it) } }
+        } else emptyList()
+        return moves + flights + navigatorAssists
     }
+
+    private fun navigablePositionsFrom(p: Position): List<Position> =
+        accessiblePositionsAdjacentTo(p).flatMap {
+            accessiblePositionsAdjacentTo(it).map { it } + it
+        }.distinct() - p
+
+    private fun accessiblePositionsAdjacentTo(p: Position, includeDiagonals: Boolean = false): List<Position> =
+        gameSetup.map.adjacentSites(p, includeDiagonals)
+            .filterNot { locationFloodStates.getValue(it.location) == Sunken }
+            .map { it.position }
 
     fun after(event: GameEvent, random: Random): GameState {
         // TODO Check that event is in list of possible events
