@@ -108,21 +108,44 @@ data class GameState(
         } else emptyList()
         val navigatorAssists = if (player == Navigator) {
             gameSetup.players.filterNot { it == Navigator }
-                .associate { otherPlayer -> otherPlayer to navigablePositionsFrom(playerPositions.getValue(otherPlayer), otherPlayer) }
+                .associate { otherPlayer -> otherPlayer to positionsNavigatorCanSendPlayerFrom(playerPositions.getValue(otherPlayer), otherPlayer) }
                 .flatMap { (otherPlayer, positions) -> positions.map { Move(otherPlayer, it) } }
         } else emptyList()
-        return moves + flights + navigatorAssists
+        val diverSwims = if (player == Diver) {
+            diverSwimPositionsFrom(playerPosition).map { Move(Diver, it) }
+        } else emptyList()
+        return moves + flights + navigatorAssists + diverSwims
     }
-
-    private fun navigablePositionsFrom(p: Position, player: Adventurer): List<Position> =
-        accessiblePositionsAdjacentTo(p, includeDiagonals = player == Explorer, includeSunkenTiles = player == Diver).flatMap {
-            accessiblePositionsAdjacentTo(it, includeDiagonals = player == Explorer).map { it } + it
-        }.distinct() - p
 
     private fun accessiblePositionsAdjacentTo(p: Position, includeDiagonals: Boolean = false, includeSunkenTiles: Boolean = false): List<Position> =
         gameSetup.map.adjacentSites(p, includeDiagonals)
             .filterNot { locationFloodStates.getValue(it.location) == Sunken && !includeSunkenTiles }
             .map { it.position }
+
+    private fun positionsNavigatorCanSendPlayerFrom(p: Position, player: Adventurer): List<Position> =
+        accessiblePositionsAdjacentTo(p, includeDiagonals = player == Explorer, includeSunkenTiles = player == Diver).flatMap {
+            accessiblePositionsAdjacentTo(it, includeDiagonals = player == Explorer).map { it } + it
+        }.distinct() - p
+
+    private fun diverSwimPositionsFrom(playersCurrentPosition: Position): List<Position> {
+        tailrec fun positions(startingPoints: List<Position>, reachable: MutableList<Position>): List<Position> {
+            val neighbours = startingPoints.flatMap { accessiblePositionsAdjacentTo(it, includeSunkenTiles = true) }
+            val floodedAndSunkenNeighbours = neighbours.filterNot { locationFloodStates.getValue(gameSetup.map.locationAt(it)) == Unflooded }
+            val newStartingPoints = floodedAndSunkenNeighbours - reachable
+//            println("startingPoints = ${startingPoints}")
+//            println("neighbours = ${neighbours}")
+//            println("floodedAndSunkenNeighbours = ${floodedAndSunkenNeighbours}")
+//            println("reachable = ${reachable}")
+//            println("newStartingPoints = ${newStartingPoints}")
+//            println("------------------------------------------------------------------------------------------------")
+            reachable += neighbours
+            return if (newStartingPoints.any()) positions(newStartingPoints, reachable) else reachable
+        }
+
+        return positions(listOf(playersCurrentPosition), mutableListOf()).filterNot {
+            locationFloodStates.getValue(gameSetup.map.locationAt(it)) == Sunken
+        }
+    }
 
     fun after(event: GameEvent, random: Random): GameState {
         // TODO Check that event is in list of possible events
