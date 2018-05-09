@@ -102,49 +102,54 @@ data class GameState(
     private fun possibleMoveAndFlyActions(player: Adventurer): List<GameEvent> {
         val playerPosition = playerPositions.getValue(player)
         val playerSite = gameSetup.map.mapSiteAt(playerPosition)
-        val moves = accessiblePositionsAdjacentTo(playerPosition, includeDiagonals = player == Explorer).map { Move(player, it) }
+        val moves = accessiblePositionsAdjacentTo(playerPosition, includeDiagonals = player == Explorer).toMovesFor(player)
         val flights = if (player == Pilot && !previousEvents.takeLastWhile { it !is DrawFromFloodDeck }.any { it is Fly }) {
-            (gameSetup.map.mapSites.map(MapSite::position) - moves.map(Move::position) - playerSite.position).map { Fly(player, it) }
+            (gameSetup.map.mapSites.map(MapSite::position) - moves.map(Move::position) - playerPosition).map { Fly(player, it) }
         } else emptyList()
         val navigatorAssists = if (player == Navigator) {
             gameSetup.players.filterNot { it == Navigator }
-                .associate { otherPlayer -> otherPlayer to positionsNavigatorCanSendPlayerFrom(playerPositions.getValue(otherPlayer), otherPlayer) }
-                .flatMap { (otherPlayer, positions) -> positions.map { Move(otherPlayer, it) } }
+                .associate { otherPlayer -> otherPlayer to positionsNavigatorCanSend(otherPlayer) }
+                .flatMap { (otherPlayer, sites) -> sites.toMovesFor(otherPlayer) }
         } else emptyList()
         val diverSwims = if (player == Diver) {
-            diverSwimPositionsFrom(playerPosition).map { Move(Diver, it) }
+            diverSwimPositionsFrom(playerSite).toMovesFor(Diver)
         } else emptyList()
         return moves + flights + navigatorAssists + diverSwims
     }
 
-    private fun accessiblePositionsAdjacentTo(p: Position, includeDiagonals: Boolean = false, includeSunkenTiles: Boolean = false): List<Position> =
+    private fun Iterable<MapSite>.toMovesFor(player: Adventurer) = this.map { Move(player, it.position) }
+
+    private fun accessiblePositionsAdjacentTo(p: Position, includeDiagonals: Boolean = false, includeSunkenTiles: Boolean = false): List<MapSite> =
         gameSetup.map.adjacentSites(p, includeDiagonals)
-            .filterNot { locationFloodStates.getValue(it.location) == Sunken && !includeSunkenTiles }
-            .map { it.position }
+            .filter { locationFloodStates.getValue(it.location) != Sunken || includeSunkenTiles }
 
-    private fun positionsNavigatorCanSendPlayerFrom(p: Position, player: Adventurer): List<Position> =
-        accessiblePositionsAdjacentTo(p, includeDiagonals = player == Explorer, includeSunkenTiles = player == Diver).flatMap {
-            accessiblePositionsAdjacentTo(it, includeDiagonals = player == Explorer).map { it } + it
-        }.distinct() - p
+    private fun positionsNavigatorCanSend(player: Adventurer): List<MapSite> =
+        playerPositions.getValue(player).let { playersCurrentPosition ->
+            accessiblePositionsAdjacentTo(
+                playersCurrentPosition,
+                includeDiagonals = player == Explorer,
+                includeSunkenTiles = player == Diver
+            ).flatMap { immediateNeighbourSite ->
+                accessiblePositionsAdjacentTo(
+                    immediateNeighbourSite.position,
+                    includeDiagonals = player == Explorer,
+                    includeSunkenTiles = false
+                ) + immediateNeighbourSite
+            }.distinct() - gameSetup.map.mapSiteAt(playersCurrentPosition)
+        }
 
-    private fun diverSwimPositionsFrom(playersCurrentPosition: Position): List<Position> {
-        tailrec fun positions(startingPoints: List<Position>, reachable: MutableList<Position>): List<Position> {
-            val neighbours = startingPoints.flatMap { accessiblePositionsAdjacentTo(it, includeSunkenTiles = true) }
-            val floodedAndSunkenNeighbours = neighbours.filterNot { locationFloodStates.getValue(gameSetup.map.locationAt(it)) == Unflooded }
+    private fun diverSwimPositionsFrom(playersCurrentSite: MapSite): List<MapSite> {
+        tailrec fun positions(startingPoints: List<MapSite>, reachable: MutableList<MapSite>): List<MapSite> {
+            val neighbours = startingPoints.flatMap { accessiblePositionsAdjacentTo(it.position, includeSunkenTiles = true) }
+            val floodedAndSunkenNeighbours = neighbours.filterNot { locationFloodStates.getValue(it.location) == Unflooded }
             val newStartingPoints = floodedAndSunkenNeighbours - reachable
-//            println("startingPoints = ${startingPoints}")
-//            println("neighbours = ${neighbours}")
-//            println("floodedAndSunkenNeighbours = ${floodedAndSunkenNeighbours}")
-//            println("reachable = ${reachable}")
-//            println("newStartingPoints = ${newStartingPoints}")
-//            println("------------------------------------------------------------------------------------------------")
             reachable += neighbours
             return if (newStartingPoints.any()) positions(newStartingPoints, reachable) else reachable
         }
 
-        return positions(listOf(playersCurrentPosition), mutableListOf()).filterNot {
-            locationFloodStates.getValue(gameSetup.map.locationAt(it)) == Sunken
-        } - playersCurrentPosition
+        return positions(listOf(playersCurrentSite), mutableListOf())
+            .filterNot { locationFloodStates[it.location] == Sunken } -
+            playersCurrentSite
     }
 
     fun after(event: GameEvent, random: Random): GameState {
