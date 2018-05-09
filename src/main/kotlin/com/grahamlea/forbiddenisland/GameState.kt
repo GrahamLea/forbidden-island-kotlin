@@ -144,7 +144,7 @@ data class GameState(
 
         return positions(listOf(playersCurrentPosition), mutableListOf()).filterNot {
             locationFloodStates.getValue(gameSetup.map.locationAt(it)) == Sunken
-        }
+        } - playersCurrentPosition
     }
 
     fun after(event: GameEvent, random: Random): GameState {

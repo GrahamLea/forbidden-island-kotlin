@@ -231,6 +231,7 @@ class GameStateAvailableActionsTest {
 
         val game = game(Diver, Explorer)
                     .withPlayerPosition(Diver, Position(1, 4))
+                    .withLocationFloodStates(Unflooded, *Position.allPositions.toTypedArray())
                     .withLocationFloodStates(Sunken, Position(2, 4), Position(4, 4))
                     .withLocationFloodStates(Flooded, Position(3, 4), Position(5, 4))
 
@@ -238,12 +239,17 @@ class GameStateAvailableActionsTest {
             .contains(Move(Diver, Position(3, 4)))
             .contains(Move(Diver, Position(5, 4)))
             .contains(Move(Diver, Position(6, 4)))
+            .doesNotContain(Move(Diver, Position(2, 4)))
+            .doesNotContain(Move(Diver, Position(4, 4)))
+            .containsAll((1..5).map { Move(Diver, Position(it, 3)) }) // Almost everything in the row above/**/...
+            .containsAll((2..5).map { Move(Diver, Position(it, 5)) }) // ... and the row below
+            .doesNotContain(Move(Diver, Position(1, 4)))
     }
 
     @Test
     fun `Diver can change direction while moving through adjacent flooded and sunken tiles`() {
 
-        val diverPosition = Position(1, 4)
+        val diverPosition = Position(1, 4) // bottom-left
 
         val floodedPositions = listOf(
             listOf(      3).map { Position(it, 1) },
@@ -255,8 +261,7 @@ class GameStateAvailableActionsTest {
                     .withPlayerPosition(Diver, diverPosition)
                     .withLocationFloodStates(Flooded, *floodedPositions.toTypedArray())
 
-        assertThat(game.gameState.availableActions.filter { it is Move })
-            .contains(Move(Diver, Position(4, 1)))
+        assertThat(game.gameState.availableActions.filter { it is Move }).contains(Move(Diver, Position(4, 1))) // top-right
     }
 
 }
