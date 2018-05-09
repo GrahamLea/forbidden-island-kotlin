@@ -159,34 +159,62 @@ class GameStateAvailableActionsTest {
         )
     }
 
-    @Ignore
     @Test
-    fun `Navigator themself can only move to adjacent tiles`() {
-        TODO()
+    fun `Navigator themselves can only move to adjacent tiles`() {
+        val game = game(Navigator, Messenger)
+                    .withPlayerPosition(Navigator, Position(4, 4))
+
+        assertThat(game.gameState.availableActions.filter { it is Move && it.player == Navigator }).containsOnlyElementsOf(
+            listOf(
+                                Position(4, 3),
+                Position(3, 4),                 Position(5, 4),
+                                Position(4, 5)
+            ).map { Move(Navigator, it) as GameEvent }
+        )
     }
 
-    @Ignore
     @Test
     fun `Navigator can move the Explorer diagonally`() {
-        TODO()
+        val game = game(Navigator, Explorer)
+            .withPlayerPosition(Explorer, Position(3, 3))
+
+        val expectedExplorerOptions = listOf(
+            listOf(      3, 4   ).map { Position(it, 1) },
+            listOf(   2, 3, 4, 5).map { Position(it, 2) },
+            listOf(1, 2,    4, 5).map { Position(it, 3) },
+            listOf(1, 2, 3, 4, 5).map { Position(it, 4) },
+            listOf(   2, 3, 4, 5).map { Position(it, 5) }
+        ).flatten()
+
+        assertThat(game.gameState.availableActions.mapNotNull { if (it is Move && it.player == Explorer) it.position else null })
+            .containsOnlyElementsOf(expectedExplorerOptions)
     }
 
-    @Ignore
     @Test
-    fun `Navigator can move the Diver through 1 flooded tile`() {
-        TODO()
+    fun `Navigator can move the Diver through 1 sunken tile`() {
+        val game = game(Navigator, Diver)
+            .withPlayerPosition(Diver, Position(3, 3))
+            .withLocationFloodStates(Sunken, Position(4, 3))
+
+        assertThat(game.gameState.availableActions).contains(Move(Diver, Position(5, 3)))
     }
 
-    @Ignore
     @Test
     fun `Navigator cannot land the anyone (incl the Diver) on flooded tiles`() {
-        TODO()
+        val game = game(Navigator, Diver)
+            .withPlayerPosition(Diver, Position(3, 3))
+            .withLocationFloodStates(Sunken, Position(5, 3))
+
+        assertThat(game.gameState.availableActions).doesNotContain(Move(Diver, Position(5, 3)))
     }
 
-    @Ignore
     @Test
     fun `Navigator cannot move non-Diver players through flooded tiles`() {
-        TODO()
+        val game = game(Navigator, Engineer)
+            .withPlayerPosition(Engineer, Position(3, 3))
+            .withLocationFloodStates(Sunken, Position(4, 3))
+
+        assertThat(game.gameState.availableActions).doesNotContain(Move(Engineer, Position(5, 3)))
     }
 
     @Ignore

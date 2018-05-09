@@ -108,20 +108,20 @@ data class GameState(
         } else emptyList()
         val navigatorAssists = if (player == Navigator) {
             gameSetup.players.filterNot { it == Navigator }
-                .associate { it to navigablePositionsFrom(playerPositions.getValue(it)) }
+                .associate { otherPlayer -> otherPlayer to navigablePositionsFrom(playerPositions.getValue(otherPlayer), otherPlayer) }
                 .flatMap { (otherPlayer, positions) -> positions.map { Move(otherPlayer, it) } }
         } else emptyList()
         return moves + flights + navigatorAssists
     }
 
-    private fun navigablePositionsFrom(p: Position): List<Position> =
-        accessiblePositionsAdjacentTo(p).flatMap {
-            accessiblePositionsAdjacentTo(it).map { it } + it
+    private fun navigablePositionsFrom(p: Position, player: Adventurer): List<Position> =
+        accessiblePositionsAdjacentTo(p, includeDiagonals = player == Explorer, includeSunkenTiles = player == Diver).flatMap {
+            accessiblePositionsAdjacentTo(it, includeDiagonals = player == Explorer).map { it } + it
         }.distinct() - p
 
-    private fun accessiblePositionsAdjacentTo(p: Position, includeDiagonals: Boolean = false): List<Position> =
+    private fun accessiblePositionsAdjacentTo(p: Position, includeDiagonals: Boolean = false, includeSunkenTiles: Boolean = false): List<Position> =
         gameSetup.map.adjacentSites(p, includeDiagonals)
-            .filterNot { locationFloodStates.getValue(it.location) == Sunken }
+            .filterNot { locationFloodStates.getValue(it.location) == Sunken && !includeSunkenTiles }
             .map { it.position }
 
     fun after(event: GameEvent, random: Random): GameState {
