@@ -24,12 +24,14 @@ class GameStateAvailableActionsTest {
                     .withGamePhase(AwaitingPlayerAction(player, 3))
                     .availableMoves()
 
-            assertThat(availableMoves).containsOnlyElementsOf(
-                listOf(
-                                    Position(4, 3),
-                    Position(3, 4),                 Position(5, 4),
-                                    Position(4, 5)
-                ).map { Move(player, it) }
+            assertThat(availableMoves).containsOnlyElementsOf(positionsFromMap("""
+                  ..
+                 ....
+                ...o..
+                ..o.o.
+                 ..o.
+                  ..
+                """).map { Move(player, it) }
             )
         }
     }
@@ -65,12 +67,14 @@ class GameStateAvailableActionsTest {
         val game = game(Explorer, Pilot)
             .withPlayerPosition(Explorer, Position(4, 4))
 
-        assertThat(game.availableMoves()).containsOnlyElementsOf(
-            listOf(
-                Position(3, 3), Position(4, 3), Position(5, 3),
-                Position(3, 4),                 Position(5, 4),
-                Position(3, 5), Position(4, 5), Position(5, 5)
-            ).map { Move(Explorer, it) }
+        assertThat(game.availableMoves()).containsOnlyElementsOf(positionsFromMap("""
+              ..
+             ....
+            ..ooo.
+            ..o.o.
+             .ooo
+              ..
+            """).map { Move(Explorer, it) }
         )
     }
 
@@ -93,14 +97,14 @@ class GameStateAvailableActionsTest {
         val game = game(Pilot, Explorer)
                         .withPlayerPosition(Pilot, Position(4, 4))
 
-        val allNonAdjacentPositions = listOf(
-            listOf(      3, 4      ).map { Position(it, 1) },
-            listOf(   2, 3, 4, 5   ).map { Position(it, 2) },
-            listOf(1, 2, 3,    5, 6).map { Position(it, 3) },
-            listOf(1, 2,  /*@*/   6).map { Position(it, 4) },
-            listOf(   2, 3,    5   ).map { Position(it, 5) },
-            listOf(      3, 4      ).map { Position(it, 6) }
-        ).flatten()
+        val allNonAdjacentPositions = positionsFromMap("""
+              oo
+             oooo
+            ooo.oo
+            oo...o
+             oo.o
+              oo
+        """)
 
         assertThat(game.availableActions<Fly>()).containsOnlyElementsOf(
             allNonAdjacentPositions.map { Fly(Pilot, it) }
@@ -117,7 +121,7 @@ class GameStateAvailableActionsTest {
     }
 
     @Test
-    fun `Pilot can fly to any tile one the turn after having moved to any tile`() {
+    fun `Pilot can fly to any tile on the turn after having moved to any tile`() {
         val game = game(Pilot, Explorer)
             .withPlayerPosition(Pilot, Position(4, 4))
             .withPreviousEvents(
@@ -125,14 +129,14 @@ class GameStateAvailableActionsTest {
                 Move(Explorer, Position(4, 4)), DrawFromTreasureDeck(Explorer), DrawFromFloodDeck(Explorer),
                 Move(Pilot, Position(4, 4)))
 
-        val allNonAdjacentPositions = listOf(
-            listOf(      3, 4      ).map { Position(it, 1) },
-            listOf(   2, 3, 4, 5   ).map { Position(it, 2) },
-            listOf(1, 2, 3,    5, 6).map { Position(it, 3) },
-            listOf(1, 2,  /*@*/   6).map { Position(it, 4) },
-            listOf(   2, 3,    5   ).map { Position(it, 5) },
-            listOf(      3, 4      ).map { Position(it, 6) }
-        ).flatten()
+        val allNonAdjacentPositions = positionsFromMap("""
+              oo
+             oooo
+            ooo.oo
+            oo...o
+             oo.o
+              oo
+        """)
 
         assertThat(game.availableActions<Fly>()).containsOnlyElementsOf(
             allNonAdjacentPositions.map { Fly(Pilot, it) }
@@ -145,14 +149,14 @@ class GameStateAvailableActionsTest {
             .withPlayerPosition(Navigator, Position(4, 4))
             .withPlayerPosition(Engineer, Position(3, 3))
 
-        assertThat(game.availableMoves(Engineer)).containsOnlyElementsOf(
-            listOf(
-                                                Position(3, 1),
-                                Position(2, 2), Position(3, 2), Position(4, 2),
-                Position(1, 3), Position(2, 3), /*     @     */ Position(4, 3), Position(5, 3),
-                                Position(2, 4), Position(3, 4), Position(4, 4),
-                                                Position(3, 5)
-            )
+        assertThat(game.availableMoves(Engineer)).containsOnlyElementsOf(positionsFromMap("""
+              o.
+             ooo.
+            oo.oo.
+            .ooo..
+             .o..
+              ..
+        """)
         )
     }
 
@@ -161,12 +165,14 @@ class GameStateAvailableActionsTest {
         val game = game(Navigator, Messenger)
                     .withPlayerPosition(Navigator, Position(4, 4))
 
-        assertThat(game.availableMoves(Navigator)).containsOnlyElementsOf(
-            listOf(
-                                Position(4, 3),
-                Position(3, 4),                 Position(5, 4),
-                                Position(4, 5)
-            )
+        assertThat(game.availableMoves(Navigator)).containsOnlyElementsOf(positionsFromMap("""
+              ..
+             ....
+            ...o..
+            ..o.o.
+             ..o.
+              ..
+            """)
         )
     }
 
@@ -175,13 +181,14 @@ class GameStateAvailableActionsTest {
         val game = game(Navigator, Explorer)
             .withPlayerPosition(Explorer, Position(3, 3))
 
-        val expectedExplorerOptions = listOf(
-            listOf(      3, 4   ).map { Position(it, 1) },
-            listOf(   2, 3, 4, 5).map { Position(it, 2) },
-            listOf(1, 2,    4, 5).map { Position(it, 3) },
-            listOf(1, 2, 3, 4, 5).map { Position(it, 4) },
-            listOf(   2, 3, 4, 5).map { Position(it, 5) }
-        ).flatten()
+        val expectedExplorerOptions = positionsFromMap("""
+              oo
+             oooo
+            oo.oo.
+            ooooo.
+             oooo
+              ..
+        """)
 
         assertThat(game.availableMoves(Explorer)).containsOnlyElementsOf(expectedExplorerOptions)
     }
@@ -247,11 +254,14 @@ class GameStateAvailableActionsTest {
 
         val diverPosition = Position(1, 4) // bottom-left
 
-        val floodedPositions = listOf(
-            listOf(      3).map { Position(it, 1) },
-            listOf(   2, 3).map { Position(it, 2) },
-            listOf(1, 2   ).map { Position(it, 3) }
-        ).flatten()
+        val floodedPositions = positionsFromMap("""
+              o.
+             oo..
+            oo....
+            ......
+             ....
+              ..
+        """)
 
         val game = game(Diver, Explorer)
                     .withPlayerPosition(Diver, diverPosition)

@@ -208,12 +208,14 @@ class GameStateResultTest {
     fun `game is NOT lost when the Explorer is on a sunken location with all adjacent and SOME diagonal ones sunken`() {
         val sunkPositionWithSunkSurroundings = Position(3, 3)
         val safePosition = Position(5, 5)
-        val positionsToSink: List<Position> =
-            listOf(
-                    Position(2, 2), Position(3, 2),
-                    Position(2, 3), Position(3, 3), Position(4, 3),
-                    Position(2, 4), Position(3, 4), Position(4, 4)
-            )
+        val positionsToSink: List<Position> = positionsFromMap("""
+              ..
+             oo..
+            .ooo..
+            .ooo..
+             ....
+              ..
+        """)
 
         val game = createGameForSunkPlayerScenario(sunkPositionWithSunkSurroundings, Explorer, positionsToSink, Navigator, safePosition)
 
@@ -236,11 +238,14 @@ class GameStateResultTest {
     fun `game is NOT lost when a player is on a sunken location and CAN swim to at least one adjacent one`() {
         val sunkPositionWithSunkSurroundings = Position(3, 3)
         val safePosition = Position(5, 5)
-        val positionsToSink = listOf(
-                                Position(3, 2),
-                Position(2, 3), Position(3, 3),
-                                Position(3, 4)
-        )
+        val positionsToSink = positionsFromMap("""
+              ..
+             .o..
+            .oo...
+            ..o...
+             ....
+              ..
+        """)
 
         val game = createGameForSunkPlayerScenario(sunkPositionWithSunkSurroundings, Engineer, positionsToSink, Navigator, safePosition)
 
@@ -251,17 +256,23 @@ class GameStateResultTest {
         val sunkPositionWithSunkSurroundings = Position(3, 3)
         val safePosition = Position(5, 5)
         val positionsToSink: List<Position> = if (sinkDiagonals) {
-            listOf(
-                    Position(2, 2), Position(3, 2), Position(4, 2),
-                    Position(2, 3), Position(3, 3), Position(4, 3),
-                    Position(2, 4), Position(3, 4), Position(4, 4)
-            )
+            positionsFromMap("""
+                  ..
+                 ooo.
+                .ooo..
+                .ooo..
+                 ....
+                  ..
+            """)
         } else {
-            listOf(
-                    Position(3, 2),
-                    Position(2, 3), Position(3, 3), Position(4, 3),
-                    Position(3, 4)
-            )
+            positionsFromMap("""
+                  ..
+                 .o..
+                .ooo..
+                ..o...
+                 ....
+                  ..
+            """)
         }
 
         return createGameForSunkPlayerScenario(sunkPositionWithSunkSurroundings, playerToStrand, positionsToSink, otherPlayer, safePosition)

@@ -36,37 +36,46 @@ class GameMapTest {
     fun `GameMap can return adjacent sites`() {
         val map = GameMap.newShuffledMap()
         val position = Position(3, 4)
-        val neighbours = listOf(
-                            Position(2, 4),
-            Position(3, 3),                 Position(3, 5),
-                            Position(4, 4)
-        )
+        val neighbours = positionsFromMap("""
+              ..
+             ....
+            ..o...
+            .o.o..
+             .o..
+              ..
+        """)
         val expectedSites = map.mapSites.filter { it.position in neighbours }
-        assertThat(map.adjacentSites(position).toSet()).isEqualTo(expectedSites.toSet())
+        assertThat(map.adjacentSites(position)).containsOnlyElementsOf(expectedSites)
     }
 
     @Test
     fun `GameMap can return adjacent sites including diagonals`() {
         val map = GameMap.newShuffledMap()
         val position = Position(4, 3)
-        val neighbours = listOf(
-                Position(3, 2), Position(4, 2), Position(5, 2),
-                Position(3, 3),                 Position(5, 3),
-                Position(3, 4), Position(4, 4), Position(5, 4)
-        )
+        val neighbours = positionsFromMap("""
+              ..
+             .ooo
+            ..o.o.
+            ..ooo.
+             ....
+              ..
+        """)
         val expectedSites = map.mapSites.filter { it.position in neighbours }
-        assertThat(map.adjacentSites(position, includeDiagonals = true).toSet()).isEqualTo(expectedSites.toSet())
+        assertThat(map.adjacentSites(position, includeDiagonals = true)).containsOnlyElementsOf(expectedSites)
     }
 
     @Test
     fun `GameMap doesn't return invalid sites adjacent to edge sites`() {
         val map = GameMap.newShuffledMap()
         val position = Position(5, 2)
-        val neighbours = listOf(
-                Position(4, 1),
-                Position(4, 2),
-                Position(4, 3), Position(5, 3), Position(6, 3)
-        )
+        val neighbours = positionsFromMap("""
+              .o
+             ..o.
+            ...ooo
+            ......
+             ....
+              ..
+        """)
         val expectedSites = map.mapSites.filter { it.position in neighbours }
         assertThat(map.adjacentSites(position, includeDiagonals = true).toSet()).isEqualTo(expectedSites.toSet())
     }
