@@ -3,11 +3,9 @@ package com.grahamlea.forbiddenisland
 import com.grahamlea.forbiddenisland.Adventurer.*
 import com.grahamlea.forbiddenisland.Location.*
 import com.grahamlea.forbiddenisland.LocationFloodState.*
-import org.hamcrest.CoreMatchers.not
-import org.junit.Assert.assertThat
-import org.junit.Test
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 import java.util.*
-import org.hamcrest.CoreMatchers.`is` as is_
 
 class GameStateProgressionTest {
 
@@ -27,7 +25,7 @@ class GameStateProgressionTest {
         val event3 = ShoreUp(Engineer, Position(2, 3))
 
         after (listOf(event1, event2, event3) playedOn game) {
-            assertThat(previousEvents, is_(immListOf<GameEvent>(event1, event2, event3)))
+            assertThat(previousEvents).isEqualTo(immListOf<GameEvent>(event1, event2, event3))
         }
     }
 
@@ -39,11 +37,11 @@ class GameStateProgressionTest {
         val engineerOriginalPosition = game.gameState.playerPositions.getValue(Engineer)
         val messengerOriginalPosition = game.gameState.playerPositions.getValue(Messenger)
 
-        assertThat(game.gameState.playerPositions, is_(immMapOf(Engineer to engineerOriginalPosition, Messenger to messengerOriginalPosition)))
+        assertThat(game.gameState.playerPositions).isEqualTo(immMapOf(Engineer to engineerOriginalPosition, Messenger to messengerOriginalPosition))
 
         val engineerNewPosition = Position(4, 3)
         after (Move(Engineer, engineerNewPosition) playedOn game) {
-            assertThat(playerPositions, is_(immMapOf(Engineer to engineerNewPosition, Messenger to messengerOriginalPosition)))
+            assertThat(playerPositions).isEqualTo(immMapOf(Engineer to engineerNewPosition, Messenger to messengerOriginalPosition))
         }
     }
 
@@ -57,7 +55,7 @@ class GameStateProgressionTest {
 
         val pilotNewPosition = Position(1, 3)
         after (Fly(Pilot, pilotNewPosition) playedOn game) {
-            assertThat(playerPositions, is_(immMapOf(Pilot to pilotNewPosition, Messenger to messengerOriginalPosition)))
+            assertThat(playerPositions).isEqualTo(immMapOf(Pilot to pilotNewPosition, Messenger to messengerOriginalPosition))
         }
     }
 
@@ -69,11 +67,11 @@ class GameStateProgressionTest {
         val engineerOriginalPosition = game.gameState.playerPositions.getValue(Engineer)
         val messengerOriginalPosition = game.gameState.playerPositions.getValue(Messenger)
 
-        assertThat(game.gameState.playerPositions, is_(immMapOf(Engineer to engineerOriginalPosition, Messenger to messengerOriginalPosition)))
+        assertThat(game.gameState.playerPositions).isEqualTo(immMapOf(Engineer to engineerOriginalPosition, Messenger to messengerOriginalPosition))
 
         val engineerNewPosition = Position(4, 3)
         after (SwimToSafety(Engineer, engineerNewPosition) playedOn game) {
-            assertThat(playerPositions, is_(immMapOf(Engineer to engineerNewPosition, Messenger to messengerOriginalPosition)))
+            assertThat(playerPositions).isEqualTo(immMapOf(Engineer to engineerNewPosition, Messenger to messengerOriginalPosition))
         }
     }
 
@@ -86,10 +84,10 @@ class GameStateProgressionTest {
 
         val mapSiteToShoreUp = game.gameSetup.map.mapSiteAt(positionToShoreUp)
 
-        assertThat(game.gameState.locationFloodStates[mapSiteToShoreUp.location], is_(Flooded))
+        assertThat(game.gameState.locationFloodStates[mapSiteToShoreUp.location]).isEqualTo(Flooded)
 
         after (ShoreUp(Engineer, positionToShoreUp) playedOn game) {
-            assertThat(locationFloodStates[mapSiteToShoreUp.location], is_(Unflooded))
+            assertThat(locationFloodStates[mapSiteToShoreUp.location]).isEqualTo(Unflooded)
         }
     }
 
@@ -99,7 +97,7 @@ class GameStateProgressionTest {
                 .withPlayerCards(immMapOf(Messenger to cards(earth, earth), Engineer to cards(earth, earth)))
 
         after (GiveTreasureCard(Messenger, Engineer, earth) playedOn game) {
-            assertThat(playerCards, is_(immMapOf(Messenger to cards(earth), Engineer to cards(earth, earth, earth))))
+            assertThat(playerCards).isEqualTo(immMapOf(Messenger to cards(earth), Engineer to cards(earth, earth, earth)))
         }
     }
 
@@ -113,13 +111,13 @@ class GameStateProgressionTest {
                              Engineer to cards(ocean, ocean)))
                 .withTreasureDeckDiscard(cards(ocean))
 
-        assertThat(game.gameState.treasuresCollected, is_(Treasure.values().associate { it to false }.imm()))
+        assertThat(game.gameState.treasuresCollected).isEqualTo(Treasure.values().associate { it to false }.imm())
 
         after (CaptureTreasure(Messenger, Treasure.EarthStone) playedOn game) {
-            assertThat(treasuresCollected[Treasure.EarthStone], is_(true))
-            assertThat(treasuresCollected.filterKeys { it != Treasure.EarthStone }.values.toSet(), is_(setOf(false)))
-            assertThat(playerCards, is_(immMapOf(Messenger to cards(ocean), Engineer to cards(ocean, ocean))))
-            assertThat(treasureDeckDiscard, is_(cards(ocean, earth, earth, earth, earth)))
+            assertThat(treasuresCollected[Treasure.EarthStone]).isEqualTo(true)
+            assertThat(treasuresCollected.filterKeys { it != Treasure.EarthStone }.values.toSet()).isEqualTo(setOf(false))
+            assertThat(playerCards).isEqualTo(immMapOf(Messenger to cards(ocean), Engineer to cards(ocean, ocean)))
+            assertThat(treasureDeckDiscard).isEqualTo(cards(ocean, earth, earth, earth, earth))
         }
     }
 
@@ -133,13 +131,13 @@ class GameStateProgressionTest {
         val messengerOriginalPosition = game.gameState.playerPositions.getValue(Messenger)
         val engineerOriginalPosition = game.gameState.playerPositions.getValue(Engineer)
 
-        assertThat(game.gameState.playerPositions, is_(immMapOf(Messenger to messengerOriginalPosition, Engineer to engineerOriginalPosition)))
+        assertThat(game.gameState.playerPositions).isEqualTo(immMapOf(Messenger to messengerOriginalPosition, Engineer to engineerOriginalPosition))
 
         val engineerNewPosition = Position(5, 5)
         after (HelicopterLift(Messenger, Engineer, engineerNewPosition) playedOn game) {
-            assertThat(playerPositions, is_(immMapOf(Messenger to messengerOriginalPosition, Engineer to engineerNewPosition)))
-            assertThat(playerCards, is_(immMapOf(Messenger to cards(earth), Engineer to cards(ocean))))
-            assertThat(treasureDeckDiscard, is_(cards(ocean, HelicopterLiftCard)))
+            assertThat(playerPositions).isEqualTo(immMapOf(Messenger to messengerOriginalPosition, Engineer to engineerNewPosition))
+            assertThat(playerCards).isEqualTo(immMapOf(Messenger to cards(earth), Engineer to cards(ocean)))
+            assertThat(treasureDeckDiscard).isEqualTo(cards(ocean, HelicopterLiftCard))
         }
     }
 
@@ -156,12 +154,12 @@ class GameStateProgressionTest {
 
         val mapSiteToShoreUp = game.gameSetup.map.mapSiteAt(positionToShoreUp)
 
-        assertThat(game.gameState.locationFloodStates[mapSiteToShoreUp.location], is_(Flooded))
+        assertThat(game.gameState.locationFloodStates[mapSiteToShoreUp.location]).isEqualTo(Flooded)
 
         after (Sandbag(Engineer, positionToShoreUp) playedOn game) {
-            assertThat(locationFloodStates[mapSiteToShoreUp.location], is_(Unflooded))
-            assertThat(playerCards, is_(immMapOf(Engineer to cards(earth), Messenger to cards(ocean))))
-            assertThat(treasureDeckDiscard, is_(cards(earth, SandbagsCard)))
+            assertThat(locationFloodStates[mapSiteToShoreUp.location]).isEqualTo(Unflooded)
+            assertThat(playerCards).isEqualTo(immMapOf(Engineer to cards(earth), Messenger to cards(ocean)))
+            assertThat(treasureDeckDiscard).isEqualTo(cards(earth, SandbagsCard))
         }
     }
 
@@ -172,10 +170,10 @@ class GameStateProgressionTest {
                 .withTreasureDeckDiscard(cards(ocean))
 
         after (DiscardCard(Messenger, earth) playedOn game) {
-            assertThat(playerCards, is_(immMapOf(Messenger to cards(HelicopterLiftCard, ocean), Engineer to cards(ocean))))
-            assertThat(treasureDeckDiscard, is_(cards(ocean, earth)))
-            assertThat(playerPositions, is_(game.gameState.playerPositions))
-            assertThat(treasureDeck, is_(game.gameState.treasureDeck))
+            assertThat(playerCards).isEqualTo(immMapOf(Messenger to cards(HelicopterLiftCard, ocean), Engineer to cards(ocean)))
+            assertThat(treasureDeckDiscard).isEqualTo(cards(ocean, earth))
+            assertThat(playerPositions).isEqualTo(game.gameState.playerPositions)
+            assertThat(treasureDeck).isEqualTo(game.gameState.treasureDeck)
         }
     }
 
@@ -187,11 +185,11 @@ class GameStateProgressionTest {
 
         val draw = DrawFromTreasureDeck(Engineer)
         after (draw playedOn game) {
-            assertThat(playerCards, is_(immMapOf(Engineer to cards(earth, fire), Messenger to cards(ocean))))
+            assertThat(playerCards).isEqualTo(immMapOf(Engineer to cards(earth, fire), Messenger to cards(ocean)))
         }
 
         after (listOf(draw, draw) playedOn game) {
-            assertThat(playerCards, is_(immMapOf(Engineer to cards(earth, fire, ocean), Messenger to cards(ocean))))
+            assertThat(playerCards).isEqualTo(immMapOf(Engineer to cards(earth, fire, ocean), Messenger to cards(ocean)))
         }
     }
 
@@ -202,7 +200,7 @@ class GameStateProgressionTest {
                 .withTopOfTreasureDeck(SandbagsCard)
 
         after (DrawFromTreasureDeck(Engineer) playedOn game) {
-            assertThat(playerCards, is_(immMapOf(Engineer to cards(earth, SandbagsCard), Messenger to cards(ocean))))
+            assertThat(playerCards).isEqualTo(immMapOf(Engineer to cards(earth, SandbagsCard), Messenger to cards(ocean)))
         }
     }
 
@@ -213,7 +211,7 @@ class GameStateProgressionTest {
                 .withTopOfTreasureDeck(HelicopterLiftCard)
 
         after (DrawFromTreasureDeck(Engineer) playedOn game) {
-            assertThat(playerCards, is_(immMapOf(Engineer to cards(earth, HelicopterLiftCard), Messenger to cards(ocean))))
+            assertThat(playerCards).isEqualTo(immMapOf(Engineer to cards(earth, HelicopterLiftCard), Messenger to cards(ocean)))
         }
     }
 
@@ -224,13 +222,13 @@ class GameStateProgressionTest {
                 .withPlayerCards(immMapOf(Engineer to cards(), Messenger to cards()))
                 .withTreasureDeckDiscard(treasureDeckDiscardBeforeEvent)
 
-        assertThat(game.gameState.treasureDeck, is_(cards(earth)))
+        assertThat(game.gameState.treasureDeck).isEqualTo(cards(earth))
 
         after (DrawFromTreasureDeck(Engineer) playedOn game) {
-            assertThat(playerCards, is_(immMapOf(Engineer to cards(earth), Messenger to cards())))
-            assertThat(treasureDeck.size, is_(TreasureDeck.newShuffledDeck().size - 1)) // One card dealt to Engineer
-            assertThat(treasureDeck, is_(not(treasureDeckDiscardBeforeEvent)))
-            assertThat(treasureDeckDiscard, is_(cards()))
+            assertThat(playerCards).isEqualTo(immMapOf(Engineer to cards(earth), Messenger to cards()))
+            assertThat(treasureDeck.size).isEqualTo(TreasureDeck.newShuffledDeck().size - 1) // One card dealt to Engineer
+            assertThat(treasureDeck).isNotEqualTo(treasureDeckDiscardBeforeEvent)
+            assertThat(treasureDeckDiscard).isEqualTo(cards())
         }
     }
 
@@ -243,17 +241,17 @@ class GameStateProgressionTest {
         val floodDeckBeforeEvent = game.gameState.floodDeck
         val floodDeckDiscardBeforeEvent = game.gameState.floodDeckDiscard
 
-        assertThat(game.gameState.floodLevel, is_(FloodLevel.TWO))
-        assertThat(floodDeckDiscardBeforeEvent.size, is_(6))
+        assertThat(game.gameState.floodLevel).isEqualTo(FloodLevel.TWO)
+        assertThat(floodDeckDiscardBeforeEvent.size).isEqualTo(6)
 
         after (DrawFromTreasureDeck(Engineer) playedOn game) {
-            assertThat(floodLevel, is_(FloodLevel.THREE))
-            assertThat(playerCards, is_(immMapOf(Engineer to cards(earth), Messenger to cards(ocean))))
-            assertThat(treasureDeckDiscard, is_(cards(WatersRiseCard)))
-            assertThat(floodDeckDiscard, is_(immListOf()))
-            assertThat(floodDeck.take(6).toSortedSet(), is_(floodDeckDiscardBeforeEvent.toSortedSet()))
-            assertThat(floodDeck.take(6), is_(not(floodDeckDiscardBeforeEvent as List<Location>)))
-            assertThat(floodDeck.drop(6), is_(floodDeckBeforeEvent as List<Location>))
+            assertThat(floodLevel).isEqualTo(FloodLevel.THREE)
+            assertThat(playerCards).isEqualTo(immMapOf(Engineer to cards(earth), Messenger to cards(ocean)))
+            assertThat(treasureDeckDiscard).isEqualTo(cards(WatersRiseCard))
+            assertThat(floodDeckDiscard).isEmpty()
+            assertThat(floodDeck.take(6).toSortedSet()).isEqualTo(floodDeckDiscardBeforeEvent.toSortedSet())
+            assertThat(floodDeck.take(6)).isNotEqualTo(floodDeckDiscardBeforeEvent as List<Location>)
+            assertThat(floodDeck.drop(6)).isEqualTo(floodDeckBeforeEvent as List<Location>)
         }
     }
 
@@ -267,20 +265,20 @@ class GameStateProgressionTest {
         val floodDeckBeforeEvent = game.gameState.floodDeck
         val floodDeckDiscardBeforeEvent = game.gameState.floodDeckDiscard
 
-        assertThat(game.gameState.floodLevel, is_(FloodLevel.TWO))
-        assertThat(floodDeckDiscardBeforeEvent.size, is_(6))
+        assertThat(game.gameState.floodLevel).isEqualTo(FloodLevel.TWO)
+        assertThat(floodDeckDiscardBeforeEvent.size).isEqualTo(6)
 
         after (DrawFromTreasureDeck(Engineer) playedOn game) {
-            assertThat(floodLevel, is_(FloodLevel.THREE))
-            assertThat(playerCards, is_(immMapOf(Engineer to cards(earth), Messenger to cards(ocean))))
-            assertThat(treasureDeckDiscard, is_(cards()))
-            assertThat(floodDeckDiscard, is_(immListOf()))
-            assertThat(floodDeck.take(6).toSortedSet(), is_(floodDeckDiscardBeforeEvent.toSortedSet()))
-            assertThat(floodDeck.take(6), is_(not(floodDeckDiscardBeforeEvent as List<Location>)))
-            assertThat(floodDeck.drop(6), is_(floodDeckBeforeEvent as List<Location>))
-            assertThat(treasureDeck.size, is_(TreasureDeck.newShuffledDeck().size - 2)) // Players have two cards
-            assertThat(treasureDeck, is_(not(treasureDeckDiscardBeforeEvent)))
-            assertThat(treasureDeckDiscard, is_(cards()))
+            assertThat(floodLevel).isEqualTo(FloodLevel.THREE)
+            assertThat(playerCards).isEqualTo(immMapOf(Engineer to cards(earth), Messenger to cards(ocean)))
+            assertThat(treasureDeckDiscard).isEqualTo(cards())
+            assertThat(floodDeckDiscard).isEmpty()
+            assertThat(floodDeck.take(6).toSortedSet()).isEqualTo(floodDeckDiscardBeforeEvent.toSortedSet())
+            assertThat(floodDeck.take(6)).isNotEqualTo(floodDeckDiscardBeforeEvent as List<Location>)
+            assertThat(floodDeck.drop(6)).isEqualTo(floodDeckBeforeEvent as List<Location>)
+            assertThat(treasureDeck.size).isEqualTo(TreasureDeck.newShuffledDeck().size - 2) // Players have two cards
+            assertThat(treasureDeck).isNotEqualTo(treasureDeckDiscardBeforeEvent)
+            assertThat(treasureDeckDiscard).isEqualTo(cards())
         }
     }
 
@@ -297,19 +295,19 @@ class GameStateProgressionTest {
         val draw = DrawFromFloodDeck(Engineer)
 
         after (draw playedOn game) {
-            assertThat(locationFloodStates[MistyMarsh], is_(Flooded))
-            assertThat(locationFloodStates[Observatory], is_(Flooded))
-            assertThat(locationFloodStates[CrimsonForest], is_(Flooded))
-            assertThat(locationFloodStates.values.count { it == Unflooded }, is_(Location.allLocationsSet.size - 3))
-            assertThat(floodDeckDiscard, is_(immListOf(MistyMarsh, CrimsonForest)))
+            assertThat(locationFloodStates[MistyMarsh]).isEqualTo(Flooded)
+            assertThat(locationFloodStates[Observatory]).isEqualTo(Flooded)
+            assertThat(locationFloodStates[CrimsonForest]).isEqualTo(Flooded)
+            assertThat(locationFloodStates.values.count { it == Unflooded }).isEqualTo(Location.allLocationsSet.size - 3)
+            assertThat(floodDeckDiscard).isEqualTo(immListOf(MistyMarsh, CrimsonForest))
         }
 
         after (listOf(draw, draw) playedOn game) {
-            assertThat(locationFloodStates[MistyMarsh], is_(Flooded))
-            assertThat(locationFloodStates[Observatory], is_(Sunken))
-            assertThat(locationFloodStates[CrimsonForest], is_(Flooded))
-            assertThat(locationFloodStates.values.count { it == Unflooded }, is_(Location.allLocationsSet.size - 3))
-            assertThat(floodDeckDiscard, is_(immListOf(MistyMarsh, CrimsonForest))) // Sunken Locations are removed from the Flood Deck
+            assertThat(locationFloodStates[MistyMarsh]).isEqualTo(Flooded)
+            assertThat(locationFloodStates[Observatory]).isEqualTo(Sunken)
+            assertThat(locationFloodStates[CrimsonForest]).isEqualTo(Flooded)
+            assertThat(locationFloodStates.values.count { it == Unflooded }).isEqualTo(Location.allLocationsSet.size - 3)
+            assertThat(floodDeckDiscard).isEqualTo(immListOf(MistyMarsh, CrimsonForest)) // Sunken Locations are removed from the Flood Deck
         }
     }
 
@@ -324,13 +322,13 @@ class GameStateProgressionTest {
                     .withFloodDeckDiscard(floodDeckDiscardBeforeEvent.imm())
                     .withGamePhase(AwaitingFloodDeckDraw(Engineer, 3))
 
-        assertThat(game.gameState.floodDeck, is_(immListOf(MistyMarsh)))
-        assertThat(game.gameState.floodDeckDiscard.size, is_(Location.values().size - 2)) // Observatory is out bc its sunken
+        assertThat(game.gameState.floodDeck).isEqualTo(immListOf(MistyMarsh))
+        assertThat(game.gameState.floodDeckDiscard.size).isEqualTo(Location.values().size - 2) // Observatory is out bc its sunken
 
         after (DrawFromFloodDeck(Engineer) playedOn game) {
-            assertThat(floodDeck.toSortedSet(), is_(Location.values().subtract(listOf(Observatory)).toSortedSet()))
-            assertThat(floodDeck.dropLast(1), is_(not(floodDeckDiscardBeforeEvent)))
-            assertThat(floodDeckDiscard, is_(immListOf()))
+            assertThat(floodDeck.toSortedSet()).isEqualTo(Location.values().subtract(listOf(Observatory)).toSortedSet())
+            assertThat(floodDeck.dropLast(1)).isNotEqualTo(floodDeckDiscardBeforeEvent)
+            assertThat(floodDeckDiscard).isEmpty()
         }
     }
 
@@ -344,12 +342,12 @@ class GameStateProgressionTest {
         val messengerOriginalPosition = game.gameState.playerPositions.getValue(Messenger)
         val engineerOriginalPosition = game.gameState.playerPositions.getValue(Engineer)
 
-        assertThat(game.gameState.playerPositions, is_(immMapOf(Messenger to messengerOriginalPosition, Engineer to engineerOriginalPosition)))
+        assertThat(game.gameState.playerPositions).isEqualTo(immMapOf(Messenger to messengerOriginalPosition, Engineer to engineerOriginalPosition))
 
         after (HelicopterLiftOffIsland(Messenger) playedOn game) {
-            assertThat(playerPositions, is_(game.gameState.playerPositions))
-            assertThat(playerCards, is_(immMapOf(Messenger to cards(earth), Engineer to cards(ocean))))
-            assertThat(treasureDeckDiscard, is_(cards(ocean, HelicopterLiftCard)))
+            assertThat(playerPositions).isEqualTo(game.gameState.playerPositions)
+            assertThat(playerCards).isEqualTo(immMapOf(Messenger to cards(earth), Engineer to cards(ocean)))
+            assertThat(treasureDeckDiscard).isEqualTo(cards(ocean, HelicopterLiftCard))
         }
     }
 

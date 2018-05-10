@@ -3,7 +3,7 @@ package com.grahamlea.forbiddenisland
 import com.grahamlea.forbiddenisland.Adventurer.*
 import com.grahamlea.forbiddenisland.LocationFloodState.*
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.util.*
 
 

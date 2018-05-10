@@ -1,37 +1,35 @@
 package com.grahamlea.forbiddenisland
 
 import com.grahamlea.forbiddenisland.Direction.*
-import org.hamcrest.CoreMatchers.nullValue
-import org.junit.Assert.assertThat
-import org.junit.Test
-import org.hamcrest.CoreMatchers.`is` as is_
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 
 class GameMapTest {
     @Test
     fun `new random map should have 24 distinct locations`() {
-        assertThat(GameMap.newShuffledMap().mapSites.map { it.location }.distinct().size, is_(Location.values().size))
+        assertThat(GameMap.newShuffledMap().mapSites.map { it.location }.distinct().size).isEqualTo(Location.values().size)
     }
 
     @Test
     fun `Positions can return their adjacent positions`() {
         val p = Position(3, 3)
-        assertThat(p.neighbour(North), is_(Position(3, 2)))
-        assertThat(p.neighbour(South), is_(Position(3, 4)))
-        assertThat(p.neighbour(East), is_(Position(4, 3)))
-        assertThat(p.neighbour(West), is_(Position(2, 3)))
-        assertThat(p.neighbour(NorthEast), is_(Position(4, 2)))
-        assertThat(p.neighbour(SouthEast), is_(Position(4, 4)))
-        assertThat(p.neighbour(NorthWest), is_(Position(2, 2)))
-        assertThat(p.neighbour(SouthWest), is_(Position(2, 4)))
+        assertThat(p.neighbour(North)).isEqualTo(Position(3, 2))
+        assertThat(p.neighbour(South)).isEqualTo(Position(3, 4))
+        assertThat(p.neighbour(East)).isEqualTo(Position(4, 3))
+        assertThat(p.neighbour(West)).isEqualTo(Position(2, 3))
+        assertThat(p.neighbour(NorthEast)).isEqualTo(Position(4, 2))
+        assertThat(p.neighbour(SouthEast)).isEqualTo(Position(4, 4))
+        assertThat(p.neighbour(NorthWest)).isEqualTo(Position(2, 2))
+        assertThat(p.neighbour(SouthWest)).isEqualTo(Position(2, 4))
     }
 
     @Test
     fun `Invalid positions are not returned as adjacent positions`() {
-        assertThat(Position(3, 1).neighbour(North), is_(nullValue()))
-        assertThat(Position(6, 4).neighbour(East), is_(nullValue()))
-        assertThat(Position(1, 3).neighbour(West), is_(nullValue()))
-        assertThat(Position(4, 6).neighbour(South), is_(nullValue()))
-        assertThat(Position(2, 2).neighbour(NorthWest), is_(nullValue()))
+        assertThat(Position(3, 1).neighbour(North)).isNull()
+        assertThat(Position(6, 4).neighbour(East)).isNull()
+        assertThat(Position(1, 3).neighbour(West)).isNull()
+        assertThat(Position(4, 6).neighbour(South)).isNull()
+        assertThat(Position(2, 2).neighbour(NorthWest)).isNull()
     }
 
     @Test
@@ -44,7 +42,7 @@ class GameMapTest {
                             Position(4, 4)
         )
         val expectedSites = map.mapSites.filter { it.position in neighbours }
-        assertThat(map.adjacentSites(position).toSet(), is_(expectedSites.toSet()))
+        assertThat(map.adjacentSites(position).toSet()).isEqualTo(expectedSites.toSet())
     }
 
     @Test
@@ -57,7 +55,7 @@ class GameMapTest {
                 Position(3, 4), Position(4, 4), Position(5, 4)
         )
         val expectedSites = map.mapSites.filter { it.position in neighbours }
-        assertThat(map.adjacentSites(position, includeDiagonals = true).toSet(), is_(expectedSites.toSet()))
+        assertThat(map.adjacentSites(position, includeDiagonals = true).toSet()).isEqualTo(expectedSites.toSet())
     }
 
     @Test
@@ -70,6 +68,6 @@ class GameMapTest {
                 Position(4, 3), Position(5, 3), Position(6, 3)
         )
         val expectedSites = map.mapSites.filter { it.position in neighbours }
-        assertThat(map.adjacentSites(position, includeDiagonals = true).toSet(), is_(expectedSites.toSet()))
+        assertThat(map.adjacentSites(position, includeDiagonals = true).toSet()).isEqualTo(expectedSites.toSet())
     }
 }

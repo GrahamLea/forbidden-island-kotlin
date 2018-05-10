@@ -3,9 +3,8 @@ package com.grahamlea.forbiddenisland
 import com.grahamlea.forbiddenisland.Adventurer.Engineer
 import com.grahamlea.forbiddenisland.Adventurer.Messenger
 import com.nhaarman.mockito_kotlin.*
-import org.junit.Assert.assertThat
-import org.junit.Test
-import org.hamcrest.CoreMatchers.`is` as is_
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 
 class GameProgressionTest {
 
@@ -22,7 +21,7 @@ class GameProgressionTest {
 
         game.process(moveEvent)
 
-        assertThat(game.gameState, is_(nextGameState))
+        assertThat(game.gameState).isEqualTo(nextGameState)
     }
 
     @Test
@@ -49,11 +48,11 @@ class GameProgressionTest {
         whenever(gamePhase2.phaseAfter(same(drawEvent), argWhere { it.playerCardCounts == cardCountsAfterDraw })) doReturn gamePhase3
 
         after (moveEvent playedOn game) {
-            assertThat(phase, is_(gamePhase2))
+            assertThat(phase).isEqualTo(gamePhase2)
         }
 
         after (listOf(moveEvent, drawEvent) playedOn game) {
-            assertThat(phase, is_(gamePhase3))
+            assertThat(phase).isEqualTo(gamePhase3)
         }
     }
 

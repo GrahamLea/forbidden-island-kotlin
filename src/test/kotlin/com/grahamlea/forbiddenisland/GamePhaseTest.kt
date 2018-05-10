@@ -4,10 +4,10 @@ import com.grahamlea.forbiddenisland.Adventurer.*
 import com.grahamlea.forbiddenisland.LocationFloodState.Sunken
 import com.grahamlea.forbiddenisland.Treasure.EarthStone
 import com.grahamlea.forbiddenisland.Treasure.OceansChalice
-import org.junit.Assert.assertThat
-import org.junit.Assert.fail
-import org.junit.Test
-import org.hamcrest.CoreMatchers.`is` as is_
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.fail
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
 
 class GamePhaseTest {
 
@@ -264,16 +264,20 @@ class GamePhaseTest {
         )
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun `awaiting player to discard card + non-card-discarding event is illegal`() {
-        AwaitingPlayerToDiscardExtraCard(Messenger, AwaitingPlayerAction(Engineer, 1))
+        Assertions.assertThrows(IllegalStateException::class.java) {
+            AwaitingPlayerToDiscardExtraCard(Messenger, AwaitingPlayerAction(Engineer, 1))
                 .phaseAfter(event = DrawFromTreasureDeck(Engineer), nextGameState = randomNewGameState)
+        }
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun `awaiting player to discard card + card-discarding event for another player is illegal`() {
-        AwaitingPlayerToDiscardExtraCard(Messenger, AwaitingPlayerAction(Engineer, 1))
+        Assertions.assertThrows(IllegalStateException::class.java) {
+            AwaitingPlayerToDiscardExtraCard(Messenger, AwaitingPlayerAction(Engineer, 1))
                 .phaseAfter(event = DiscardCard(Engineer, TreasureCard(EarthStone)), nextGameState = randomNewGameState)
+        }
     }
 
     @Test
@@ -294,16 +298,20 @@ class GamePhaseTest {
         )
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun `awaiting player to swim + non-swim event is illegal`() {
-        AwaitingPlayerToSwimToSafety(Messenger, AwaitingPlayerAction(Engineer, 1))
+        Assertions.assertThrows(IllegalStateException::class.java) {
+            AwaitingPlayerToSwimToSafety(Messenger, AwaitingPlayerAction(Engineer, 1))
                 .phaseAfter(event = DrawFromTreasureDeck(Engineer), nextGameState = randomNewGameState)
+        }
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun `awaiting player to swim + swim event for another player is illegal`() {
-        AwaitingPlayerToSwimToSafety(Messenger, AwaitingPlayerAction(Engineer, 1))
+        Assertions.assertThrows(IllegalStateException::class.java) {
+            AwaitingPlayerToSwimToSafety(Messenger, AwaitingPlayerAction(Engineer, 1))
                 .phaseAfter(event = SwimToSafety(Engineer, position33), nextGameState = randomNewGameState)
+        }
     }
 
     @Test
@@ -323,7 +331,7 @@ class GamePhaseTest {
 
         for (phase in phases) {
             for (event in events) {
-                assertThat(phase.phaseAfter(event, randomNewGameState), is_(phase))
+                assertThat(phase.phaseAfter(event, randomNewGameState)).isEqualTo(phase)
             }
         }
     }
@@ -354,7 +362,7 @@ class GamePhaseTest {
     }
 
     private fun checkPhaseTransition(firstPhase: GamePhase, event: GameEvent, gameStateAfterEventProcessed: GameState = randomNewGameState, expectedPhase: GamePhase) {
-        assertThat(firstPhase.phaseAfter(event, gameStateAfterEventProcessed), is_(expectedPhase))
+        assertThat(firstPhase.phaseAfter(event, gameStateAfterEventProcessed)).isEqualTo(expectedPhase)
     }
 }
 

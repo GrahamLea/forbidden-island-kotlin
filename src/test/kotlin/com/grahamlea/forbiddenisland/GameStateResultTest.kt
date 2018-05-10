@@ -6,30 +6,14 @@ import com.grahamlea.forbiddenisland.FloodLevel.DEAD
 import com.grahamlea.forbiddenisland.Location.*
 import com.grahamlea.forbiddenisland.LocationFloodState.*
 import com.grahamlea.forbiddenisland.Treasure.*
-import org.hamcrest.CoreMatchers.*
-import org.junit.Assert.assertThat
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.Parameterized
-import org.hamcrest.CoreMatchers.`is` as is_
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.RepeatedTest
 
-@RunWith(Parameterized::class)
 class GameStateResultTest {
-
-    companion object {
-        // Some of these tests setup fairly complex scenarios on top of random data, so we run them 100 times each
-        // to ensure that the implementation passes for all cases
-        private const val numberOfTimesToRunTests = 100
-
-        @JvmStatic @Parameterized.Parameters
-        fun data(): Array<Array<Any>> {
-            return Array(numberOfTimesToRunTests) { Array<Any>(0) {} }
-        }
-    }
 
     private val allLocationsUnflooded = Location.values().associate { it to Unflooded }
 
-    @Test
+    @RepeatedTest(100)
     fun `game is won when HelicopterLiftOffIsland event has been played`() {
         val game = Game.newRandomGameFor(randomListOfPlayers(2)).let { game ->
             game.copy(gameState = game.gameState.copy(
@@ -37,10 +21,10 @@ class GameStateResultTest {
             ))
         }
 
-        assertThat(game.gameState.result, is_(AdventurersWon as GameResult))
+        assertThat(game.gameState.result).isEqualTo(AdventurersWon)
     }
 
-    @Test
+    @RepeatedTest(100)
     fun `game is not won when all four treasures are collected and all adventurers are on fool's landing and helicopter lift was most recent card played`() {
         val players = randomListOfPlayers(2)
         val game = Game.newRandomGameFor(players).let { game ->
@@ -54,10 +38,10 @@ class GameStateResultTest {
                 .withPlayerPosition(players[1], game.gameSetup.map.positionOf(FoolsLanding))
         }
 
-        assertThat(game.gameState.result, is_(nullValue()))
+        assertThat(game.gameState.result).isNull()
     }
 
-    @Test
+    @RepeatedTest(100)
     fun `game is not won just when all four treasures are collected`() {
         val players = randomListOfPlayers(2)
         val game = Game.newRandomGameFor(players).let { game ->
@@ -65,10 +49,10 @@ class GameStateResultTest {
                     treasuresCollected = Treasure.values().associate { it to true }.imm()))
         }
 
-        assertThat(game.gameState.result, is_(nullValue()))
+        assertThat(game.gameState.result).isNull()
     }
 
-    @Test
+    @RepeatedTest(100)
     fun `game is not won when all four treasures are collected and all adventurers are on fool's landing`() {
         val players = randomListOfPlayers(2)
         val game = Game.newRandomGameFor(players).let { game ->
@@ -78,10 +62,10 @@ class GameStateResultTest {
                 .withPlayerPosition(players[1], game.gameSetup.map.positionOf(FoolsLanding))
         }
 
-        assertThat(game.gameState.result, is_(nullValue()))
+        assertThat(game.gameState.result).isNull()
     }
 
-    @Test
+    @RepeatedTest(100)
     fun `game is not won when all four treasures are collected and one adventurers is on fool's landing and helicopter lift has been played`() {
         val players = randomListOfPlayers(2)
         val game = Game.newRandomGameFor(players).let { game ->
@@ -95,10 +79,10 @@ class GameStateResultTest {
                 .withPlayerPosition(players[1], game.gameSetup.map.positionOf(TempleOfTheSun))
         }
 
-        assertThat(game.gameState.result, is_(nullValue()))
+        assertThat(game.gameState.result).isNull()
     }
 
-    @Test
+    @RepeatedTest(100)
     fun `game is not won when three treasures are collected and all adventurers are on fool's landing and helicopter lift has been played`() {
         val players = randomListOfPlayers(2)
         val game = Game.newRandomGameFor(players).let { game ->
@@ -112,115 +96,115 @@ class GameStateResultTest {
                 .withPlayerPosition(players[1], game.gameSetup.map.positionOf(FoolsLanding))
         }
 
-        assertThat(game.gameState.result, is_(nullValue()))
+        assertThat(game.gameState.result).isNull()
     }
 
-    @Test
+    @RepeatedTest(100)
     fun `game is lost when Fool's Landing sinks`() {
         val gameState = Game.newRandomGameFor(4).gameState
                 .copy(locationFloodStates = (allLocationsUnflooded + (FoolsLanding to Sunken)).imm())
 
-        assertThat(gameState.result, is_(FoolsLandingSank as GameResult))
+        assertThat(gameState.result).isEqualTo(FoolsLandingSank)
     }
 
-    @Test
+    @RepeatedTest(100)
     fun `game is lost when flood level reaches 10 (dead)`() {
         val gameState = Game.newRandomGameFor(4).gameState.copy(floodLevel = DEAD)
 
-        assertThat(gameState.result, is_(MaximumWaterLevelReached as GameResult))
+        assertThat(gameState.result).isEqualTo(MaximumWaterLevelReached)
     }
 
-    @Test
+    @RepeatedTest(100)
     fun `game is lost when both pickup locations for Crystal of Fire sink`() {
         val gameState = Game.newRandomGameFor(4).gameState
                 .copy(locationFloodStates = (allLocationsUnflooded + (CaveOfEmbers to Sunken) + (CaveOfShadows to Sunken)).imm())
 
-        assertThat(gameState.result,
-                is_(BothPickupLocationsSankBeforeCollectingTreasure(CrystalOfFire, CaveOfEmbers to CaveOfShadows) as GameResult))
+        assertThat(gameState.result)
+            .isEqualTo(BothPickupLocationsSankBeforeCollectingTreasure(CrystalOfFire, CaveOfEmbers to CaveOfShadows))
     }
 
-    @Test
+    @RepeatedTest(100)
     fun `game is lost when both pickup locations for Ocean's Chalice sink`() {
         val gameState = Game.newRandomGameFor(4).gameState
                 .copy(locationFloodStates = (allLocationsUnflooded + (CoralPalace to Sunken) + (TidalPalace to Sunken)).imm())
 
-        assertThat(gameState.result,
-                is_(BothPickupLocationsSankBeforeCollectingTreasure(OceansChalice, CoralPalace to TidalPalace) as GameResult))
+        assertThat(gameState.result)
+            .isEqualTo(BothPickupLocationsSankBeforeCollectingTreasure(OceansChalice, CoralPalace to TidalPalace))
     }
 
-    @Test
+    @RepeatedTest(100)
     fun `game is lost when both pickup locations for Statue of the Wind sink`() {
         val gameState = Game.newRandomGameFor(4).gameState
                 .copy(locationFloodStates = (allLocationsUnflooded + (HowlingGarden to Sunken) + (WhisperingGarden to Sunken)).imm())
 
-        assertThat(gameState.result,
-                is_(BothPickupLocationsSankBeforeCollectingTreasure(StatueOfTheWind, HowlingGarden to WhisperingGarden) as GameResult))
+        assertThat(gameState.result)
+            .isEqualTo(BothPickupLocationsSankBeforeCollectingTreasure(StatueOfTheWind, HowlingGarden to WhisperingGarden))
     }
 
-    @Test
+    @RepeatedTest(100)
     fun `game is lost when both pickup locations for Earth Stone sink`() {
         val gameState = Game.newRandomGameFor(4).gameState
                 .copy(locationFloodStates = (allLocationsUnflooded + (TempleOfTheMoon to Sunken) + (TempleOfTheSun to Sunken)).imm())
 
-        assertThat(gameState.result,
-                is_(BothPickupLocationsSankBeforeCollectingTreasure(EarthStone, TempleOfTheMoon to TempleOfTheSun) as GameResult))
+        assertThat(gameState.result)
+                .isEqualTo(BothPickupLocationsSankBeforeCollectingTreasure(EarthStone, TempleOfTheMoon to TempleOfTheSun))
     }
 
-    @Test
+    @RepeatedTest(100)
     fun `game is not lost when one pickup locations for a Treasure has sunken`() {
         val gameState = Game.newRandomGameFor(4).gameState
                 .copy(locationFloodStates = (allLocationsUnflooded + (TempleOfTheMoon to Sunken)).imm())
 
-        assertThat(gameState.result, is_(nullValue()))
+        assertThat(gameState.result).isNull()
     }
 
-    @Test
+    @RepeatedTest(100)
     fun `game is not lost when one pickup locations for a Treasure has sunken and the other is flooded`() {
         val gameState = Game.newRandomGameFor(4).gameState
                 .copy(locationFloodStates = (allLocationsUnflooded + (TempleOfTheMoon to Sunken) + (TempleOfTheSun to Flooded)).imm())
 
-        assertThat(gameState.result, is_(nullValue()))
+        assertThat(gameState.result).isNull()
     }
 
-    @Test
+    @RepeatedTest(100)
     fun `game is not lost when both pickup locations for a Treasure are flooded`() {
         val gameState = Game.newRandomGameFor(4).gameState
                 .copy(locationFloodStates = (allLocationsUnflooded + (TempleOfTheMoon to Flooded) + (TempleOfTheSun to Flooded)).imm())
 
-        assertThat(gameState.result, is_(nullValue()))
+        assertThat(gameState.result).isNull()
     }
 
-    @Test
+    @RepeatedTest(100)
     fun `game is lost when the Engineer is on a sunken location and can't swim to an adjacent one`() {
         val game = setupStrandedGameFor(Engineer, Navigator, sinkDiagonals = false)
-        assertThat(game.gameState.result, is_(PlayerDrowned(Engineer) as GameResult))
+        assertThat(game.gameState.result).isEqualTo(PlayerDrowned(Engineer))
     }
 
-    @Test
+    @RepeatedTest(100)
     fun `game is lost when the Navigator is on a sunken location and can't swim to an adjacent one`() {
         val game = setupStrandedGameFor(Navigator, Engineer, sinkDiagonals = false)
-        assertThat(game.gameState.result, is_(PlayerDrowned(Navigator) as GameResult))
+        assertThat(game.gameState.result).isEqualTo(PlayerDrowned(Navigator))
     }
 
-    @Test
+    @RepeatedTest(100)
     fun `game is lost when the Messenger is on a sunken location and can't swim to an adjacent one`() {
         val game = setupStrandedGameFor(Messenger, Engineer, sinkDiagonals = false)
-        assertThat(game.gameState.result, is_(PlayerDrowned(Messenger) as GameResult))
+        assertThat(game.gameState.result).isEqualTo(PlayerDrowned(Messenger))
     }
 
-    @Test
+    @RepeatedTest(100)
     fun `game is lost when the Explorer is on a sunken location with all adjacent and diagonal ones sunken`() {
         val game = setupStrandedGameFor(Explorer, Navigator, sinkDiagonals = true)
-        assertThat(game.gameState.result, is_(PlayerDrowned(Explorer) as GameResult))
+        assertThat(game.gameState.result).isEqualTo(PlayerDrowned(Explorer))
     }
 
-    @Test
+    @RepeatedTest(100)
     fun `game is NOT lost when the Explorer is on a sunken location with only adjacent ones sunken`() {
         val game = setupStrandedGameFor(Explorer, Navigator, sinkDiagonals = false)
-        assertThat(game.gameState.result, is_(nullValue()))
+        assertThat(game.gameState.result).isNull()
     }
 
-    @Test
+    @RepeatedTest(100)
     fun `game is NOT lost when the Explorer is on a sunken location with all adjacent and SOME diagonal ones sunken`() {
         val sunkPositionWithSunkSurroundings = Position(3, 3)
         val safePosition = Position(5, 5)
@@ -233,22 +217,22 @@ class GameStateResultTest {
 
         val game = createGameForSunkPlayerScenario(sunkPositionWithSunkSurroundings, Explorer, positionsToSink, Navigator, safePosition)
 
-        assertThat(game.gameState.result, is_(nullValue()))
+        assertThat(game.gameState.result).isNull()
     }
 
-    @Test
+    @RepeatedTest(100)
     fun `game is NOT lost when the Diver is on a sunken location with all adjacent ones sunken`() {
         val game = setupStrandedGameFor(Diver, Navigator, sinkDiagonals = false)
-        assertThat(game.gameState.result, is_(nullValue()))
+        assertThat(game.gameState.result).isNull()
     }
 
-    @Test
+    @RepeatedTest(100)
     fun `game is NOT lost when the Pilot is on a sunken location with all adjacent ones sunken`() {
         val game = setupStrandedGameFor(Pilot, Navigator, sinkDiagonals = false)
-        assertThat(game.gameState.result, is_(nullValue()))
+        assertThat(game.gameState.result).isNull()
     }
 
-    @Test
+    @RepeatedTest(100)
     fun `game is NOT lost when a player is on a sunken location and CAN swim to at least one adjacent one`() {
         val sunkPositionWithSunkSurroundings = Position(3, 3)
         val safePosition = Position(5, 5)
@@ -260,7 +244,7 @@ class GameStateResultTest {
 
         val game = createGameForSunkPlayerScenario(sunkPositionWithSunkSurroundings, Engineer, positionsToSink, Navigator, safePosition)
 
-        assertThat(game.gameState.result, is_(nullValue()))
+        assertThat(game.gameState.result).isNull()
     }
 
     private fun setupStrandedGameFor(playerToStrand: Adventurer, otherPlayer: Adventurer, sinkDiagonals: Boolean): Game {

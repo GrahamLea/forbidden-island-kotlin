@@ -1,13 +1,12 @@
 package com.grahamlea.forbiddenisland
 
-import org.hamcrest.CoreMatchers.`is`
-import org.junit.Assert.assertThat
-import org.junit.Test
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 
 class AllPossibleEventsTest {
     @Test
     fun `all possible events`() {
-        assertThat(GameEvent.allPossibleEvents.joinToString("\n"),
-                `is`(this::class.java.getResource("AllPossibleEvents.txt").readText()))
+        assertThat(GameEvent.allPossibleEvents.joinToString("\n"))
+            .isEqualTo(this::class.java.getResource("AllPossibleEvents.txt").readText())
     }
 }
