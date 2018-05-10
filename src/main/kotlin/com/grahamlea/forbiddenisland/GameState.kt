@@ -94,27 +94,20 @@ data class GameState(
 
     val availableActions: List<GameEvent> by lazy {
         when (phase) {
-            is AwaitingPlayerAction -> possibleMoveAndFlyActions(phase.player)
+            is AwaitingPlayerAction -> availableMoveAndFlyActions(phase.player)
             else -> emptyList()
         }
     }
 
-    private fun possibleMoveAndFlyActions(player: Adventurer): List<GameEvent> {
+    private fun availableMoveAndFlyActions(player: Adventurer): List<GameEvent> {
         val playerPosition = playerPositions.getValue(player)
-        val playerSite = gameSetup.map.mapSiteAt(playerPosition)
         val moves = accessiblePositionsAdjacentTo(playerPosition, includeDiagonals = player == Explorer).toMovesFor(player)
-        val flights = if (player == Pilot && !previousEvents.takeLastWhile { it !is DrawFromFloodDeck }.any { it is Fly }) {
-            (gameSetup.map.mapSites.map(MapSite::position) - moves.map(Move::position) - playerPosition).map { Fly(player, it) }
-        } else emptyList()
-        val navigatorAssists = if (player == Navigator) {
-            gameSetup.players.filterNot { it == Navigator }
-                .associate { otherPlayer -> otherPlayer to positionsNavigatorCanSend(otherPlayer) }
-                .flatMap { (otherPlayer, sites) -> sites.toMovesFor(otherPlayer) }
-        } else emptyList()
-        val diverSwims = if (player == Diver) {
-            diverSwimPositionsFrom(playerSite).toMovesFor(Diver)
-        } else emptyList()
-        return moves + flights + navigatorAssists + diverSwims
+        return moves + when (player) {
+            Diver -> diverSwimPositionsFrom(gameSetup.map.mapSiteAt(playerPosition)).toMovesFor(Diver)
+            Navigator -> (gameSetup.players - Navigator).flatMap { sitesNavigatorCanSend(it).toMovesFor(it) }
+            Pilot -> if (!pilotHasAlreadyUsedAFlightThisTurn()) availablePilotFlights(moves, playerPosition, player) else emptyList()
+            else -> emptyList()
+        }
     }
 
     private fun Iterable<MapSite>.toMovesFor(player: Adventurer) = this.map { Move(player, it.position) }
@@ -123,7 +116,7 @@ data class GameState(
         gameSetup.map.adjacentSites(p, includeDiagonals)
             .filter { locationFloodStates.getValue(it.location) != Sunken || includeSunkenTiles }
 
-    private fun positionsNavigatorCanSend(player: Adventurer): List<MapSite> =
+    private fun sitesNavigatorCanSend(player: Adventurer): List<MapSite> =
         playerPositions.getValue(player).let { playersCurrentPosition ->
             accessiblePositionsAdjacentTo(
                 playersCurrentPosition,
@@ -137,6 +130,12 @@ data class GameState(
                 ) + immediateNeighbourSite
             }.distinct() - gameSetup.map.mapSiteAt(playersCurrentPosition)
         }
+
+    private fun pilotHasAlreadyUsedAFlightThisTurn() =
+        previousEvents.takeLastWhile { it !is DrawFromFloodDeck }.any { it is Fly }
+
+    private fun availablePilotFlights(pilotAvailableMoves: List<Move>, playerPosition: Position, player: Adventurer) =
+        (gameSetup.map.mapSites.map(MapSite::position) - pilotAvailableMoves.map(Move::position) - playerPosition).map { Fly(player, it) }
 
     private fun diverSwimPositionsFrom(playersCurrentSite: MapSite): List<MapSite> {
         tailrec fun positions(startingPoints: List<MapSite>, reachable: MutableList<MapSite>): List<MapSite> {
