@@ -135,7 +135,12 @@ data class GameState(
         previousEvents.takeLastWhile { it !is DrawFromFloodDeck }.any { it is Fly }
 
     private fun availablePilotFlights(pilotAvailableMoves: List<Move>, playerPosition: Position, player: Adventurer) =
-        (gameSetup.map.mapSites.map(MapSite::position) - pilotAvailableMoves.map(Move::position) - playerPosition).map { Fly(player, it) }
+        (gameSetup.map.mapSites
+            .filterNot { locationFloodStates[it.location] == Sunken }
+            .map(MapSite::position)
+            - pilotAvailableMoves.map(Move::position)
+            - playerPosition)
+            .map { Fly(player, it) }
 
     private fun diverSwimPositionsFrom(playersCurrentSite: MapSite): List<MapSite> {
         tailrec fun positions(startingPoints: List<MapSite>, reachable: MutableList<MapSite>): List<MapSite> {

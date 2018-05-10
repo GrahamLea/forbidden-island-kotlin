@@ -144,6 +144,16 @@ class GameStateAvailableActionsTest {
     }
 
     @Test
+    fun `pilot can't fly to positions that have sunk`() {
+        val sunkenPosition = Position(3, 1)
+        val game = game(Pilot, Explorer)
+            .withPlayerPosition(Pilot, Position(4, 4))
+            .withLocationFloodStates(Sunken, sunkenPosition)
+
+        assertThat(game.availableActions<Fly>()).doesNotContain(Fly(Pilot, sunkenPosition))
+    }
+
+    @Test
     fun `Navigator can move other players up to 2 tiles, including changing directions`() {
         val game = game(Navigator, Engineer)
             .withPlayerPosition(Navigator, Position(4, 4))
