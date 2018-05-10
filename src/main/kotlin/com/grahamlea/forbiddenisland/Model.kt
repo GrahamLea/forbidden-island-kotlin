@@ -92,7 +92,7 @@ enum class Location(
     CrimsonForest("Crimson Forest"),
     Observatory("Observatory"),
     TwilightHollow("TwilightHollow"),
-    CliffsOfAbaondon("Cliffs of Abaondon"),
+    CliffsOfAbandon("Cliffs of Abandon"),
     DunesOfDeception("Dunes of Deception"),
     LostLagoon("Lost Lagoon");
 
