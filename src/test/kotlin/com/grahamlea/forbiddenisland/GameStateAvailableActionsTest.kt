@@ -276,5 +276,5 @@ class GameStateAvailableActionsTest {
     private fun Game.availableMoves(): List<Move> = availableActions<Move>()
 
     private inline fun <reified T: GameEvent> Game.availableActions(): List<T> =
-        gameState.availableActions.mapNotNull { if (it is T) it else null }
+        gameState.availableActions.mapNotNull { it as? T }
 }
