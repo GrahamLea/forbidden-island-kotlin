@@ -19,17 +19,17 @@ class GameStateAvailableActionsTest {
         val game = game(Engineer, Messenger, Diver, Pilot).withLocationFloodStates(Unflooded, *Location.values())
 
         for (player in game.gameSetup.players) {
-            val availableActions =
+            val availableMoves =
                 game.withPlayerPosition(player, Position(4, 4))
                     .withGamePhase(AwaitingPlayerAction(player, 3))
-                    .gameState.availableActions
+                    .availableMoves()
 
-            assertThat(availableActions.filter { it is Move }).containsOnlyElementsOf(
+            assertThat(availableMoves).containsOnlyElementsOf(
                 listOf(
                                     Position(4, 3),
                     Position(3, 4),                 Position(5, 4),
                                     Position(4, 5)
-                ).map { Move(player, it) as GameEvent }
+                ).map { Move(player, it) }
             )
         }
     }
@@ -49,12 +49,12 @@ class GameStateAvailableActionsTest {
             .withLocationFloodStates(Sunken, sunkenPosition)
 
         for (player in game.gameSetup.players) {
-            val availableActions =
+            val availableMoves =
                 game.withPlayerPosition(player, playerPosition)
                     .withGamePhase(AwaitingPlayerAction(player, 3))
-                    .gameState.availableActions
+                    .availableMoves()
 
-            assertThat(availableActions)
+            assertThat(availableMoves)
                 .contains(Move(player, floodedPosition))
                 .doesNotContain(Move(player, sunkenPosition))
         }
@@ -65,12 +65,12 @@ class GameStateAvailableActionsTest {
         val game = game(Explorer, Pilot)
             .withPlayerPosition(Explorer, Position(4, 4))
 
-        assertThat(game.gameState.availableActions.filter { it is Move }).containsOnlyElementsOf(
+        assertThat(game.availableMoves()).containsOnlyElementsOf(
             listOf(
                 Position(3, 3), Position(4, 3), Position(5, 3),
                 Position(3, 4),                 Position(5, 4),
                 Position(3, 5), Position(4, 5), Position(5, 5)
-            ).map { Move(Explorer, it) as GameEvent }
+            ).map { Move(Explorer, it) }
         )
     }
 
@@ -102,8 +102,8 @@ class GameStateAvailableActionsTest {
             listOf(      3, 4      ).map { Position(it, 6) }
         ).flatten()
 
-        assertThat(game.gameState.availableActions.filter { it is Fly }).containsOnlyElementsOf(
-            allNonAdjacentPositions.map { Fly(Pilot, it) as GameEvent }
+        assertThat(game.availableActions<Fly>()).containsOnlyElementsOf(
+            allNonAdjacentPositions.map { Fly(Pilot, it) }
         )
     }
 
@@ -113,7 +113,7 @@ class GameStateAvailableActionsTest {
             .withPlayerPosition(Pilot, Position(4, 4))
             .withPreviousEvents(Fly(Pilot, Position(4, 4)))
 
-        assertThat(game.gameState.availableActions.filter { it is Fly }).isEmpty()
+        assertThat(game.availableActions<Fly>()).isEmpty()
     }
 
     @Test
@@ -134,8 +134,8 @@ class GameStateAvailableActionsTest {
             listOf(      3, 4      ).map { Position(it, 6) }
         ).flatten()
 
-        assertThat(game.gameState.availableActions.filter { it is Fly }).containsOnlyElementsOf(
-            allNonAdjacentPositions.map { Fly(Pilot, it) as GameEvent }
+        assertThat(game.availableActions<Fly>()).containsOnlyElementsOf(
+            allNonAdjacentPositions.map { Fly(Pilot, it) }
         )
     }
 
@@ -145,10 +145,7 @@ class GameStateAvailableActionsTest {
             .withPlayerPosition(Navigator, Position(4, 4))
             .withPlayerPosition(Engineer, Position(3, 3))
 
-
-        assertThat(game.gameState.availableActions.mapNotNull {
-            if (it is Move && it.player == Engineer) it.position else null
-        }).containsOnlyElementsOf(
+        assertThat(game.availableMoves(Engineer)).containsOnlyElementsOf(
             listOf(
                                                 Position(3, 1),
                                 Position(2, 2), Position(3, 2), Position(4, 2),
@@ -164,12 +161,12 @@ class GameStateAvailableActionsTest {
         val game = game(Navigator, Messenger)
                     .withPlayerPosition(Navigator, Position(4, 4))
 
-        assertThat(game.gameState.availableActions.filter { it is Move && it.player == Navigator }).containsOnlyElementsOf(
+        assertThat(game.availableMoves(Navigator)).containsOnlyElementsOf(
             listOf(
                                 Position(4, 3),
                 Position(3, 4),                 Position(5, 4),
                                 Position(4, 5)
-            ).map { Move(Navigator, it) as GameEvent }
+            )
         )
     }
 
@@ -186,8 +183,7 @@ class GameStateAvailableActionsTest {
             listOf(   2, 3, 4, 5).map { Position(it, 5) }
         ).flatten()
 
-        assertThat(game.gameState.availableActions.mapNotNull { if (it is Move && it.player == Explorer) it.position else null })
-            .containsOnlyElementsOf(expectedExplorerOptions)
+        assertThat(game.availableMoves(Explorer)).containsOnlyElementsOf(expectedExplorerOptions)
     }
 
     @Test
@@ -235,7 +231,7 @@ class GameStateAvailableActionsTest {
                     .withLocationFloodStates(Sunken, Position(2, 4), Position(4, 4))
                     .withLocationFloodStates(Flooded, Position(3, 4), Position(5, 4))
 
-        assertThat(game.gameState.availableActions.filter { it is Move })
+        assertThat(game.availableMoves())
             .contains(Move(Diver, Position(3, 4)))
             .contains(Move(Diver, Position(5, 4)))
             .contains(Move(Diver, Position(6, 4)))
@@ -261,7 +257,14 @@ class GameStateAvailableActionsTest {
                     .withPlayerPosition(Diver, diverPosition)
                     .withLocationFloodStates(Flooded, *floodedPositions.toTypedArray())
 
-        assertThat(game.gameState.availableActions.filter { it is Move }).contains(Move(Diver, Position(4, 1))) // top-right
+        assertThat(game.availableMoves()).contains(Move(Diver, Position(4, 1))) // top-right
     }
 
+    private fun Game.availableMoves(player: Adventurer): List<Position> =
+        availableMoves().filter { it.player == player }.map(Move::position)
+
+    private fun Game.availableMoves(): List<Move> = availableActions<Move>()
+
+    private inline fun <reified T: GameEvent> Game.availableActions(): List<T> =
+        gameState.availableActions.mapNotNull { if (it is T) it else null }
 }
