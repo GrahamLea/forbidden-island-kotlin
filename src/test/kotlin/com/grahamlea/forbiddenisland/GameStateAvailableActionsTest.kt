@@ -1,11 +1,14 @@
 package com.grahamlea.forbiddenisland
 
 import com.grahamlea.forbiddenisland.Adventurer.*
+import com.grahamlea.forbiddenisland.Game.Companion.newRandomGameFor
 import com.grahamlea.forbiddenisland.LocationFloodState.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import java.util.*
 
 @DisplayName("GameState available actions")
@@ -16,7 +19,8 @@ class GameStateAvailableActionsTest {
     private val ocean = TreasureCard(Treasure.OceansChalice)
     private val fire = TreasureCard(Treasure.CrystalOfFire)
 
-    @Nested @DisplayName("Move actions")
+    @Nested
+    @DisplayName("Move actions")
     inner class MoveTests {
 
         @Nested
@@ -70,7 +74,8 @@ class GameStateAvailableActionsTest {
             }
         }
 
-        @Nested @DisplayName("Explorer")
+        @Nested
+        @DisplayName("Explorer")
         inner class ExplorerTests {
             @Test
             fun `Explorer can walk to diagonal positions as well as adjacent`() {
@@ -103,7 +108,8 @@ class GameStateAvailableActionsTest {
             }
         }
 
-        @Nested @DisplayName("Navigator")
+        @Nested
+        @DisplayName("Navigator")
         inner class NavigatorTests {
             @Test
             fun `Navigator can move other players up to 2 tiles, including changing directions`() {
@@ -192,7 +198,8 @@ class GameStateAvailableActionsTest {
             }
         }
 
-        @Nested @DisplayName("Diver")
+        @Nested
+        @DisplayName("Diver")
         inner class DiverTests {
             @Test
             fun `Diver can move through adjacent flooded and sunken tiles in one action, but can't land on sunken tiles`() {
@@ -237,7 +244,8 @@ class GameStateAvailableActionsTest {
         }
     }
 
-    @Nested @DisplayName("Fly actions")
+    @Nested
+    @DisplayName("Fly actions")
     inner class FlyTests {
         @Test
         fun `Pilot can fly to any tile that's not adjacent`() {
@@ -299,6 +307,89 @@ class GameStateAvailableActionsTest {
 
             assertThat(game.availableActions<Fly>()).doesNotContain(Fly(Pilot, sunkenPosition))
         }
+    }
+
+    @Nested
+    @DisplayName("Shore Up actions")
+    inner class ShoreUpTests {
+        @Test
+        fun `Navigator, Messenger, Diver and Pilot can shore up their own position or flooded positions adjacent to them`() {
+            val game = game(Navigator, Messenger, Diver, Pilot)
+                            .withLocationFloodStates(Flooded, *Position.allPositions.toTypedArray())
+
+            for (player in game.gameSetup.players) {
+                val availableMoves =
+                    game.withPlayerPosition(player, Position(4, 4))
+                        .withGamePhase(AwaitingPlayerAction(player, 3))
+                        .availableActions<ShoreUp>()
+
+                assertThat(availableMoves).containsOnlyElementsOf(positionsFromMap("""
+                  ..
+                 ....
+                ...o..
+                ..ooo.
+                 ..o.
+                  ..
+                """).map { ShoreUp(player, it) })
+            }
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = ["Diver", "Engineer", "Explorer", "Messenger", "Navigator", "Pilot"])
+        fun `Unflooded or Sunken positions cannot be shored up`(playerName: String) {
+            val player1 = Adventurer.valueOf(playerName)
+            val player2 = (Adventurer.values().toList() - player1).shuffled().first()
+            val game = newRandomGameFor(immListOf(player1, player2))
+                            .withPlayerPosition(player1, Position(4, 4))
+                            .withLocationFloodStates(Unflooded, *Position.allPositions.toTypedArray())
+                            .withLocationFloodStates(Sunken, Position(3, 4), Position(4, 5))
+
+            assertThat(game.availableActions<ShoreUp>()).isEmpty()
+        }
+
+        @Test
+        fun `Explorer can shore up flooded positions adjacent and diagonal to them`() {
+            val game = game(Explorer, Messenger)
+                        .withLocationFloodStates(Flooded, *Position.allPositions.toTypedArray())
+                        .withPlayerPosition(Explorer, Position(4, 4))
+
+                assertThat(game.availableActions<ShoreUp>()).containsOnlyElementsOf(positionsFromMap("""
+                  ..
+                 ....
+                ..ooo.
+                ..ooo.
+                 .ooo
+                  ..
+                """).map { ShoreUp(Explorer, it) })
+        }
+
+        @Test
+        fun `Engineer can shore up one or two flooded positions`() {
+            val game = game(Engineer, Messenger)
+                        .withLocationFloodStates(Flooded, *Position.allPositions.toTypedArray())
+                        .withPlayerPosition(Engineer, Position(4, 4))
+
+            val validPositions = positionsFromMap("""
+              ..
+             ....
+            ...o..
+            ..ooo.
+             ..o.
+              ..
+            """)
+
+            val validCombinations = Pair(Engineer, validPositions).let { (p, vp) -> listOf(
+                ShoreUp(p, vp[0], vp[1]), ShoreUp(p, vp[0], vp[2]), ShoreUp(p, vp[0], vp[3]), ShoreUp(p, vp[0], vp[4]),
+                ShoreUp(p, vp[1], vp[2]), ShoreUp(p, vp[1], vp[3]), ShoreUp(p, vp[1], vp[4]),
+                ShoreUp(p, vp[2], vp[3]), ShoreUp(p, vp[2], vp[4]),
+                ShoreUp(p, vp[3], vp[4])
+            )}
+
+            assertThat(game.availableActions<ShoreUp>()).containsOnlyElementsOf(
+                validPositions.map { ShoreUp(Engineer, it) } + validCombinations
+            )
+        }
+
     }
 }
 

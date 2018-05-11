@@ -3,8 +3,7 @@ package com.grahamlea.forbiddenisland
 import com.grahamlea.forbiddenisland.Adventurer.*
 import com.grahamlea.forbiddenisland.FloodLevel.DEAD
 import com.grahamlea.forbiddenisland.Location.FoolsLanding
-import com.grahamlea.forbiddenisland.LocationFloodState.Sunken
-import com.grahamlea.forbiddenisland.LocationFloodState.Unflooded
+import com.grahamlea.forbiddenisland.LocationFloodState.*
 import java.util.*
 
 data class GameState(
@@ -94,7 +93,7 @@ data class GameState(
 
     val availableActions: List<GameEvent> by lazy {
         when (phase) {
-            is AwaitingPlayerAction -> availableMoveAndFlyActions(phase.player)
+            is AwaitingPlayerAction -> availableMoveAndFlyActions(phase.player) + availableShoreUpActions(phase.player)
             else -> emptyList()
         }
     }
@@ -154,6 +153,18 @@ data class GameState(
         return positions(listOf(playersCurrentSite), mutableListOf())
             .filterNot { locationFloodStates[it.location] == Sunken } -
             playersCurrentSite
+    }
+
+    private fun availableShoreUpActions(player: Adventurer): List<GameEvent> {
+        val playerPosition = playerPositions.getValue(player)
+        val floodedPositions = (gameSetup.map.adjacentSites(playerPosition, includeDiagonals = player == Explorer)
+            + gameSetup.map.mapSiteAt(playerPosition))
+            .filter { locationFloodStates[it.location] == Flooded }
+            .map(MapSite::position)
+        return floodedPositions.map { ShoreUp(player, it) } +
+            if (player != Engineer) emptyList()
+            else floodedPositions
+                    .flatMap { p1 -> floodedPositions.mapNotNull { p2 -> if (p1 < p2) ShoreUp(player, p1, p2) else null } }
     }
 
     fun after(event: GameEvent, random: Random): GameState {
