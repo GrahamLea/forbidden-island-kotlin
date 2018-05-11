@@ -2,8 +2,10 @@ package com.grahamlea.forbiddenisland
 
 import com.grahamlea.forbiddenisland.Treasure.*
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
+@DisplayName("treasure deck")
 class TreasureDeckTest {
     @Test
     fun `has 3 helicopter lift cards`() {

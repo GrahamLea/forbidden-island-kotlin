@@ -2,9 +2,11 @@ package com.grahamlea.forbiddenisland
 
 import com.grahamlea.forbiddenisland.Game.Companion.newRandomGameFor
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import java.util.*
 
+@DisplayName("GamePrinter")
 class GamePrinterTest {
     @Test
     fun printMap() {

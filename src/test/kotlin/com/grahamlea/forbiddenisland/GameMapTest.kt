@@ -2,8 +2,10 @@ package com.grahamlea.forbiddenisland
 
 import com.grahamlea.forbiddenisland.Direction.*
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
+@DisplayName("GameMap")
 class GameMapTest {
     @Test
     fun `new random map should have 24 distinct locations`() {
