@@ -3,6 +3,7 @@ package com.grahamlea.forbiddenisland
 import com.grahamlea.forbiddenisland.Adventurer.*
 import com.grahamlea.forbiddenisland.Location.*
 import com.grahamlea.forbiddenisland.LocationFloodState.*
+import com.grahamlea.forbiddenisland.Treasure.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -12,9 +13,9 @@ import java.util.*
 class GameStateProgressionTest {
 
     private val random = Random()
-    private val earth = TreasureCard(Treasure.EarthStone)
-    private val ocean = TreasureCard(Treasure.OceansChalice)
-    private val fire = TreasureCard(Treasure.CrystalOfFire)
+    private val earth = TreasureCard(EarthStone)
+    private val ocean = TreasureCard(OceansChalice)
+    private val fire = TreasureCard(CrystalOfFire)
 
     @Test
     fun `events on game state are recorded in previous events`() {
@@ -112,12 +113,22 @@ class GameStateProgressionTest {
                     immMapOf(Messenger to cards(earth, earth, earth, earth, ocean),
                              Engineer to cards(ocean, ocean)))
                 .withTreasureDeckDiscard(cards(ocean))
+                .withTreasuresCollected(OceansChalice)
 
-        assertThat(game.gameState.treasuresCollected).isEqualTo(Treasure.values().associate { it to false }.imm())
+        assertThat(game.gameState.treasuresCollected).containsAllEntriesOf(mapOf(
+            OceansChalice to true,
+            EarthStone to false,
+            StatueOfTheWind to false,
+            CrystalOfFire to false)
+        )
 
-        after (CaptureTreasure(Messenger, Treasure.EarthStone) playedOn game) {
-            assertThat(treasuresCollected[Treasure.EarthStone]).isEqualTo(true)
-            assertThat(treasuresCollected.filterKeys { it != Treasure.EarthStone }.values.toSet()).isEqualTo(setOf(false))
+        after (CaptureTreasure(Messenger, EarthStone) playedOn game) {
+            assertThat(treasuresCollected).containsAllEntriesOf(mapOf(
+                OceansChalice to true,
+                EarthStone to true,
+                StatueOfTheWind to false,
+                CrystalOfFire to false)
+            )
             assertThat(playerCards).isEqualTo(immMapOf(Messenger to cards(ocean), Engineer to cards(ocean, ocean)))
             assertThat(treasureDeckDiscard).isEqualTo(cards(ocean, earth, earth, earth, earth))
         }
@@ -228,8 +239,9 @@ class GameStateProgressionTest {
 
         after (DrawFromTreasureDeck(Engineer) playedOn game) {
             assertThat(playerCards).isEqualTo(immMapOf(Engineer to cards(earth), Messenger to cards()))
-            assertThat(treasureDeck.size).isEqualTo(TreasureDeck.newShuffledDeck().size - 1) // One card dealt to Engineer
-            assertThat(treasureDeck).isNotEqualTo(treasureDeckDiscardBeforeEvent)
+            assertThat(treasureDeck)
+                .hasSize(TreasureDeck.newShuffledDeck().size - 1) // One card dealt to Engineer
+                .isNotEqualTo(treasureDeckDiscardBeforeEvent)
             assertThat(treasureDeckDiscard).isEqualTo(cards())
         }
     }
@@ -244,16 +256,17 @@ class GameStateProgressionTest {
         val floodDeckDiscardBeforeEvent = game.gameState.floodDeckDiscard
 
         assertThat(game.gameState.floodLevel).isEqualTo(FloodLevel.TWO)
-        assertThat(floodDeckDiscardBeforeEvent.size).isEqualTo(6)
+        assertThat(floodDeckDiscardBeforeEvent).hasSize(6)
 
         after (DrawFromTreasureDeck(Engineer) playedOn game) {
             assertThat(floodLevel).isEqualTo(FloodLevel.THREE)
             assertThat(playerCards).isEqualTo(immMapOf(Engineer to cards(earth), Messenger to cards(ocean)))
             assertThat(treasureDeckDiscard).isEqualTo(cards(WatersRiseCard))
             assertThat(floodDeckDiscard).isEmpty()
-            assertThat(floodDeck.take(6).toSortedSet()).isEqualTo(floodDeckDiscardBeforeEvent.toSortedSet())
-            assertThat(floodDeck.take(6)).isNotEqualTo(floodDeckDiscardBeforeEvent as List<Location>)
-            assertThat(floodDeck.drop(6)).isEqualTo(floodDeckBeforeEvent as List<Location>)
+            assertThat(floodDeck.take(6))
+                .containsOnlyElementsOf(floodDeckDiscardBeforeEvent)
+                .isNotEqualTo(floodDeckDiscardBeforeEvent)
+            assertThat(floodDeck.drop(6)).isEqualTo(floodDeckBeforeEvent)
         }
     }
 
@@ -268,18 +281,20 @@ class GameStateProgressionTest {
         val floodDeckDiscardBeforeEvent = game.gameState.floodDeckDiscard
 
         assertThat(game.gameState.floodLevel).isEqualTo(FloodLevel.TWO)
-        assertThat(floodDeckDiscardBeforeEvent.size).isEqualTo(6)
+        assertThat(floodDeckDiscardBeforeEvent).hasSize(6)
 
         after (DrawFromTreasureDeck(Engineer) playedOn game) {
             assertThat(floodLevel).isEqualTo(FloodLevel.THREE)
             assertThat(playerCards).isEqualTo(immMapOf(Engineer to cards(earth), Messenger to cards(ocean)))
             assertThat(treasureDeckDiscard).isEqualTo(cards())
             assertThat(floodDeckDiscard).isEmpty()
-            assertThat(floodDeck.take(6).toSortedSet()).isEqualTo(floodDeckDiscardBeforeEvent.toSortedSet())
-            assertThat(floodDeck.take(6)).isNotEqualTo(floodDeckDiscardBeforeEvent as List<Location>)
-            assertThat(floodDeck.drop(6)).isEqualTo(floodDeckBeforeEvent as List<Location>)
-            assertThat(treasureDeck.size).isEqualTo(TreasureDeck.newShuffledDeck().size - 2) // Players have two cards
-            assertThat(treasureDeck).isNotEqualTo(treasureDeckDiscardBeforeEvent)
+            assertThat(floodDeck.take(6))
+                .containsOnlyElementsOf(floodDeckDiscardBeforeEvent)
+                .isNotEqualTo(floodDeckDiscardBeforeEvent)
+            assertThat(floodDeck.drop(6)).isEqualTo(floodDeckBeforeEvent)
+            assertThat(treasureDeck)
+                .hasSize(TreasureDeck.newShuffledDeck().size - 2) // Players have two cards
+                .isNotEqualTo(treasureDeckDiscardBeforeEvent)
             assertThat(treasureDeckDiscard).isEqualTo(cards())
         }
     }
@@ -325,10 +340,10 @@ class GameStateProgressionTest {
                     .withGamePhase(AwaitingFloodDeckDraw(Engineer, 3))
 
         assertThat(game.gameState.floodDeck).isEqualTo(immListOf(MistyMarsh))
-        assertThat(game.gameState.floodDeckDiscard.size).isEqualTo(Location.values().size - 2) // Observatory is out bc its sunken
+        assertThat(game.gameState.floodDeckDiscard).hasSize(Location.values().size - 2) // Observatory is out bc its sunken
 
         after (DrawFromFloodDeck(Engineer) playedOn game) {
-            assertThat(floodDeck.toSortedSet()).isEqualTo(Location.values().subtract(listOf(Observatory)).toSortedSet())
+            assertThat(floodDeck).containsOnlyElementsOf(Location.values().toList() - Observatory)
             assertThat(floodDeck.dropLast(1)).isNotEqualTo(floodDeckDiscardBeforeEvent)
             assertThat(floodDeckDiscard).isEmpty()
         }

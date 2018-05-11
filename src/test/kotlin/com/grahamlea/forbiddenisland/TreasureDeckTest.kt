@@ -9,20 +9,20 @@ import org.junit.jupiter.api.Test
 class TreasureDeckTest {
     @Test
     fun `has 3 helicopter lift cards`() {
-        assertThat(TreasureDeck.newShuffledDeck().filter { it is HelicopterLiftCard }.size).isEqualTo(3)
-        assertThat(TreasureDeck.newShuffledDeck().filter { it is HelicopterLiftCard }.size).isEqualTo(3)
+        assertThat(TreasureDeck.newShuffledDeck().filter { it is HelicopterLiftCard }).hasSize(3)
+        assertThat(TreasureDeck.newShuffledDeck().filter { it is HelicopterLiftCard }).hasSize(3)
     }
 
     @Test
     fun `has 2 sandbags cards`() {
-        assertThat(TreasureDeck.newShuffledDeck().filter { it is SandbagsCard }.size).isEqualTo(2)
-        assertThat(TreasureDeck.newShuffledDeck().filter { it is SandbagsCard }.size).isEqualTo(2)
+        assertThat(TreasureDeck.newShuffledDeck().filter { it is SandbagsCard }).hasSize(2)
+        assertThat(TreasureDeck.newShuffledDeck().filter { it is SandbagsCard }).hasSize(2)
     }
 
     @Test
     fun `has 3 Waters Rise! cards`() {
-        assertThat(TreasureDeck.newShuffledDeck().filter { it is WatersRiseCard }.size).isEqualTo(3)
-        assertThat(TreasureDeck.newShuffledDeck().filter { it is WatersRiseCard }.size).isEqualTo(3)
+        assertThat(TreasureDeck.newShuffledDeck().filter { it is WatersRiseCard }).hasSize(3)
+        assertThat(TreasureDeck.newShuffledDeck().filter { it is WatersRiseCard }).hasSize(3)
     }
 
     @Test

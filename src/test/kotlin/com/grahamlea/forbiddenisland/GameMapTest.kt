@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 class GameMapTest {
     @Test
     fun `new random map should have 24 distinct locations`() {
-        assertThat(GameMap.newShuffledMap().mapSites.map { it.location }.distinct().size).isEqualTo(Location.values().size)
+        assertThat(GameMap.newShuffledMap().mapSites.map { it.location }.distinct()).hasSize(Location.values().size)
     }
 
     @Test

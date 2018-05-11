@@ -94,6 +94,14 @@ fun Game.withPreviousEvents(vararg events: GameEvent): Game {
     )
 }
 
+fun Game.withTreasuresCollected(vararg treasures: Treasure): Game {
+    return copy(
+        gameState.copy(
+             treasuresCollected = (gameState.treasuresCollected + treasures.map { it to true }).imm()
+        )
+    )
+}
+
 fun Game.withGamePhase(phase: GamePhase): Game = copy(gameState.copy(phase = phase))
 
 @Suppress("UNCHECKED_CAST")

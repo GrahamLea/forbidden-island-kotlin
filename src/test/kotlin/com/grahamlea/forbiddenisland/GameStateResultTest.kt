@@ -225,13 +225,13 @@ class GameStateResultTest {
                 val sunkPositionWithSunkSurroundings = Position(3, 3)
                 val safePosition = Position(5, 5)
                 val positionsToSink: List<Position> = positionsFromMap("""
-              ..
-             oo..
-            .ooo..
-            .ooo..
-             ....
-              ..
-        """)
+                  ..
+                     oo..
+                    .ooo..
+                    .ooo..
+                     ....
+                      ..
+                """)
 
                 val game = createGameForSunkPlayerScenario(sunkPositionWithSunkSurroundings, Explorer, positionsToSink, Navigator, safePosition)
 

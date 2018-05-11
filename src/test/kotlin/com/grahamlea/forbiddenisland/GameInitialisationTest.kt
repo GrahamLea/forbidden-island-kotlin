@@ -28,9 +28,9 @@ class GameInitialisationTest {
 
     @Test
     fun `new game has unique Adventurer for each player`() {
-        assertThat(Game.newRandomGameFor(2).gameSetup.players.distinct().size).isEqualTo(2)
-        assertThat(Game.newRandomGameFor(3).gameSetup.players.distinct().size).isEqualTo(3)
-        assertThat(Game.newRandomGameFor(4).gameSetup.players.distinct().size).isEqualTo(4)
+        assertThat(Game.newRandomGameFor(2).gameSetup.players.distinct()).hasSize(2)
+        assertThat(Game.newRandomGameFor(3).gameSetup.players.distinct()).hasSize(3)
+        assertThat(Game.newRandomGameFor(4).gameSetup.players.distinct()).hasSize(4)
     }
 
     @Test
@@ -59,8 +59,7 @@ class GameInitialisationTest {
         val game = Game.newRandomGameFor(4)
         val unfloodedLocations = game.gameState.locationFloodStates.filter { (_, v) -> v == Unflooded }.keys
         val floodDeck = GameState::class.getPrivateFieldValue("floodDeck", game.gameState) as ImmutableList<Location>
-        assertThat(unfloodedLocations.toSet()).isEqualTo(floodDeck.toSet())
-        assertThat(unfloodedLocations.size).isEqualTo(floodDeck.size)
+        assertThat(unfloodedLocations).containsOnlyElementsOf(floodDeck)
     }
 
     @Test
@@ -92,8 +91,8 @@ class GameInitialisationTest {
         val game = Game.newRandomGameFor(4)
         val dealtCards = game.gameState.playerCards.flatMap { it.value }
         val remainingCards = GameState::class.getPrivateFieldValue("treasureDeck", game.gameState) as ImmutableList<HoldableCard>
-        assertThat((dealtCards + remainingCards).map { it.displayName }.groupingBy { it }.eachCount().toSortedMap())
-            .isEqualTo(TreasureDeck.newShuffledDeck().map { it.displayName }.groupingBy { it }.eachCount().toSortedMap())
+        assertThat((dealtCards + remainingCards).map { it.displayName }.sorted())
+            .isEqualTo(TreasureDeck.newShuffledDeck().map { it.displayName }.sorted())
     }
 
     @Test
@@ -117,9 +116,10 @@ class GameInitialisationTest {
                 treasureDeck = initialTreasureDeck.imm()
         )
         val allDealtCards = game.gameState.playerCards.flatMap { (_, v) -> v }
-        assertThat(allDealtCards.size).isEqualTo(4)
-        assertThat(allDealtCards.count { it == WatersRiseCard }).isEqualTo(0)
-        assertThat(allDealtCards.toSet()).isEqualTo(treasureDeckWithoutWatersRise.take(4).toSet())
+        assertThat(allDealtCards)
+            .hasSize(4)
+            .containsOnlyElementsOf(treasureDeckWithoutWatersRise.take(4))
+            .filteredOn { it == WatersRiseCard }.isEmpty()
 
         val treasureDeck = GameState::class.getPrivateFieldValue("treasureDeck", game.gameState) as ImmutableList<HoldableCard>
         assertThat(treasureDeck.count { it === WatersRiseCard }).isEqualTo(3)
@@ -129,7 +129,7 @@ class GameInitialisationTest {
     @Test()
     fun `new game phase is waiting for first player action out of 3`() {
         val game = Game.newRandomGameFor(listOf(Diver, Messenger).imm())
-        assertThat(game.gameState.phase).isEqualTo(AwaitingPlayerAction(Diver, 3) as GamePhase)
+        assertThat(game.gameState.phase).isEqualTo(AwaitingPlayerAction(Diver, 3))
     }
 
     @Test()
