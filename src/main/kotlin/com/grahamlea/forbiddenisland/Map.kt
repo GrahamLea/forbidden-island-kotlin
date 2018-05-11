@@ -8,6 +8,9 @@ data class GameMap(val mapSites: ImmutableList<MapSite>) {
     init {
         require(mapSites.map { it.position }.toSet().containsAll(Position.allPositions)) { "mapSites must include all valid Positions" }
         require(mapSites.map { it.location }.toSet().containsAll(Location.values().toList())) { "mapSites must include all Locations" }
+        Position.allPositions.size.let { positionCount ->
+            require(mapSites.size == positionCount) { "mapSites must have exactly $positionCount entries" }
+        }
     }
 
     fun mapSiteAt(position: Position): MapSite = mapSites.first { it.position == position }
