@@ -375,6 +375,51 @@ class GameStateAvailableActionsTest {
         }
 
     }
+
+    @Nested
+    @DisplayName("Give Treasure Card actions")
+    inner class GiveTreasureCardTests {
+
+        @RunForEachAdventurer(except = [Messenger])
+        fun `current player can give treasure cards to players on the same tile`(
+            player1: Adventurer, player2: Adventurer, player3: Adventurer, player4: Adventurer) {
+
+            val game = game(player1, player2, player3, player4)
+                .withPlayerPosition(player1, Position(4, 4))
+                .withPlayerPosition(player2, Position(4, 4))
+                .withPlayerPosition(player3, Position(4, 4))
+                .withPlayerPosition(player4, Position(3, 3)) // DIFFERENT!
+                .withPlayerCards(mapOf(
+                    player1 to cards(earth, fire, fire),
+                    player2 to cards(ocean),
+                    player3 to cards(),
+                    player4 to cards()
+                ))
+
+            assertThat(game.availableActions<GiveTreasureCard>()).containsOnly(
+                GiveTreasureCard(player1, player2, earth),
+                GiveTreasureCard(player1, player2, fire),
+                GiveTreasureCard(player1, player3, earth),
+                GiveTreasureCard(player1, player3, fire)
+            )
+        }
+
+        @Test
+        fun `messenger can give treasure cards to any players`() {
+            val game = game(Messenger, Diver)
+                .withPlayerPosition(Messenger, Position(4, 4))
+                .withPlayerPosition(Diver, Position(1, 3))
+                .withPlayerCards(mapOf(
+                    Messenger to cards(earth, fire, fire),
+                    Diver to cards(ocean)
+                ))
+
+            assertThat(game.availableActions<GiveTreasureCard>()).containsOnly(
+                GiveTreasureCard(Messenger, Diver, earth),
+                GiveTreasureCard(Messenger, Diver, fire)
+            )
+        }
+    }
 }
 
 private fun Game.availableMoves(player: Adventurer): List<Position> =

@@ -93,13 +93,17 @@ data class GameState(
 
     val availableActions: List<GameEvent> by lazy {
         when (phase) {
-            is AwaitingPlayerAction -> availableMoveAndFlyActions(phase.player) + availableShoreUpActions(phase.player)
+            is AwaitingPlayerAction ->
+                playerPositions.getValue(phase.player).let { playerPosition ->
+                    availableMoveAndFlyActions(phase.player, playerPosition) +
+                        availableShoreUpActions(phase.player, playerPosition) +
+                        availableGiveTreasureCardActions(phase.player, playerPosition)
+                }
             else -> emptyList()
         }
     }
 
-    private fun availableMoveAndFlyActions(player: Adventurer): List<GameEvent> {
-        val playerPosition = playerPositions.getValue(player)
+    private fun availableMoveAndFlyActions(player: Adventurer, playerPosition: Position): List<GameEvent> {
         val moves = accessiblePositionsAdjacentTo(playerPosition, includeDiagonals = player == Explorer).toMovesFor(player)
         return moves + when (player) {
             Diver -> diverSwimPositionsFrom(gameSetup.map.mapSiteAt(playerPosition)).toMovesFor(Diver)
@@ -155,8 +159,7 @@ data class GameState(
             playersCurrentSite
     }
 
-    private fun availableShoreUpActions(player: Adventurer): List<GameEvent> {
-        val playerPosition = playerPositions.getValue(player)
+    private fun availableShoreUpActions(player: Adventurer, playerPosition: Position): List<GameEvent> {
         val floodedPositions = (gameSetup.map.adjacentSites(playerPosition, includeDiagonals = player == Explorer)
             + gameSetup.map.mapSiteAt(playerPosition))
             .filter { locationFloodStates[it.location] == Flooded }
@@ -166,6 +169,14 @@ data class GameState(
             else floodedPositions
                     .flatMap { p1 -> floodedPositions.mapNotNull { p2 -> if (p1 < p2) ShoreUp(player, p1, p2) else null } }
     }
+
+    private fun availableGiveTreasureCardActions(player: Adventurer, playerPosition: Position): List<GameEvent> =
+        (if (player == Messenger) gameSetup.players else playerPositions.filter { it.value == playerPosition }.keys)
+            .filter { it != player }
+            .flatMap { colocatedPlayer ->
+                playerCards.getValue(player).mapNotNull { it as? TreasureCard }.distinct()
+                    .map { GiveTreasureCard(player, colocatedPlayer, it) }
+            }
 
     fun after(event: GameEvent, random: Random): GameState {
         // TODO Check that event is in list of possible events

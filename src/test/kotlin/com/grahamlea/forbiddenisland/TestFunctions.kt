@@ -42,11 +42,11 @@ fun Game.withPlayerPosition(player: Adventurer, newPosition: Position): Game {
     )
 }
 
-fun Game.withPlayerCards(playerCards: ImmutableMap<Adventurer, ImmutableList<HoldableCard>>): Game {
+fun Game.withPlayerCards(playerCards: Map<Adventurer, ImmutableList<HoldableCard>>): Game {
     if (!gameState.treasureDeckDiscard.isEmpty()) throw IllegalStateException("If you need to manipulate the treasureDeckDiscard, do it after setting the player cards")
     return copy(
         gameState.copy(
-            playerCards = playerCards,
+            playerCards = playerCards.imm(),
             treasureDeck = TreasureDeck.newShuffledDeck().subtract(playerCards.values.flatten())
         )
     )
