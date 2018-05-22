@@ -7,8 +7,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.ValueSource
 import java.util.*
 
 @DisplayName("GameState available actions")
@@ -47,30 +45,19 @@ class GameStateAvailableActionsTest {
                 }
             }
 
-            @Test
-            fun `Any player can move to flooded locations, but no player can move to sunken`() {
+            @RunForEachAdventurer
+            fun `Any player can move to flooded locations, but no player can move to sunken`(player1: Adventurer, player2: Adventurer) {
                 val playerPosition = Position(4, 4)
                 val floodedPosition = Position(3, 4)
                 val sunkenPosition = Position(5, 4)
-                testFloodRelatedMoves(playerPosition, floodedPosition, sunkenPosition, Diver, Engineer, Explorer)
-                testFloodRelatedMoves(playerPosition, floodedPosition, sunkenPosition, Messenger, Navigator, Pilot)
-            }
-
-            private fun testFloodRelatedMoves(playerPosition: Position, floodedPosition: Position, sunkenPosition: Position, vararg players: Adventurer) {
-                val game = game(*players)
+                val game = game(player1, player2)
+                    .withPlayerPosition(player1, playerPosition)
                     .withLocationFloodStates(Flooded, floodedPosition)
                     .withLocationFloodStates(Sunken, sunkenPosition)
 
-                for (player in game.gameSetup.players) {
-                    val availableMoves =
-                        game.withPlayerPosition(player, playerPosition)
-                            .withGamePhase(AwaitingPlayerAction(player, 3))
-                            .availableMoves()
-
-                    assertThat(availableMoves)
-                        .contains(Move(player, floodedPosition))
-                        .doesNotContain(Move(player, sunkenPosition))
-                }
+                assertThat(game.availableMoves())
+                    .contains(Move(player1, floodedPosition))
+                    .doesNotContain(Move(player1, sunkenPosition))
             }
         }
 
@@ -334,11 +321,8 @@ class GameStateAvailableActionsTest {
             }
         }
 
-        @ParameterizedTest
-        @ValueSource(strings = ["Diver", "Engineer", "Explorer", "Messenger", "Navigator", "Pilot"])
-        fun `Unflooded or Sunken positions cannot be shored up`(playerName: String) {
-            val player1 = Adventurer.valueOf(playerName)
-            val player2 = (Adventurer.values().toList() - player1).shuffled().first()
+        @RunForEachAdventurer
+        fun `Unflooded or Sunken positions cannot be shored up`(player1: Adventurer, player2: Adventurer) {
             val game = newRandomGameFor(immListOf(player1, player2))
                             .withPlayerPosition(player1, Position(4, 4))
                             .withLocationFloodStates(Unflooded, *Position.allPositions.toTypedArray())
