@@ -2,6 +2,7 @@ package com.grahamlea.forbiddenisland
 
 import org.junit.jupiter.api.TestTemplate
 import org.junit.jupiter.api.extension.*
+import org.junit.platform.commons.util.AnnotationUtils.findAnnotation
 import org.junit.platform.commons.util.AnnotationUtils.isAnnotated
 import org.junit.platform.commons.util.Preconditions
 import java.lang.reflect.Method
@@ -11,7 +12,7 @@ import java.util.stream.Stream
 @Retention(AnnotationRetention.RUNTIME)
 @TestTemplate
 @ExtendWith(RunForEachAdventurerExtension::class)
-annotation class RunForEachAdventurer()
+annotation class RunForEachAdventurer(val except: Array<Adventurer> = [])
 
 internal class RunForEachAdventurerExtension : TestTemplateInvocationContextProvider {
 
@@ -38,8 +39,10 @@ internal class RunForEachAdventurerExtension : TestTemplateInvocationContextProv
             !types.isEmpty() && !types.any { it != Adventurer::class.java }
         }
 
-    override fun provideTestTemplateInvocationContexts(context: ExtensionContext): Stream<TestTemplateInvocationContext> =
-        Stream.of(*Adventurer.values()).map { PlayerTestTemplateInvocationContext(it) }
+    override fun provideTestTemplateInvocationContexts(context: ExtensionContext): Stream<TestTemplateInvocationContext> {
+        val adventurersToSkip = findAnnotation(context.testMethod.get(), RunForEachAdventurer::class.java).map { it.except }.orElseGet { arrayOf() }
+        return (Adventurer.values().toList() - adventurersToSkip).stream().map(::PlayerTestTemplateInvocationContext)
+    }
 }
 
 internal class PlayerTestTemplateInvocationContext(val player: Adventurer) : TestTemplateInvocationContext, ParameterResolver {
