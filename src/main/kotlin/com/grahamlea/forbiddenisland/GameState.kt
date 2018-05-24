@@ -97,7 +97,8 @@ data class GameState(
                 playerPositions.getValue(phase.player).let { playerPosition ->
                     availableMoveAndFlyActions(phase.player, playerPosition) +
                         availableShoreUpActions(phase.player, playerPosition) +
-                        availableGiveTreasureCardActions(phase.player, playerPosition)
+                        availableGiveTreasureCardActions(phase.player, playerPosition) +
+                        availableCaptureTreasureActions(phase.player, playerPosition)
                 }
             else -> emptyList()
         }
@@ -177,6 +178,14 @@ data class GameState(
                 playerCards.getValue(player).mapNotNull { it as? TreasureCard }.distinct()
                     .map { GiveTreasureCard(player, colocatedPlayer, it) }
             }
+
+    private fun availableCaptureTreasureActions(player: Adventurer, playerPosition: Position): List<GameEvent> =
+        gameSetup.map.locationAt(playerPosition).pickupLocationForTreasure?.let { treasureAtLocation ->
+            if (!treasuresCollected.getValue(treasureAtLocation) &&
+                playerCards.getValue(player).count { it is TreasureCard && it.treasure == treasureAtLocation } >= 4)
+                listOf(CaptureTreasure(player, treasureAtLocation))
+            else null
+        } ?: listOf()
 
     fun after(event: GameEvent, random: Random): GameState {
         // TODO Check that event is in list of possible events

@@ -420,6 +420,90 @@ class GameStateAvailableActionsTest {
             )
         }
     }
+
+    @Nested
+    @DisplayName("Capture Treasure actions")
+    inner class CaptureTreasureTests {
+
+        private val gamePermittingCapture = newRandomGameFor(2).let {
+            it.withPlayerPosition(it.gameSetup.players[0], it.gameSetup.map.positionOf(Location.TempleOfTheSun))
+                .withPlayerCards(mapOf(
+                    it.gameSetup.players[0] to cards(earth, earth, earth, earth),
+                    it.gameSetup.players[1] to cards()
+                ))
+        }
+
+        @Test
+        fun `player on a treasure location with 4 matching treasure cards can capture the treasure`() {
+            val testGame = gamePermittingCapture
+
+            assertThat(testGame.availableActions<CaptureTreasure>()).containsOnly(
+                CaptureTreasure(testGame.gameSetup.players[0], Treasure.EarthStone)
+            )
+        }
+
+        @Test
+        fun `player with 5 matching treasure cards can capture the treasure too`() {
+            val testGame = gamePermittingCapture.let {
+                it.withPlayerCards(mapOf(
+                    it.gameSetup.players[0] to cards(earth, earth, earth, earth, earth),
+                    it.gameSetup.players[1] to cards()
+                ))
+            }
+
+            assertThat(testGame.availableActions<CaptureTreasure>()).containsOnly(
+                CaptureTreasure(testGame.gameSetup.players[0], Treasure.EarthStone)
+            )
+        }
+
+        @Test
+        fun `player on a treasure location with less than 4 matching treasure cards CANNOT capture the treasure`() {
+            val testGame = gamePermittingCapture.let {
+                it.withPlayerCards(mapOf(
+                    it.gameSetup.players[0] to cards(earth, earth, earth),
+                    it.gameSetup.players[1] to cards()
+                ))
+            }
+
+            assertThat(testGame.availableActions<CaptureTreasure>()).isEmpty()
+        }
+
+        @Test
+        fun `player on a treasure location with 4 matching treasure cards of another treasure CANNOT capture the treasure`() {
+            val testGame = gamePermittingCapture.let {
+                it.withPlayerCards(mapOf(
+                    it.gameSetup.players[0] to cards(ocean, ocean, ocean, ocean),
+                    it.gameSetup.players[1] to cards()
+                ))
+            }
+
+            assertThat(testGame.availableActions<CaptureTreasure>()).isEmpty()
+        }
+
+        @Test
+        fun `player with 4 matching treasure cards not on a pickup location CANNOT capture the treasure`() {
+            val testGame = gamePermittingCapture.let {
+                it.withPlayerPosition(it.gameSetup.players[0], it.gameSetup.map.positionOf(Location.Observatory)) // TODO: Introduce withPlayerLocation()
+            }
+
+            assertThat(testGame.availableActions<CaptureTreasure>()).isEmpty()
+        }
+
+        @Test
+        fun `player can only capture a treasure when it's their turn`() {
+            val testGame = gamePermittingCapture
+                .withGamePhase(AwaitingPlayerAction(gamePermittingCapture.gameSetup.players[1], 3))
+
+            assertThat(testGame.availableActions<CaptureTreasure>()).isEmpty()
+        }
+
+        @Test
+        fun `player can not capture a treasure already captured`() {
+            val testGame = gamePermittingCapture.withTreasuresCollected(Treasure.EarthStone)
+
+            assertThat(testGame.availableActions<CaptureTreasure>()).isEmpty()
+        }
+    }
 }
 
 private fun Game.availableMoves(player: Adventurer): List<Position> =
