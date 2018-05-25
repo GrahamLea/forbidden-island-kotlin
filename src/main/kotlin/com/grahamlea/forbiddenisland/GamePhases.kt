@@ -89,7 +89,7 @@ data class AwaitingPlayerToDiscardExtraCard(val playerWithTooManyCards: Adventur
 
 data class AwaitingPlayerToSwimToSafety(val player: Adventurer, val returningToPhase: GamePhase): ForcedOutOfTurnPhase() {
     override fun calculateNextPhase(event: GameEvent, nextGameState: GameState): GamePhase {
-        if (event !is SwimToSafety || event.strandedPlayer != player)
+        if (event !is SwimToSafety || event.player != player)
             invalidEventInPhase(event)
         else
             return returningToPhase

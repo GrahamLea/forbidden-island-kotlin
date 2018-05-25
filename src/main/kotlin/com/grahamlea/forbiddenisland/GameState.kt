@@ -111,7 +111,7 @@ data class GameState(
             Diver -> diverSwimPositionsFrom(gameSetup.map.mapSiteAt(playerPosition)).toMovesFor(Diver)
             Navigator -> (gameSetup.players - Navigator).flatMap { sitesNavigatorCanSend(it).toMovesFor(it) }
             Pilot -> if (!pilotHasAlreadyUsedAFlightThisTurn()) availablePilotFlights(moves, playerPosition, player) else emptyList()
-            else -> emptyList()
+            else -> emptyList<GameEvent>()
         }
     }
 
@@ -205,24 +205,17 @@ data class GameState(
 
     fun after(event: GameEvent, random: Random): GameState {
         // TODO Check that event is in list of possible events
-        return when (event) {
-                is Move -> copy(playerPositions = playerPositions + (event.player to event.position))
-                is Fly -> copy(playerPositions = playerPositions + (event.player to event.position))
-                is SwimToSafety -> copy(playerPositions = playerPositions + (event.strandedPlayer to event.position))
+        return with(if (event is CardDiscardingEvent) event.playerDiscardingCard discards event.discardedCards else this) {
+            when (event) {
+                is PlayerMovingEvent -> copy(playerPositions = playerPositions + (event.player to event.position))
                 is ShoreUp -> copy(locationFloodStates = locationFloodStates + (gameSetup.map.locationAt(event.position) to Unflooded))
                 is GiveTreasureCard -> copy(playerCards =
                     playerCards + (event.player   to playerCards.getValue(event.player)  .subtract(listOf(event.card))) +
                                   (event.receiver to playerCards.getValue(event.receiver).plus(    listOf(event.card)))
                 )
-                is CaptureTreasure -> event.player.discards(TreasureCard(event.treasure) * 4).copy(
-                    treasuresCollected = treasuresCollected + (event.treasure to true)
-                )
-                is HelicopterLift -> (event.playerWithCard discards HelicopterLiftCard).copy(
-                    playerPositions = playerPositions + (event.playerBeingMoved to event.position)
-                )
-                is Sandbag -> (event.player discards SandbagsCard).copy(
-                    locationFloodStates = locationFloodStates + (gameSetup.map.locationAt(event.position) to Unflooded)
-                )
+                is CaptureTreasure -> copy(treasuresCollected = treasuresCollected + (event.treasure to true))
+                is HelicopterLift -> copy(playerPositions = playerPositions + (event.playerBeingMoved to event.position))
+                is Sandbag -> copy(locationFloodStates = locationFloodStates + (gameSetup.map.locationAt(event.position) to Unflooded))
                 is DrawFromTreasureDeck -> treasureDeck.first().let { drawnCard ->
                     if (drawnCard == WatersRiseCard) {
                         copy(
@@ -248,17 +241,16 @@ data class GameState(
                         )
                     }.let { if (it.floodDeck.isEmpty()) it.copy(floodDeck = it.floodDeckDiscard.shuffled().imm(), floodDeckDiscard = immListOf()) else it }
                 }
-                is DiscardCard -> (event.player discards event.card)
-                is HelicopterLiftOffIsland -> (event.player discards HelicopterLiftCard)
+                is DiscardCard, is HelicopterLiftOffIsland -> this
+                else -> throw IllegalStateException("Unhandled event: $event")
             }.let { newState -> newState.copy(
                 phase = phase.phaseAfter(event, newState),
                 previousEvents = previousEvents + event
             )}
+        }
     }
 
-    private infix fun Adventurer.discards(card: HoldableCard) = this.discards(immListOf(card))
-
-    private fun Adventurer.discards(cardList: Collection<HoldableCard>) =
+    private infix fun Adventurer.discards(cardList: Collection<HoldableCard>) =
             copy(
                     playerCards = playerCards + (this to playerCards.getValue(this).subtract(cardList)),
                     treasureDeckDiscard = treasureDeckDiscard + cardList

@@ -37,15 +37,21 @@ sealed class GameEvent {
 
 sealed class PlayerActionEvent: GameEvent()
 
-interface CardDiscardingEvent {
-    val playerDiscardingCard: Adventurer
+interface PlayerMovingEvent {
+    val player: Adventurer
+    val position: Position
 }
 
-data class Move(val player: Adventurer, val position: Position): PlayerActionEvent() {
+interface CardDiscardingEvent {
+    val playerDiscardingCard: Adventurer
+    val discardedCards: ImmutableList<HoldableCard>
+}
+
+data class Move(override val player: Adventurer, override val position: Position): PlayerActionEvent(), PlayerMovingEvent {
     override fun toString() = "$player moves to $position"
 }
 
-data class Fly(val player: Adventurer, val position: Position): PlayerActionEvent() {
+data class Fly(override val player: Adventurer, override val position: Position): PlayerActionEvent(), PlayerMovingEvent {
     init { require(player == Pilot) { "Only the Pilot is able to fly" } }
     override fun toString() = "$player flies to $position"
 }
@@ -59,7 +65,9 @@ data class GiveTreasureCard(val player: Adventurer, val receiver: Adventurer, va
     override fun toString() = "$player gives one '$card' card to $receiver"
 }
 
-data class CaptureTreasure(val player:Adventurer, val treasure: Treasure): PlayerActionEvent() {
+data class CaptureTreasure(val player:Adventurer, val treasure: Treasure): PlayerActionEvent(), CardDiscardingEvent {
+    override val playerDiscardingCard = player
+    override val discardedCards = (TreasureCard(treasure) * 4).imm()
     override fun toString() = "$treasure is captured by $player"
 }
 
@@ -70,24 +78,29 @@ sealed class PlayerSpecialActionEvent: OutOfTurnEvent()
 data class HelicopterLift(val playerWithCard: Adventurer, val playerBeingMoved: Adventurer, val position: Position):
         PlayerSpecialActionEvent(), CardDiscardingEvent {
     override val playerDiscardingCard = playerWithCard
+    override val discardedCards = immListOf(HelicopterLiftCard)
     override fun toString() = "$playerBeingMoved is helicopter lifted to $position by $playerWithCard"
 }
 
 data class Sandbag(val player: Adventurer, val position: Position): PlayerSpecialActionEvent(), CardDiscardingEvent {
     override val playerDiscardingCard = player
+    override val discardedCards = immListOf(SandbagsCard)
     override fun toString() = "$position is sand bagged by $player"
 }
 
-data class SwimToSafety(val strandedPlayer: Adventurer, val position: Position): OutOfTurnEvent() {
-    override fun toString() = "$strandedPlayer swims to safety at $position"
+data class SwimToSafety(override val player: Adventurer, override val position: Position): OutOfTurnEvent(), PlayerMovingEvent {
+    override fun toString() = "$player swims to safety at $position"
 }
 
 data class DiscardCard(val player: Adventurer, val card: HoldableCard): OutOfTurnEvent(), CardDiscardingEvent {
     override val playerDiscardingCard = player
+    override val discardedCards = immListOf(card)
     override fun toString() = "$player discards $card"
 }
 
-data class HelicopterLiftOffIsland(val player: Adventurer): PlayerSpecialActionEvent() {
+data class HelicopterLiftOffIsland(val player: Adventurer): PlayerSpecialActionEvent(), CardDiscardingEvent {
+    override val playerDiscardingCard = player
+    override val discardedCards = immListOf(HelicopterLiftCard)
     override fun toString() = "All players are lifted off the island by $player"
 }
 
