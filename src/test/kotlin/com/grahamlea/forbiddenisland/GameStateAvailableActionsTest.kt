@@ -302,7 +302,7 @@ class GameStateAvailableActionsTest {
         @Test
         fun `Navigator, Messenger, Diver and Pilot can shore up their own position or flooded positions adjacent to them`() {
             val game = game(Navigator, Messenger, Diver, Pilot)
-                            .withLocationFloodStates(Flooded, *Position.allPositions.toTypedArray())
+                .withLocationFloodStates(Flooded, *Position.allPositions.toTypedArray())
 
             for (player in game.gameSetup.players) {
                 val availableMoves =
@@ -324,9 +324,9 @@ class GameStateAvailableActionsTest {
         @RunForEachAdventurer
         fun `Unflooded or Sunken positions cannot be shored up`(player1: Adventurer, player2: Adventurer) {
             val game = newRandomGameFor(immListOf(player1, player2))
-                            .withPlayerPosition(player1, Position(4, 4))
-                            .withLocationFloodStates(Unflooded, *Position.allPositions.toTypedArray())
-                            .withLocationFloodStates(Sunken, Position(3, 4), Position(4, 5))
+                .withPlayerPosition(player1, Position(4, 4))
+                .withLocationFloodStates(Unflooded, *Position.allPositions.toTypedArray())
+                .withLocationFloodStates(Sunken, Position(3, 4), Position(4, 5))
 
             assertThat(game.availableActions<ShoreUp>()).isEmpty()
         }
@@ -334,10 +334,10 @@ class GameStateAvailableActionsTest {
         @Test
         fun `Explorer can shore up flooded positions adjacent and diagonal to them`() {
             val game = game(Explorer, Messenger)
-                        .withLocationFloodStates(Flooded, *Position.allPositions.toTypedArray())
-                        .withPlayerPosition(Explorer, Position(4, 4))
+                .withLocationFloodStates(Flooded, *Position.allPositions.toTypedArray())
+                .withPlayerPosition(Explorer, Position(4, 4))
 
-                assertThat(game.availableActions<ShoreUp>()).containsOnlyElementsOf(positionsFromMap("""
+            assertThat(game.availableActions<ShoreUp>()).containsOnlyElementsOf(positionsFromMap("""
                   ..
                  ....
                 ..ooo.
@@ -350,8 +350,8 @@ class GameStateAvailableActionsTest {
         @Test
         fun `Engineer can shore up one or two flooded positions`() {
             val game = game(Engineer, Messenger)
-                        .withLocationFloodStates(Flooded, *Position.allPositions.toTypedArray())
-                        .withPlayerPosition(Engineer, Position(4, 4))
+                .withLocationFloodStates(Flooded, *Position.allPositions.toTypedArray())
+                .withPlayerPosition(Engineer, Position(4, 4))
 
             val validPositions = positionsFromMap("""
               ..
@@ -362,12 +362,14 @@ class GameStateAvailableActionsTest {
               ..
             """)
 
-            val validCombinations = Pair(Engineer, validPositions).let { (p, vp) -> listOf(
-                ShoreUp(p, vp[0], vp[1]), ShoreUp(p, vp[0], vp[2]), ShoreUp(p, vp[0], vp[3]), ShoreUp(p, vp[0], vp[4]),
-                ShoreUp(p, vp[1], vp[2]), ShoreUp(p, vp[1], vp[3]), ShoreUp(p, vp[1], vp[4]),
-                ShoreUp(p, vp[2], vp[3]), ShoreUp(p, vp[2], vp[4]),
-                ShoreUp(p, vp[3], vp[4])
-            )}
+            val validCombinations = Pair(Engineer, validPositions).let { (p, vp) ->
+                listOf(
+                    ShoreUp(p, vp[0], vp[1]), ShoreUp(p, vp[0], vp[2]), ShoreUp(p, vp[0], vp[3]), ShoreUp(p, vp[0], vp[4]),
+                    ShoreUp(p, vp[1], vp[2]), ShoreUp(p, vp[1], vp[3]), ShoreUp(p, vp[1], vp[4]),
+                    ShoreUp(p, vp[2], vp[3]), ShoreUp(p, vp[2], vp[4]),
+                    ShoreUp(p, vp[3], vp[4])
+                )
+            }
 
             assertThat(game.availableActions<ShoreUp>()).containsOnlyElementsOf(
                 validPositions.map { ShoreUp(Engineer, it) } + validCombinations
@@ -503,6 +505,142 @@ class GameStateAvailableActionsTest {
 
             assertThat(testGame.availableActions<CaptureTreasure>()).isEmpty()
         }
+    }
+
+    @Nested
+    @DisplayName("Helicopter Lift actions")
+    inner class HelicopterLiftTests {
+
+        @RunForEachAdventurer
+        fun `any player with a Helicopter Lift can move any Player anywhere on anyone's turn`(
+            player1: Adventurer, player2: Adventurer, player3: Adventurer) {
+            val player1Position = Position(3, 1)
+            val player2Position = Position(4, 2)
+            val player3Position = Position(5, 3)
+            val game = game(player1, player2, player3)
+                .withPlayerPosition(player1, player1Position)
+                .withPlayerPosition(player2, player2Position)
+                .withPlayerPosition(player3, player3Position)
+                .withPlayerCards(mapOf(
+                    player1 to cards(),
+                    player2 to cards(HelicopterLiftCard),
+                    player3 to cards()
+                ))
+
+            val player1FlightDesinations = positionsFromMap("""
+                      .o
+                     oooo
+                    oooooo
+                    oooooo
+                     oooo
+                      oo
+                """)
+
+            val player2FlightDesinations = positionsFromMap("""
+                      oo
+                     oo.o
+                    oooooo
+                    oooooo
+                     oooo
+                      oo
+                """)
+
+            val player3FlightDesinations = positionsFromMap("""
+                      oo
+                     oooo
+                    oooo.o
+                    oooooo
+                     oooo
+                      oo
+                """)
+
+            fun Pair<Adventurer, List<Position>>.toLiftActions() = this.second.map { HelicopterLift(player2, this.first, it) }
+
+            assertThat(game.availableActions<HelicopterLift>()).containsOnlyElementsOf(
+                Pair(player1, player1FlightDesinations).toLiftActions() +
+                Pair(player2, player2FlightDesinations).toLiftActions() +
+                Pair(player3, player3FlightDesinations).toLiftActions()
+            )
+        }
+
+        @Test
+        fun `cannot helicopter lift a player to a sunken tile`() {
+            val location = Location.Observatory
+            val game = game(Messenger, Navigator)
+                    .withLocationFloodStates(Sunken, location)
+                    .withPlayerCards(mapOf(
+                        Messenger to cards(HelicopterLiftCard),
+                        Navigator to cards()
+                    ))
+            val position = game.gameSetup.map.positionOf(location)
+
+            assertThat(game.availableActions<HelicopterLift>()).doesNotContain(
+                HelicopterLift(Messenger, Messenger, position),
+                HelicopterLift(Messenger, Navigator, position)
+            )
+        }
+
+        @Test
+        fun `helicopter lift can be used while awaiting a Treasure Deck Draw`() {
+                val game = game(Messenger, Navigator)
+                    .withPlayerCards(mapOf(
+                        Messenger to cards(HelicopterLiftCard),
+                        Navigator to cards()
+                    ))
+                    .withGamePhase(AwaitingTreasureDeckDraw(Navigator, 2))
+
+            assertThat(game.availableActions<HelicopterLift>()).isNotEmpty()
+        }
+
+        @Test
+        fun `helicopter lift can be used while awaiting a Flood Deck Draw`() {
+            val game = game(Messenger, Navigator)
+                .withPlayerCards(mapOf(
+                    Messenger to cards(HelicopterLiftCard),
+                    Navigator to cards()
+                ))
+                .withGamePhase(AwaitingFloodDeckDraw(Navigator, 2))
+
+            assertThat(game.availableActions<HelicopterLift>()).isNotEmpty()
+        }
+
+        @Test
+        fun `helicopter lift can be used by discarding player when card needs to be discarded`() {
+            val game = game(Messenger, Navigator)
+                .withPlayerCards(mapOf(
+                    Messenger to cards(HelicopterLiftCard),
+                    Navigator to cards()
+                ))
+                .withGamePhase(AwaitingPlayerToDiscardExtraCard(Messenger, AwaitingTreasureDeckDraw(Messenger, 1)))
+
+            assertThat(game.availableActions<HelicopterLift>()).isNotEmpty()
+        }
+
+        @Test
+        fun `helicopter lift CANNOT be used by another player when card needs to be discarded`() {
+            val game = game(Messenger, Navigator)
+                .withPlayerCards(mapOf(
+                    Messenger to cards(),
+                    Navigator to cards(HelicopterLiftCard)
+                ))
+                .withGamePhase(AwaitingPlayerToDiscardExtraCard(Messenger, AwaitingTreasureDeckDraw(Messenger, 1)))
+
+            assertThat(game.availableActions<HelicopterLift>()).isEmpty()
+        }
+
+        @Test
+        fun `helicopter lift can be used when a player needs to swim to safety`() {
+            val game = game(Messenger, Navigator)
+                .withPlayerCards(mapOf(
+                    Messenger to cards(HelicopterLiftCard),
+                    Navigator to cards()
+                ))
+                .withGamePhase(AwaitingPlayerToSwimToSafety(Navigator, AwaitingFloodDeckDraw(Messenger, 1)))
+
+            assertThat(game.availableActions<HelicopterLift>()).isNotEmpty()
+        }
+
+        // TODO: Can lift more than one pawn on the same tile
     }
 }
 

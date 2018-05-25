@@ -101,7 +101,8 @@ data class GameState(
                         availableCaptureTreasureActions(phase.player, playerPosition)
                 }
             else -> emptyList()
-        }
+        } + availableHelicopterLiftActions()
+
     }
 
     private fun availableMoveAndFlyActions(player: Adventurer, playerPosition: Position): List<GameEvent> {
@@ -186,6 +187,21 @@ data class GameState(
                 listOf(CaptureTreasure(player, treasureAtLocation))
             else null
         } ?: listOf()
+
+    private fun availableHelicopterLiftActions(): List<GameEvent> =
+        playerCards.filterValues { it.contains(HelicopterLiftCard) }.keys.flatMap { playerWithCard ->
+            locationFloodStates.filterValues { it != Sunken }.keys.map { gameSetup.map.positionOf(it) }.let { accessiblePositions ->
+                playerPositions.mapValues { accessiblePositions - it.value }.flatMap { (otherPlayer, destinations) ->
+                    destinations.map { HelicopterLift(playerWithCard, otherPlayer, it) }
+                }
+            }
+        }.let { actions ->
+            if (phase is AwaitingPlayerToDiscardExtraCard)
+                actions.filter { it.playerWithCard == phase.playerWithTooManyCards }
+            else
+                actions
+        }
+
 
     fun after(event: GameEvent, random: Random): GameState {
         // TODO Check that event is in list of possible events
