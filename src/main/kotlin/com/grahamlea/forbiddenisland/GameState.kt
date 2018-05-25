@@ -207,15 +207,16 @@ data class GameState(
         // TODO Check that event is in list of possible events
         return with(if (event is CardDiscardingEvent) event.playerDiscardingCard discards event.discardedCards else this) {
             when (event) {
+                is DiscardCard, is HelicopterLiftOffIsland -> this
                 is PlayerMovingEvent -> copy(playerPositions = playerPositions + (event.player to event.position))
                 is ShoreUp -> copy(locationFloodStates = locationFloodStates + (gameSetup.map.locationAt(event.position) to Unflooded))
+                is CaptureTreasure -> copy(treasuresCollected = treasuresCollected + (event.treasure to true))
+                is HelicopterLift -> copy(playerPositions = playerPositions + (event.playerBeingMoved to event.position))
+                is Sandbag -> copy(locationFloodStates = locationFloodStates + (gameSetup.map.locationAt(event.position) to Unflooded))
                 is GiveTreasureCard -> copy(playerCards =
                     playerCards + (event.player   to playerCards.getValue(event.player)  .subtract(listOf(event.card))) +
                                   (event.receiver to playerCards.getValue(event.receiver).plus(    listOf(event.card)))
                 )
-                is CaptureTreasure -> copy(treasuresCollected = treasuresCollected + (event.treasure to true))
-                is HelicopterLift -> copy(playerPositions = playerPositions + (event.playerBeingMoved to event.position))
-                is Sandbag -> copy(locationFloodStates = locationFloodStates + (gameSetup.map.locationAt(event.position) to Unflooded))
                 is DrawFromTreasureDeck -> treasureDeck.first().let { drawnCard ->
                     if (drawnCard == WatersRiseCard) {
                         copy(
@@ -241,7 +242,6 @@ data class GameState(
                         )
                     }.let { if (it.floodDeck.isEmpty()) it.copy(floodDeck = it.floodDeckDiscard.shuffled().imm(), floodDeckDiscard = immListOf()) else it }
                 }
-                is DiscardCard, is HelicopterLiftOffIsland -> this
                 else -> throw IllegalStateException("Unhandled event: $event")
             }.let { newState -> newState.copy(
                 phase = phase.phaseAfter(event, newState),
