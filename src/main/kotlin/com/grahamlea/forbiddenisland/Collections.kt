@@ -23,5 +23,12 @@ fun <K, V> immMapOf(vararg pairs: Pair<K, V>): ImmutableMap<K, V> = mapOf(*pairs
 fun <K, V> Map<K, V>.imm() = this as? ImmutableMap<K, V> ?: ImmutableMap(this)
 infix operator fun <K, V> ImmutableMap<K, V>.plus(p: Pair<K, V>): ImmutableMap<K, V> = ImmutableMap(this as Map<K, V> + p)
 
+data class ImmutableSet<E: Comparable<E>>(private val inner:Set<E>) : SortedSet<E> by inner.toSortedSet() {
+    override fun toString() = "@" + inner.toString()
+}
+fun <T: Comparable<T>> immSetOf(element: T): ImmutableSet<T> = java.util.Collections.singleton(element).imm()
+fun <T: Comparable<T>> immSetOf(vararg elements: T): ImmutableSet<T> = sortedSetOf(*elements).imm()
+fun <E: Comparable<E>> Set<E>.imm() = this as? ImmutableSet<E> ?: ImmutableSet(this)
+
 inline fun <reified T : Enum<T>> shuffled(random: Random = Random(), count: Int = enumValues<T>().size): ImmutableList<T>
         = enumValues<T>().toList().shuffled(random).take(count).imm()
