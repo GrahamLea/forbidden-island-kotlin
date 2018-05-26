@@ -135,25 +135,48 @@ class GameStateProgressionTest {
     }
 
     @Test
-    fun `helicopter lift played on game changes position of the one player and discards the card`() {
-        val game = Game.newRandomGameFor(immListOf(Messenger, Engineer), GameMap.newShuffledMap())
+    fun `helicopter lift played on game changes position of the players and discards the card`() {
+        val game = Game.newRandomGameFor(immListOf(Messenger, Engineer, Explorer, Diver), GameMap.newShuffledMap())
                 .withPlayerPosition(Engineer, Position(2, 2))
-                .withPlayerCards(immMapOf(Messenger to cards(HelicopterLiftCard, earth), Engineer to cards(ocean)))
+                .withPlayerPosition(Explorer, Position(2, 2))
+                .withPlayerPosition(Diver, Position(2, 2))
+                .withPlayerCards(immMapOf(
+                    Messenger to cards(HelicopterLiftCard, earth),
+                    Engineer to cards(ocean),
+                    Explorer to cards(earth),
+                    Diver to cards(fire)
+                ))
                 .withTreasureDeckDiscard(cards(ocean))
 
         val messengerOriginalPosition = game.gameState.playerPositions.getValue(Messenger)
         val engineerOriginalPosition = game.gameState.playerPositions.getValue(Engineer)
+        val explorerOriginalPosition = game.gameState.playerPositions.getValue(Explorer)
+        val diverOriginalPosition = game.gameState.playerPositions.getValue(Diver)
 
-        assertThat(game.gameState.playerPositions).isEqualTo(immMapOf(Messenger to messengerOriginalPosition, Engineer to engineerOriginalPosition))
+        assertThat(game.gameState.playerPositions).isEqualTo(immMapOf(
+            Messenger to messengerOriginalPosition,
+            Engineer to engineerOriginalPosition,
+            Explorer to explorerOriginalPosition,
+            Diver to diverOriginalPosition
+        ))
 
-        val engineerNewPosition = Position(5, 5)
-        after (HelicopterLift(Messenger, Engineer, engineerNewPosition) playedOn game) {
-            assertThat(playerPositions).isEqualTo(immMapOf(Messenger to messengerOriginalPosition, Engineer to engineerNewPosition))
-            assertThat(playerCards).isEqualTo(immMapOf(Messenger to cards(earth), Engineer to cards(ocean)))
+        val engineerAndExplorerNewPosition = Position(5, 5)
+        after (HelicopterLift(Messenger, immSetOf(Engineer, Explorer), engineerAndExplorerNewPosition) playedOn game) {
+            assertThat(playerPositions).isEqualTo(immMapOf(
+                Messenger to messengerOriginalPosition,
+                Engineer to engineerAndExplorerNewPosition,
+                Explorer to engineerAndExplorerNewPosition,
+                Diver to diverOriginalPosition
+            ))
+            assertThat(playerCards).isEqualTo(immMapOf(
+                Messenger to cards(earth),
+                Engineer to cards(ocean),
+                Explorer to cards(earth),
+                Diver to cards(fire)
+            ))
             assertThat(treasureDeckDiscard).isEqualTo(cards(ocean, HelicopterLiftCard))
         }
     }
-
 
     @Test
     fun `sandbag played on game shores up location and discards the card`() {

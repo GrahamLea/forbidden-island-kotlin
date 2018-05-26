@@ -514,6 +514,7 @@ class GameStateAvailableActionsTest {
         @RunForEachAdventurer
         fun `any player with a Helicopter Lift can move any Player anywhere on anyone's turn`(
             player1: Adventurer, player2: Adventurer, player3: Adventurer) {
+
             val player1Position = Position(3, 1)
             val player2Position = Position(4, 2)
             val player3Position = Position(5, 3)
@@ -554,7 +555,8 @@ class GameStateAvailableActionsTest {
                       oo
                 """)
 
-            fun Pair<Adventurer, List<Position>>.toLiftActions() = this.second.map { HelicopterLift(player2, this.first, it) }
+            fun Pair<Adventurer, List<Position>>.toLiftActions() =
+                this.second.map { HelicopterLift(player2, immSetOf(this.first), it) }
 
             assertThat(game.availableActions<HelicopterLift>()).containsOnlyElementsOf(
                 Pair(player1, player1FlightDesinations).toLiftActions() +
@@ -575,8 +577,36 @@ class GameStateAvailableActionsTest {
             val position = game.gameSetup.map.positionOf(location)
 
             assertThat(game.availableActions<HelicopterLift>()).doesNotContain(
-                HelicopterLift(Messenger, Messenger, position),
-                HelicopterLift(Messenger, Navigator, position)
+                HelicopterLift(Messenger, immSetOf(Messenger), position),
+                HelicopterLift(Messenger, immSetOf(Navigator), position)
+            )
+        }
+
+        @Test
+        fun `any combination of multiple players from the same tile can be helicopter lifted at the same time`() {
+            val game = game(Diver, Explorer, Messenger, Navigator)
+                    .withPlayerPosition(Diver, Position(4, 4))
+                    .withPlayerPosition(Explorer, Position(4, 4))
+                    .withPlayerPosition(Messenger, Position(3, 3))
+                    .withPlayerPosition(Navigator, Position(4, 4))
+                    .withPlayerCards(mapOf(
+                        Diver to cards(),
+                        Explorer to cards(),
+                        Messenger to cards(HelicopterLiftCard),
+                        Navigator to cards()
+                    ))
+
+            assertThat(game.availableActions<HelicopterLift>()).contains(
+                HelicopterLift(Messenger, immSetOf(Diver), Position(1, 3)),
+                HelicopterLift(Messenger, immSetOf(Explorer), Position(1, 3)),
+                HelicopterLift(Messenger, immSetOf(Navigator), Position(1, 3)),
+                HelicopterLift(Messenger, immSetOf(Diver, Explorer), Position(1, 3)),
+                HelicopterLift(Messenger, immSetOf(Diver, Navigator), Position(1, 3)),
+                HelicopterLift(Messenger, immSetOf(Explorer, Navigator), Position(1, 3)),
+                HelicopterLift(Messenger, immSetOf(Diver, Explorer, Navigator), Position(1, 3))
+            ).doesNotContain(
+                HelicopterLift(Messenger, immSetOf(Explorer, Messenger), Position(1, 3)),
+                HelicopterLift(Messenger, immSetOf(Messenger, Navigator), Position(1, 3))
             )
         }
 
@@ -639,8 +669,6 @@ class GameStateAvailableActionsTest {
 
             assertThat(game.availableActions<HelicopterLift>()).isNotEmpty()
         }
-
-        // TODO: Can lift more than one pawn on the same tile
     }
 }
 

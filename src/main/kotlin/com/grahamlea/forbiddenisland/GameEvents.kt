@@ -1,11 +1,15 @@
 package com.grahamlea.forbiddenisland
 
-import com.grahamlea.forbiddenisland.Adventurer.*
+import com.grahamlea.forbiddenisland.Adventurer.Engineer
+import com.grahamlea.forbiddenisland.Adventurer.Pilot
 
 sealed class GameEvent {
     companion object {
+
+        private val players = Adventurer.values().sorted()
+
         val allPossibleEvents: List<GameEvent> by lazy {
-            val players = values().sorted()
+            val allPlayerCombinations: List<ImmutableSet<Adventurer>> = (1..4).flatMap { setsOfPlayersOfLength(it) }
             val positions = Position.allPositions.sorted()
             val treasures = Treasure.values().sorted()
             val cardTypes = HoldableCard.allCardTypes.sorted()
@@ -17,7 +21,7 @@ sealed class GameEvent {
                     { ShoreUp(Engineer, first, second) }.filterNot { it.position >= it.position2!! },
                 generateAll(players, players, treasures)
                     { GiveTreasureCard(first, second, TreasureCard(third)) }.filterNot { it.player == it.receiver },
-                generateAll(players, players, positions) { HelicopterLift(first, second, third) },
+                generateAll(players, allPlayerCombinations, positions) { HelicopterLift(first, second, third) },
                 generateAll(players, positions) { Sandbag(first, second) },
                 generateAll(players, positions) { SwimToSafety(first, second) },
                 generateAll(players, cardTypes.filterNot { it === WatersRiseCard }) { DiscardCard(first, second) },
@@ -25,6 +29,11 @@ sealed class GameEvent {
                 players.map { DrawFromTreasureDeck(it) },
                 players.map { DrawFromFloodDeck(it) }
             ).flatten()
+        }
+
+        private fun setsOfPlayersOfLength(length: Int): List<ImmutableSet<Adventurer>> {
+            return (1..63).map { it.toString(2).padStart(6, '0') }.filter { it.count { it == '1' } == length }.reversed()
+                .map { it.mapIndexedNotNull { i, c -> if (c == '1') i else null }.map { players[it] }.toSortedSet().imm() }
         }
 
         private fun <A, B, T: GameEvent> generateAll(o1s: Iterable<A>, o2s: Iterable<B>, function: Pair<A, B>.() -> T): List<T> =
@@ -75,11 +84,14 @@ sealed class OutOfTurnEvent: GameEvent()
 
 sealed class PlayerSpecialActionEvent: OutOfTurnEvent()
 
-data class HelicopterLift(val playerWithCard: Adventurer, val playerBeingMoved: Adventurer, val position: Position):
+data class HelicopterLift(val playerWithCard: Adventurer, val playersBeingMoved: Set<Adventurer>, val position: Position):
         PlayerSpecialActionEvent(), CardDiscardingEvent {
+
     override val playerDiscardingCard = playerWithCard
     override val discardedCards = immListOf(HelicopterLiftCard)
-    override fun toString() = "$playerBeingMoved is helicopter lifted to $position by $playerWithCard"
+    override fun toString() =
+        (if (playersBeingMoved.size == 1) "${playersBeingMoved.first()} is" else "${playersBeingMoved.joinToString(" and ")} are") +
+            " helicopter lifted to $position by $playerWithCard"
 }
 
 data class Sandbag(val player: Adventurer, val position: Position): PlayerSpecialActionEvent(), CardDiscardingEvent {

@@ -191,8 +191,8 @@ data class GameState(
     private fun availableHelicopterLiftActions(): List<GameEvent> =
         playerCards.filterValues { it.contains(HelicopterLiftCard) }.keys.flatMap { playerWithCard ->
             locationFloodStates.filterValues { it != Sunken }.keys.map { gameSetup.map.positionOf(it) }.let { accessiblePositions ->
-                playerPositions.mapValues { accessiblePositions - it.value }.flatMap { (otherPlayer, destinations) ->
-                    destinations.map { HelicopterLift(playerWithCard, otherPlayer, it) }
+                playerPositions.toCombinations().mapValues { accessiblePositions - it.value }.flatMap { (otherPlayers, destinations) ->
+                    destinations.map { HelicopterLift(playerWithCard, otherPlayers, it) }
                 }
             }
         }.let { actions ->
@@ -211,7 +211,7 @@ data class GameState(
                 is PlayerMovingEvent -> copy(playerPositions = playerPositions + (event.player to event.position))
                 is ShoreUp -> copy(locationFloodStates = locationFloodStates + (gameSetup.map.locationAt(event.position) to Unflooded))
                 is CaptureTreasure -> copy(treasuresCollected = treasuresCollected + (event.treasure to true))
-                is HelicopterLift -> copy(playerPositions = playerPositions + (event.playerBeingMoved to event.position))
+                is HelicopterLift -> copy(playerPositions = (playerPositions + event.playersBeingMoved.map { (it to event.position) }).imm())
                 is Sandbag -> copy(locationFloodStates = locationFloodStates + (gameSetup.map.locationAt(event.position) to Unflooded))
                 is GiveTreasureCard -> copy(playerCards =
                     playerCards + (event.player   to playerCards.getValue(event.player)  .subtract(listOf(event.card))) +
@@ -262,3 +262,16 @@ data class GameState(
 
     val playerCardCounts: Map<Adventurer, Int> = playerCards.mapValues { it.value.size }
 }
+
+private fun ImmutableMap<Adventurer, Position>.toCombinations(): Map<ImmutableSet<Adventurer>, Position> {
+    return this.transpose().flatMap { (position, players) ->
+        players.toCombinations().map { it to position }
+    }.toMap()
+}
+
+private fun ImmutableSet<Adventurer>.toCombinations(): Collection<ImmutableSet<Adventurer>> =
+    if (this.size == 1) listOf(immSetOf(first()))
+    else listOf(this) + (this.flatMap { (this - it).toSortedSet().imm().toCombinations() }.distinct())
+
+private fun <K: Comparable<K>, V> ImmutableMap<K, V>.transpose(): Map<V, ImmutableSet<K>> =
+    this.values.toSet().associate { v -> v to this.filterValues { it == v }.keys.toSortedSet().imm() }

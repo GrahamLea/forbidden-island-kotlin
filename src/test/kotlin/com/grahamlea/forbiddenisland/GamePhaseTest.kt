@@ -285,7 +285,7 @@ class GamePhaseTest {
         fun `+ player helicopter lift card = back to play of previous phase`() {
             checkPhaseTransition(
                 firstPhase = AwaitingPlayerToDiscardExtraCard(Messenger, AwaitingPlayerAction(Engineer, 1)),
-                event = HelicopterLift(Messenger, Pilot, position33),
+                event = HelicopterLift(Messenger, immSetOf(Pilot), position33),
                 expectedPhase = AwaitingPlayerAction(Engineer, 1)
             )
         }
@@ -350,11 +350,12 @@ class GamePhaseTest {
             AwaitingPlayerAction(Engineer, 2),
             AwaitingTreasureDeckDraw(Engineer, 3),
             AwaitingFloodDeckDraw(Engineer, 3)
+            // TODO: More phases here now that should be tested?
             // AwaitingPlayerToDiscardExtraCard behaves differently
         )
 
         val events = listOf(
-            HelicopterLift(Engineer, Diver, position33),
+            HelicopterLift(Engineer, immSetOf(Diver), position33),
             Sandbag(Engineer, position33),
             SwimToSafety(Engineer, position33)
         )
@@ -373,7 +374,7 @@ class GamePhaseTest {
                 ShoreUp(Engineer, position33),
                 GiveTreasureCard(Engineer, Messenger, TreasureCard(EarthStone)),
                 CaptureTreasure(Engineer, EarthStone),
-                HelicopterLift(Engineer, Diver, position33),
+                HelicopterLift(Engineer, immSetOf(Diver), position33),
                 Sandbag(Engineer, position33),
                 SwimToSafety(Engineer, position33),
                 DrawFromTreasureDeck(Engineer),
