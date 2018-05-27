@@ -125,4 +125,3 @@ data class DrawFromTreasureDeck(val player: Adventurer): PlayerObligationEvent()
 data class DrawFromFloodDeck(val player: Adventurer): PlayerObligationEvent() {
     override fun toString() = "$player draws from the Flood Deck"
 }
-

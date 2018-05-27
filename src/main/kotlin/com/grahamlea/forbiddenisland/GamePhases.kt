@@ -99,4 +99,5 @@ data class AwaitingPlayerToSwimToSafety(val player: Adventurer, val returningToP
 object GameOver: GamePhase() {
     override fun phaseAfter(event: GameEvent, nextGameState: GameState): GamePhase { invalidEventInPhase(event) }
     override fun calculateNextPhase(event: GameEvent, nextGameState: GameState): GamePhase { throw IllegalStateException() }
+    override fun toString() = "GameOver"
 }

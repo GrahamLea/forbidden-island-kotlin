@@ -7,6 +7,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.MethodSource
 
 @Suppress("UsePropertyAccessSyntax")
 @DisplayName("GameState available actions")
@@ -228,6 +230,8 @@ class GameStateAvailableActionsTest {
                 assertThat(game.availableMoves()).contains(Move(Diver, Position(4, 1))) // top-right
             }
         }
+
+        // TODO: Move not available during other phases
     }
 
     @Nested
@@ -293,6 +297,8 @@ class GameStateAvailableActionsTest {
 
             assertThat(game.availableActions<Fly>()).doesNotContain(Fly(Pilot, sunkenPosition))
         }
+
+        // TODO: Fly not available during other phases
     }
 
     @Nested
@@ -375,6 +381,7 @@ class GameStateAvailableActionsTest {
             )
         }
 
+        // TODO: Shore Up not available during other phases
     }
 
     @Nested
@@ -420,6 +427,8 @@ class GameStateAvailableActionsTest {
                 GiveTreasureCard(Messenger, Diver, fire)
             )
         }
+
+        // TODO: Give Treasure Cards not available during other phases
     }
 
     @Nested
@@ -504,6 +513,8 @@ class GameStateAvailableActionsTest {
 
             assertThat(testGame.availableActions<CaptureTreasure>()).isEmpty()
         }
+
+        // TODO: Capture Treasure not available during other phases
     }
 
     @Nested
@@ -559,8 +570,8 @@ class GameStateAvailableActionsTest {
 
             assertThat(game.availableActions<HelicopterLift>()).containsOnlyElementsOf(
                 Pair(player1, player1FlightDestinations).toLiftActions() +
-                Pair(player2, player2FlightDestinations).toLiftActions() +
-                Pair(player3, player3FlightDestinations).toLiftActions()
+                    Pair(player2, player2FlightDestinations).toLiftActions() +
+                    Pair(player3, player3FlightDestinations).toLiftActions()
             )
         }
 
@@ -568,11 +579,11 @@ class GameStateAvailableActionsTest {
         fun `cannot helicopter lift a player to a sunken tile`() {
             val location = Location.Observatory
             val game = game(Messenger, Navigator)
-                    .withLocationFloodStates(Sunken, location)
-                    .withPlayerCards(mapOf(
-                        Messenger to cards(HelicopterLiftCard),
-                        Navigator to cards()
-                    ))
+                .withLocationFloodStates(Sunken, location)
+                .withPlayerCards(mapOf(
+                    Messenger to cards(HelicopterLiftCard),
+                    Navigator to cards()
+                ))
             val position = game.gameSetup.map.positionOf(location)
 
             assertThat(game.availableActions<HelicopterLift>()).doesNotContain(
@@ -584,16 +595,16 @@ class GameStateAvailableActionsTest {
         @Test
         fun `any combination of multiple players from the same tile can be helicopter lifted at the same time`() {
             val game = game(Diver, Explorer, Messenger, Navigator)
-                    .withPlayerPosition(Diver, Position(4, 4))
-                    .withPlayerPosition(Explorer, Position(4, 4))
-                    .withPlayerPosition(Messenger, Position(3, 3))
-                    .withPlayerPosition(Navigator, Position(4, 4))
-                    .withPlayerCards(mapOf(
-                        Diver to cards(),
-                        Explorer to cards(),
-                        Messenger to cards(HelicopterLiftCard),
-                        Navigator to cards()
-                    ))
+                .withPlayerPosition(Diver, Position(4, 4))
+                .withPlayerPosition(Explorer, Position(4, 4))
+                .withPlayerPosition(Messenger, Position(3, 3))
+                .withPlayerPosition(Navigator, Position(4, 4))
+                .withPlayerCards(mapOf(
+                    Diver to cards(),
+                    Explorer to cards(),
+                    Messenger to cards(HelicopterLiftCard),
+                    Navigator to cards()
+                ))
 
             assertThat(game.availableActions<HelicopterLift>()).contains(
                 HelicopterLift(Messenger, immSetOf(Diver), Position(1, 3)),
@@ -611,12 +622,12 @@ class GameStateAvailableActionsTest {
 
         @Test
         fun `helicopter lift can be used while awaiting a Treasure Deck Draw`() {
-                val game = game(Messenger, Navigator)
-                    .withPlayerCards(mapOf(
-                        Messenger to cards(HelicopterLiftCard),
-                        Navigator to cards()
-                    ))
-                    .withGamePhase(AwaitingTreasureDeckDraw(Navigator, 2))
+            val game = game(Messenger, Navigator)
+                .withPlayerCards(mapOf(
+                    Messenger to cards(HelicopterLiftCard),
+                    Navigator to cards()
+                ))
+                .withGamePhase(AwaitingTreasureDeckDraw(Navigator, 2))
 
             assertThat(game.availableActions<HelicopterLift>()).isNotEmpty()
         }
@@ -776,6 +787,39 @@ class GameStateAvailableActionsTest {
 
             assertThat(game.availableActions<Sandbag>()).isEmpty()
         }
+    }
+
+    @Nested
+    @DisplayName("DrawFromTreasureDeck actions")
+    inner class DrawFromTreasureDeckTests {
+
+        @Test
+        fun `draw from treasure deck allowed by player having turn when awaiting it`() {
+            val game = game(Messenger, Navigator, Diver)
+                .withGamePhase(AwaitingTreasureDeckDraw(Navigator, 2))
+
+            assertThat(game.availableActions<DrawFromTreasureDeck>()).containsOnly(
+                DrawFromTreasureDeck(Navigator)
+            )
+        }
+
+        @ParameterizedTest
+        @MethodSource("non-DrawFromTreasureDeck phases")
+        fun `draw from treasure deck not allowed in any other phase`(phase: GamePhase) {
+            val game = game(Messenger, Navigator, Diver)
+                .withGamePhase(phase)
+
+            assertThat(game.availableActions<DrawFromTreasureDeck>()).isEmpty()
+        }
+
+        private fun `non-DrawFromTreasureDeck phases`(): List<GamePhase> =
+            listOf(
+                AwaitingPlayerAction(Navigator, 1),
+                AwaitingFloodDeckDraw(Navigator, 2),
+                AwaitingPlayerToSwimToSafety(Navigator, AwaitingPlayerAction(Navigator, 1)),
+                AwaitingPlayerToDiscardExtraCard(Navigator, AwaitingPlayerAction(Navigator, 1)),
+                GameOver
+            )
     }
 }
 

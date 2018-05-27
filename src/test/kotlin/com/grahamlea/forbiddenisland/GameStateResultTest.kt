@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.RepeatedTest
 
+@DisplayName("GameState result")
 class GameStateResultTest {
 
     private val allLocationsUnflooded = Location.values().associate { it to Unflooded }
