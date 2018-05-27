@@ -350,8 +350,7 @@ class GamePhaseTest {
             AwaitingPlayerAction(Engineer, 2),
             AwaitingTreasureDeckDraw(Engineer, 3),
             AwaitingFloodDeckDraw(Engineer, 3)
-            // TODO: More phases here now that should be tested?
-            // AwaitingPlayerToDiscardExtraCard behaves differently
+            // AwaitingPlayerToDiscardExtraCard and AwaitingPlayerToSwimToSafety behave differently
         )
 
         val events = listOf(
