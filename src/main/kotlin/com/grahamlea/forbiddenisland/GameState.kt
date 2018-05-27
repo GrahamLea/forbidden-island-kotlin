@@ -101,8 +101,12 @@ data class GameState(
                         availableCaptureTreasureActions(phase.player, playerPosition)
                 }
             else -> emptyList()
-        } + availableHelicopterLiftActions()
-
+        } + ((allHelicopterLiftActions() + allSandbagActions()).let { actions ->
+            when (phase) {
+                is AwaitingPlayerToSwimToSafety -> emptyList()
+                is AwaitingPlayerToDiscardExtraCard -> actions.filter { (it as CardDiscardingEvent).playerDiscardingCard == phase.playerWithTooManyCards }
+                else -> actions
+            }})
     }
 
     private fun availableMoveAndFlyActions(player: Adventurer, playerPosition: Position): List<GameEvent> {
@@ -188,21 +192,21 @@ data class GameState(
             else null
         } ?: listOf()
 
-    private fun availableHelicopterLiftActions(): List<GameEvent> =
+    private fun allHelicopterLiftActions(): List<GameEvent> =
         playerCards.filterValues { it.contains(HelicopterLiftCard) }.keys.flatMap { playerWithCard ->
             locationFloodStates.filterValues { it != Sunken }.keys.map { gameSetup.map.positionOf(it) }.let { accessiblePositions ->
                 playerPositions.toCombinations().mapValues { accessiblePositions - it.value }.flatMap { (otherPlayers, destinations) ->
                     destinations.map { HelicopterLift(playerWithCard, otherPlayers, it) }
                 }
             }
-        }.let { actions ->
-            when (phase) {
-                is AwaitingPlayerToSwimToSafety -> emptyList()
-                is AwaitingPlayerToDiscardExtraCard -> actions.filter { it.playerWithCard == phase.playerWithTooManyCards }
-                else -> actions
-            }
         }
 
+    private fun allSandbagActions(): List<GameEvent> =
+        playerCards.filterValues { it.contains(SandbagsCard) }.keys.flatMap { playerWithCard ->
+            locationFloodStates.filterValues { it == Flooded }.keys.map { gameSetup.map.positionOf(it) }.let { floodedPositions ->
+                floodedPositions.map { Sandbag(playerWithCard, it) }
+            }
+        }
 
     fun after(event: GameEvent, random: Random): GameState {
         // TODO Check that event is in list of possible events

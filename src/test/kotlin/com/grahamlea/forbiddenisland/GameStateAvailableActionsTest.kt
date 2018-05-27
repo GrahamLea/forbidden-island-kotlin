@@ -7,12 +7,11 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import java.util.*
 
+@Suppress("UsePropertyAccessSyntax")
 @DisplayName("GameState available actions")
 class GameStateAvailableActionsTest {
 
-    private val random = Random()
     private val earth = TreasureCard(Treasure.EarthStone)
     private val ocean = TreasureCard(Treasure.OceansChalice)
     private val fire = TreasureCard(Treasure.CrystalOfFire)
@@ -528,7 +527,7 @@ class GameStateAvailableActionsTest {
                     player3 to cards()
                 ))
 
-            val player1FlightDesinations = positionsFromMap("""
+            val player1FlightDestinations = positionsFromMap("""
                       .o
                      oooo
                     oooooo
@@ -537,7 +536,7 @@ class GameStateAvailableActionsTest {
                       oo
                 """)
 
-            val player2FlightDesinations = positionsFromMap("""
+            val player2FlightDestinations = positionsFromMap("""
                       oo
                      oo.o
                     oooooo
@@ -546,7 +545,7 @@ class GameStateAvailableActionsTest {
                       oo
                 """)
 
-            val player3FlightDesinations = positionsFromMap("""
+            val player3FlightDestinations = positionsFromMap("""
                       oo
                      oooo
                     oooo.o
@@ -559,9 +558,9 @@ class GameStateAvailableActionsTest {
                 this.second.map { HelicopterLift(player2, immSetOf(this.first), it) }
 
             assertThat(game.availableActions<HelicopterLift>()).containsOnlyElementsOf(
-                Pair(player1, player1FlightDesinations).toLiftActions() +
-                Pair(player2, player2FlightDesinations).toLiftActions() +
-                Pair(player3, player3FlightDesinations).toLiftActions()
+                Pair(player1, player1FlightDestinations).toLiftActions() +
+                Pair(player2, player2FlightDestinations).toLiftActions() +
+                Pair(player3, player3FlightDestinations).toLiftActions()
             )
         }
 
@@ -670,12 +669,120 @@ class GameStateAvailableActionsTest {
             assertThat(game.availableActions<HelicopterLift>()).isEmpty()
         }
     }
+
+    @Nested
+    @DisplayName("Sandbag actions")
+    inner class SandbagTests {
+
+        @RunForEachAdventurer
+        fun `any player with a Sandbag can use it on any flooded location on anyone's turn`(
+            player1: Adventurer, player2: Adventurer, player3: Adventurer) {
+
+            val floodedPositions = positionsFromMap("""
+                  .o
+                 oo..
+                ......
+                ...oo.
+                 o..o
+                  o.
+            """)
+
+            val game = game(player1, player2, player3)
+                .withLocationFloodStates(Unflooded, *Position.allPositions.toTypedArray()) // TODO: Provide a variant of this method that doesn't need toTypedArray()
+                .withLocationFloodStates(Flooded, *floodedPositions.toTypedArray())
+                .withPlayerCards(mapOf(
+                    player1 to cards(),
+                    player2 to cards(SandbagsCard),
+                    player3 to cards()
+                ))
+
+            assertThat(game.availableActions<Sandbag>()).containsOnlyElementsOf(
+                floodedPositions.map { Sandbag(player2, it) }
+            )
+        }
+
+        @Test
+        fun `cannot sandbag a sunken location`() {
+            val location = Location.Observatory
+            val game = game(Messenger, Navigator)
+                .withLocationFloodStates(Sunken, location)
+                .withPlayerCards(mapOf(
+                    Messenger to cards(SandbagsCard),
+                    Navigator to cards()
+                ))
+            val position = game.gameSetup.map.positionOf(location)
+
+            assertThat(game.availableActions<Sandbag>()).doesNotContain(
+                Sandbag(Messenger, position)
+            )
+        }
+
+        @Test
+        fun `sandbag can be used while awaiting a Treasure Deck Draw`() {
+            val game = game(Messenger, Navigator)
+                .withPlayerCards(mapOf(
+                    Messenger to cards(SandbagsCard),
+                    Navigator to cards()
+                ))
+                .withGamePhase(AwaitingTreasureDeckDraw(Navigator, 2))
+
+            assertThat(game.availableActions<Sandbag>()).isNotEmpty()
+        }
+
+        @Test
+        fun `sandbag can be used while awaiting a Flood Deck Draw`() {
+            val game = game(Messenger, Navigator)
+                .withPlayerCards(mapOf(
+                    Messenger to cards(SandbagsCard),
+                    Navigator to cards()
+                ))
+                .withGamePhase(AwaitingFloodDeckDraw(Navigator, 2))
+
+            assertThat(game.availableActions<Sandbag>()).isNotEmpty()
+        }
+
+        @Test
+        fun `sandbag can be used by discarding player when card needs to be discarded`() {
+            val game = game(Messenger, Navigator)
+                .withPlayerCards(mapOf(
+                    Messenger to cards(SandbagsCard),
+                    Navigator to cards()
+                ))
+                .withGamePhase(AwaitingPlayerToDiscardExtraCard(Messenger, AwaitingTreasureDeckDraw(Messenger, 1)))
+
+            assertThat(game.availableActions<Sandbag>()).isNotEmpty()
+        }
+
+        @Test
+        fun `sandbag CANNOT be used by another player when card needs to be discarded`() {
+            val game = game(Messenger, Navigator)
+                .withPlayerCards(mapOf(
+                    Messenger to cards(),
+                    Navigator to cards(SandbagsCard)
+                ))
+                .withGamePhase(AwaitingPlayerToDiscardExtraCard(Messenger, AwaitingTreasureDeckDraw(Messenger, 1)))
+
+            assertThat(game.availableActions<Sandbag>()).isEmpty()
+        }
+
+        @Test
+        fun `sandbag cannot be used when a player needs to swim to safety`() {
+            val game = game(Messenger, Navigator)
+                .withPlayerCards(mapOf(
+                    Messenger to cards(SandbagsCard),
+                    Navigator to cards()
+                ))
+                .withGamePhase(AwaitingPlayerToSwimToSafety(Navigator, AwaitingFloodDeckDraw(Messenger, 1)))
+
+            assertThat(game.availableActions<Sandbag>()).isEmpty()
+        }
+    }
 }
 
 private fun Game.availableMoves(player: Adventurer): List<Position> =
     availableMoves().filter { it.player == player }.map(Move::position)
 
-private fun Game.availableMoves(): List<Move> = availableActions<Move>()
+private fun Game.availableMoves(): List<Move> = availableActions()
 
 private inline fun <reified T: GameEvent> Game.availableActions(): List<T> =
     gameState.availableActions.mapNotNull { it as? T }
