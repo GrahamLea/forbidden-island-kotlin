@@ -196,10 +196,11 @@ data class GameState(
                 }
             }
         }.let { actions ->
-            if (phase is AwaitingPlayerToDiscardExtraCard)
-                actions.filter { it.playerWithCard == phase.playerWithTooManyCards }
-            else
-                actions
+            when (phase) {
+                is AwaitingPlayerToSwimToSafety -> emptyList()
+                is AwaitingPlayerToDiscardExtraCard -> actions.filter { it.playerWithCard == phase.playerWithTooManyCards }
+                else -> actions
+            }
         }
 
 

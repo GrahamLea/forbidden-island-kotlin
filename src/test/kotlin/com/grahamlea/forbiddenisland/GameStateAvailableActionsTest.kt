@@ -659,7 +659,7 @@ class GameStateAvailableActionsTest {
         }
 
         @Test
-        fun `helicopter lift can be used when a player needs to swim to safety`() {
+        fun `helicopter lift cannot be used when a player needs to swim to safety`() {
             val game = game(Messenger, Navigator)
                 .withPlayerCards(mapOf(
                     Messenger to cards(HelicopterLiftCard),
@@ -667,7 +667,7 @@ class GameStateAvailableActionsTest {
                 ))
                 .withGamePhase(AwaitingPlayerToSwimToSafety(Navigator, AwaitingFloodDeckDraw(Messenger, 1)))
 
-            assertThat(game.availableActions<HelicopterLift>()).isNotEmpty()
+            assertThat(game.availableActions<HelicopterLift>()).isEmpty()
         }
     }
 }
