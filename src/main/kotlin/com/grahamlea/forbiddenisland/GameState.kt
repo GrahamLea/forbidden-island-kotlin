@@ -101,6 +101,7 @@ data class GameState(
                         availableCaptureTreasureActions(phase.player, playerPosition)
                 }
             is AwaitingTreasureDeckDraw -> listOf(DrawFromTreasureDeck(phase.player))
+            is AwaitingFloodDeckDraw -> listOf(DrawFromFloodDeck(phase.player))
             else -> emptyList()
         } + ((allHelicopterLiftActions() + allSandbagActions()).let { actions ->
             when (phase) {

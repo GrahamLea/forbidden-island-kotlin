@@ -790,7 +790,7 @@ class GameStateAvailableActionsTest {
     }
 
     @Nested
-    @DisplayName("DrawFromTreasureDeck actions")
+    @DisplayName("Draw from Treasure Deck actions")
     inner class DrawFromTreasureDeckTests {
 
         @Test
@@ -816,6 +816,39 @@ class GameStateAvailableActionsTest {
             listOf(
                 AwaitingPlayerAction(Navigator, 1),
                 AwaitingFloodDeckDraw(Navigator, 2),
+                AwaitingPlayerToSwimToSafety(Navigator, AwaitingPlayerAction(Navigator, 1)),
+                AwaitingPlayerToDiscardExtraCard(Navigator, AwaitingPlayerAction(Navigator, 1)),
+                GameOver
+            )
+    }
+
+    @Nested
+    @DisplayName("Draw from Flood Deck actions")
+    inner class DrawFromFloodDeckTests {
+
+        @Test
+        fun `draw from flood deck allowed by player having turn when awaiting it`() {
+            val game = game(Messenger, Navigator, Diver)
+                .withGamePhase(AwaitingFloodDeckDraw(Navigator, 2))
+
+            assertThat(game.availableActions<DrawFromFloodDeck>()).containsOnly(
+                DrawFromFloodDeck(Navigator)
+            )
+        }
+
+        @ParameterizedTest
+        @MethodSource("non-DrawFromFloodDeck phases")
+        fun `draw from flood deck not allowed in any other phase`(phase: GamePhase) {
+            val game = game(Messenger, Navigator, Diver)
+                .withGamePhase(phase)
+
+            assertThat(game.availableActions<DrawFromFloodDeck>()).isEmpty()
+        }
+
+        private fun `non-DrawFromFloodDeck phases`(): List<GamePhase> =
+            listOf(
+                AwaitingPlayerAction(Navigator, 1),
+                AwaitingTreasureDeckDraw(Navigator, 2),
                 AwaitingPlayerToSwimToSafety(Navigator, AwaitingPlayerAction(Navigator, 1)),
                 AwaitingPlayerToDiscardExtraCard(Navigator, AwaitingPlayerAction(Navigator, 1)),
                 GameOver
