@@ -92,7 +92,8 @@ data class GameState(
                     .keys
 
     val availableActions: List<GameEvent> by lazy {
-        when (phase) {
+        if (phase == GameOver) emptyList()
+        else when (phase) {
             is AwaitingPlayerAction ->
                 playerPositions.getValue(phase.player).let { playerPosition ->
                     availableMoveAndFlyActions(phase.player, playerPosition) +
@@ -105,7 +106,7 @@ data class GameState(
             is AwaitingPlayerToDiscardExtraCard ->
                 playerCards.getValue(phase.playerWithTooManyCards).distinct().map { DiscardCard(phase.playerWithTooManyCards, it) }
             else -> emptyList()
-        } + ((allHelicopterLiftActions() + allSandbagActions()).let { actions ->
+        } + ((allHelicopterLiftActions() + allSandbagActions() + helicopterLiftOffIslandIfAvailable()).let { actions ->
             when (phase) {
                 is AwaitingPlayerToSwimToSafety -> emptyList()
                 is AwaitingPlayerToDiscardExtraCard -> actions.filter { (it as CardDiscardingEvent).playerDiscardingCard == phase.playerWithTooManyCards }
@@ -211,6 +212,13 @@ data class GameState(
                 floodedPositions.map { Sandbag(playerWithCard, it) }
             }
         }
+
+    private fun helicopterLiftOffIslandIfAvailable(): List<GameEvent> =
+        if (treasuresCollected.values.all { it } &&
+            listOf(gameSetup.map.positionOf(FoolsLanding)) == playerPositions.values.distinct())
+            playerCards.filterValues { it.contains(HelicopterLiftCard) }.keys.map { HelicopterLiftOffIsland(it) }
+        else
+            emptyList()
 
     fun after(event: GameEvent, random: Random): GameState {
         // TODO Check that event is in list of possible events
