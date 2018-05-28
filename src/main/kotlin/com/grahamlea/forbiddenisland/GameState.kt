@@ -102,6 +102,8 @@ data class GameState(
                 }
             is AwaitingTreasureDeckDraw -> listOf(DrawFromTreasureDeck(phase.player))
             is AwaitingFloodDeckDraw -> listOf(DrawFromFloodDeck(phase.player))
+            is AwaitingPlayerToDiscardExtraCard ->
+                playerCards.getValue(phase.playerWithTooManyCards).distinct().map { DiscardCard(phase.playerWithTooManyCards, it) }
             else -> emptyList()
         } + ((allHelicopterLiftActions() + allSandbagActions()).let { actions ->
             when (phase) {

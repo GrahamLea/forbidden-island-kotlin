@@ -467,13 +467,15 @@ class GameStateAvailableActionsTest {
     @DisplayName("Capture Treasure actions")
     inner class CaptureTreasureTests {
 
-        private val gamePermittingCapture = newRandomGameFor(2).let {
+        private fun Game.permittingTreasureCapture() = this.let {
             it.withPlayerPosition(it.gameSetup.players[0], it.gameSetup.map.positionOf(Location.TempleOfTheSun))
                 .withPlayerCards(mapOf(
                     it.gameSetup.players[0] to cards(earth, earth, earth, earth),
                     it.gameSetup.players[1] to cards()
                 ))
         }
+
+        private val gamePermittingCapture = newRandomGameFor(2).permittingTreasureCapture()
 
         @Test
         fun `player on a treasure location with 4 matching treasure cards can capture the treasure`() {
@@ -549,7 +551,8 @@ class GameStateAvailableActionsTest {
         @ParameterizedTest
         @MethodSource("com.grahamlea.forbiddenisland.GameStateAvailableActionsTest#nonAwaitingPlayerActionPhases")
         fun `GiveTreasureCard not available when not awaiting a player action`(phase: GamePhase) {
-            val game = gamePermittingCapture
+            val game = game(Engineer, Navigator)
+                .permittingTreasureCapture()
                 .withGamePhase(phase)
 
             assertThat(game.availableActions<GiveTreasureCard>()).isEmpty()
@@ -892,6 +895,45 @@ class GameStateAvailableActionsTest {
                 AwaitingTreasureDeckDraw(Navigator, 2),
                 AwaitingPlayerToSwimToSafety(Navigator, AwaitingPlayerAction(Navigator, 1)),
                 AwaitingPlayerToDiscardExtraCard(Navigator, AwaitingPlayerAction(Navigator, 1)),
+                GameOver
+            )
+    }
+
+    @Nested
+    @DisplayName("Discard Card actions")
+    inner class DiscardCardTests {
+
+        @Test
+        fun `discard card is the only action available when a player has 6 treasure cards`() {
+            val game = game(Messenger, Navigator)
+                .withPlayerCards(mapOf(
+                    Messenger to cards(),
+                    Navigator to cards(earth, earth, earth, earth, earth, ocean)
+                ))
+                .withGamePhase(AwaitingPlayerToDiscardExtraCard(Navigator, AwaitingPlayerAction(Messenger, 2)))
+
+            assertThat(game.availableActions<GameEvent>()).containsOnly(
+                DiscardCard(Navigator, earth),
+                DiscardCard(Navigator, ocean)
+            ).hasSize(2)
+        }
+
+        @ParameterizedTest
+        @MethodSource("non-DiscardCard phases")
+        fun `draw from flood deck not available in any other phase`(phase: GamePhase) {
+            val game = game(Messenger, Navigator, Diver)
+                .withGamePhase(phase)
+
+            assertThat(game.availableActions<DiscardCard>()).isEmpty()
+        }
+
+        @Suppress("unused")
+        private fun `non-DiscardCard phases`(): List<GamePhase> =
+            listOf(
+                AwaitingPlayerAction(Navigator, 1),
+                AwaitingTreasureDeckDraw(Navigator, 2),
+                AwaitingFloodDeckDraw(Navigator, 2),
+                AwaitingPlayerToSwimToSafety(Navigator, AwaitingPlayerAction(Navigator, 1)),
                 GameOver
             )
     }
