@@ -231,7 +231,14 @@ class GameStateAvailableActionsTest {
             }
         }
 
-        // TODO: Move not available during other phases
+        @ParameterizedTest
+        @MethodSource("com.grahamlea.forbiddenisland.GameStateAvailableActionsTest#nonAwaitingPlayerActionPhases")
+        fun `Move not available when not awaiting a player action`(phase: GamePhase) {
+            val game = game(Messenger, Navigator, Diver)
+                .withGamePhase(phase)
+
+            assertThat(game.availableActions<Move>()).isEmpty()
+        }
     }
 
     @Nested
@@ -298,7 +305,14 @@ class GameStateAvailableActionsTest {
             assertThat(game.availableActions<Fly>()).doesNotContain(Fly(Pilot, sunkenPosition))
         }
 
-        // TODO: Fly not available during other phases
+        @ParameterizedTest
+        @MethodSource("com.grahamlea.forbiddenisland.GameStateAvailableActionsTest#nonAwaitingPlayerActionPhases")
+        fun `Fly not available when not awaiting a player action`(phase: GamePhase) {
+            val game = game(Pilot, Navigator, Diver)
+                .withGamePhase(phase)
+
+            assertThat(game.availableActions<Fly>()).isEmpty()
+        }
     }
 
     @Nested
@@ -381,7 +395,14 @@ class GameStateAvailableActionsTest {
             )
         }
 
-        // TODO: Shore Up not available during other phases
+        @ParameterizedTest
+        @MethodSource("com.grahamlea.forbiddenisland.GameStateAvailableActionsTest#nonAwaitingPlayerActionPhases")
+        fun `Shore Up not available when not awaiting a player action`(phase: GamePhase) {
+            val game = game(Messenger, Navigator, Diver)
+                .withGamePhase(phase)
+
+            assertThat(game.availableActions<ShoreUp>()).isEmpty()
+        }
     }
 
     @Nested
@@ -428,7 +449,18 @@ class GameStateAvailableActionsTest {
             )
         }
 
-        // TODO: Give Treasure Cards not available during other phases
+
+        @ParameterizedTest
+        @MethodSource("com.grahamlea.forbiddenisland.GameStateAvailableActionsTest#nonAwaitingPlayerActionPhases")
+        fun `GiveTreasureCard not available when not awaiting a player action`(phase: GamePhase) {
+            val game = game(Messenger, Navigator, Diver)
+                .withPlayerPosition(Messenger, Position(3, 3))
+                .withPlayerPosition(Navigator, Position(3, 3))
+                .withPlayerPosition(Diver, Position(3, 3))
+                .withGamePhase(phase)
+
+            assertThat(game.availableActions<GiveTreasureCard>()).isEmpty()
+        }
     }
 
     @Nested
@@ -514,7 +546,14 @@ class GameStateAvailableActionsTest {
             assertThat(testGame.availableActions<CaptureTreasure>()).isEmpty()
         }
 
-        // TODO: Capture Treasure not available during other phases
+        @ParameterizedTest
+        @MethodSource("com.grahamlea.forbiddenisland.GameStateAvailableActionsTest#nonAwaitingPlayerActionPhases")
+        fun `GiveTreasureCard not available when not awaiting a player action`(phase: GamePhase) {
+            val game = gamePermittingCapture
+                .withGamePhase(phase)
+
+            assertThat(game.availableActions<GiveTreasureCard>()).isEmpty()
+        }
     }
 
     @Nested
@@ -805,13 +844,14 @@ class GameStateAvailableActionsTest {
 
         @ParameterizedTest
         @MethodSource("non-DrawFromTreasureDeck phases")
-        fun `draw from treasure deck not allowed in any other phase`(phase: GamePhase) {
+        fun `draw from treasure deck not available in any other phase`(phase: GamePhase) {
             val game = game(Messenger, Navigator, Diver)
                 .withGamePhase(phase)
 
             assertThat(game.availableActions<DrawFromTreasureDeck>()).isEmpty()
         }
 
+        @Suppress("unused")
         private fun `non-DrawFromTreasureDeck phases`(): List<GamePhase> =
             listOf(
                 AwaitingPlayerAction(Navigator, 1),
@@ -838,16 +878,30 @@ class GameStateAvailableActionsTest {
 
         @ParameterizedTest
         @MethodSource("non-DrawFromFloodDeck phases")
-        fun `draw from flood deck not allowed in any other phase`(phase: GamePhase) {
+        fun `draw from flood deck not available in any other phase`(phase: GamePhase) {
             val game = game(Messenger, Navigator, Diver)
                 .withGamePhase(phase)
 
             assertThat(game.availableActions<DrawFromFloodDeck>()).isEmpty()
         }
 
+        @Suppress("unused")
         private fun `non-DrawFromFloodDeck phases`(): List<GamePhase> =
             listOf(
                 AwaitingPlayerAction(Navigator, 1),
+                AwaitingTreasureDeckDraw(Navigator, 2),
+                AwaitingPlayerToSwimToSafety(Navigator, AwaitingPlayerAction(Navigator, 1)),
+                AwaitingPlayerToDiscardExtraCard(Navigator, AwaitingPlayerAction(Navigator, 1)),
+                GameOver
+            )
+    }
+
+    companion object {
+        @JvmStatic
+        @Suppress("unused", "RedundantVisibilityModifier")
+        public fun nonAwaitingPlayerActionPhases(): List<GamePhase> =
+            listOf(
+                AwaitingFloodDeckDraw(Navigator, 1),
                 AwaitingTreasureDeckDraw(Navigator, 2),
                 AwaitingPlayerToSwimToSafety(Navigator, AwaitingPlayerAction(Navigator, 1)),
                 AwaitingPlayerToDiscardExtraCard(Navigator, AwaitingPlayerAction(Navigator, 1)),
