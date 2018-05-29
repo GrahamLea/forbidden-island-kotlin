@@ -56,8 +56,8 @@ class GameStateAvailableActionsTest {
                 val sunkenPosition = Position(5, 4)
                 val game = game(player1, player2)
                     .withPlayerPosition(player1, playerPosition)
-                    .withLocationFloodStates(Flooded, floodedPosition)
-                    .withLocationFloodStates(Sunken, sunkenPosition)
+                    .withPositionFloodStates(Flooded, floodedPosition)
+                    .withPositionFloodStates(Sunken, sunkenPosition)
 
                 assertThat(game.availableMoves())
                     .contains(Move(player1, floodedPosition))
@@ -90,8 +90,8 @@ class GameStateAvailableActionsTest {
                 val sunkenPosition = Position(5, 3)
                 val game = game(Explorer, Messenger)
                     .withPlayerPosition(Explorer, Position(4, 4))
-                    .withLocationFloodStates(Flooded, floodedPosition)
-                    .withLocationFloodStates(Sunken, sunkenPosition)
+                    .withPositionFloodStates(Flooded, floodedPosition)
+                    .withPositionFloodStates(Sunken, sunkenPosition)
 
                 assertThat(game.gameState.availableActions)
                     .contains(Move(Explorer, floodedPosition))
@@ -156,7 +156,7 @@ class GameStateAvailableActionsTest {
             fun `Navigator can move the Diver through 1 sunken tile`() {
                 val game = game(Navigator, Diver)
                     .withPlayerPosition(Diver, Position(3, 3))
-                    .withLocationFloodStates(Sunken, Position(4, 3))
+                    .withPositionFloodStates(Sunken, Position(4, 3))
 
                 assertThat(game.gameState.availableActions).contains(Move(Diver, Position(5, 3)))
             }
@@ -165,7 +165,7 @@ class GameStateAvailableActionsTest {
             fun `Navigator cannot move the Diver through more than 1 sunken tile`() {
                 val game = game(Navigator, Diver)
                     .withPlayerPosition(Diver, Position(3, 3))
-                    .withLocationFloodStates(Sunken, Position(4, 3), Position(5, 3))
+                    .withPositionFloodStates(Sunken, Position(4, 3), Position(5, 3))
 
                 assertThat(game.gameState.availableActions).doesNotContain(Move(Diver, Position(6, 3)))
             }
@@ -174,7 +174,7 @@ class GameStateAvailableActionsTest {
             fun `Navigator cannot land the anyone (incl the Diver) on flooded tiles`() {
                 val game = game(Navigator, Diver)
                     .withPlayerPosition(Diver, Position(3, 3))
-                    .withLocationFloodStates(Sunken, Position(5, 3))
+                    .withPositionFloodStates(Sunken, Position(5, 3))
 
                 assertThat(game.gameState.availableActions).doesNotContain(Move(Diver, Position(5, 3)))
             }
@@ -183,7 +183,7 @@ class GameStateAvailableActionsTest {
             fun `Navigator cannot move non-Diver players through flooded tiles`() {
                 val game = game(Navigator, Engineer)
                     .withPlayerPosition(Engineer, Position(3, 3))
-                    .withLocationFloodStates(Sunken, Position(4, 3))
+                    .withPositionFloodStates(Sunken, Position(4, 3))
 
                 assertThat(game.gameState.availableActions).doesNotContain(Move(Engineer, Position(5, 3)))
             }
@@ -197,9 +197,9 @@ class GameStateAvailableActionsTest {
 
                 val game = game(Diver, Explorer)
                     .withPlayerPosition(Diver, Position(1, 4))
-                    .withLocationFloodStates(Unflooded, *Position.allPositions.toTypedArray())
-                    .withLocationFloodStates(Sunken, Position(2, 4), Position(4, 4))
-                    .withLocationFloodStates(Flooded, Position(3, 4), Position(5, 4))
+                    .withPositionFloodStates(Unflooded, Position.allPositions)
+                    .withPositionFloodStates(Sunken, Position(2, 4), Position(4, 4))
+                    .withPositionFloodStates(Flooded, Position(3, 4), Position(5, 4))
 
                 assertThat(game.availableMoves())
                     .contains(Move(Diver, Position(3, 4)))
@@ -228,7 +228,7 @@ class GameStateAvailableActionsTest {
 
                 val game = game(Diver, Explorer)
                     .withPlayerPosition(Diver, diverPosition)
-                    .withLocationFloodStates(Flooded, *floodedPositions.toTypedArray())
+                    .withPositionFloodStates(Flooded, floodedPositions)
 
                 assertThat(game.availableMoves()).contains(Move(Diver, Position(4, 1))) // top-right
             }
@@ -303,7 +303,7 @@ class GameStateAvailableActionsTest {
             val sunkenPosition = Position(3, 1)
             val game = game(Pilot, Explorer)
                 .withPlayerPosition(Pilot, Position(4, 4))
-                .withLocationFloodStates(Sunken, sunkenPosition)
+                .withPositionFloodStates(Sunken, sunkenPosition)
 
             assertThat(game.availableActions<Fly>()).doesNotContain(Fly(Pilot, sunkenPosition))
         }
@@ -324,7 +324,7 @@ class GameStateAvailableActionsTest {
         @Test
         fun `Navigator, Messenger, Diver and Pilot can shore up their own position or flooded positions adjacent to them`() {
             val game = game(Navigator, Messenger, Diver, Pilot)
-                .withLocationFloodStates(Flooded, *Position.allPositions.toTypedArray())
+                .withPositionFloodStates(Flooded, Position.allPositions)
 
             for (player in game.gameSetup.players) {
                 val availableMoves =
@@ -347,8 +347,8 @@ class GameStateAvailableActionsTest {
         fun `Unflooded or Sunken positions cannot be shored up`(player1: Adventurer, player2: Adventurer) {
             val game = newRandomGameFor(immListOf(player1, player2))
                 .withPlayerPosition(player1, Position(4, 4))
-                .withLocationFloodStates(Unflooded, *Position.allPositions.toTypedArray())
-                .withLocationFloodStates(Sunken, Position(3, 4), Position(4, 5))
+                .withPositionFloodStates(Unflooded, Position.allPositions)
+                .withPositionFloodStates(Sunken, Position(3, 4), Position(4, 5))
 
             assertThat(game.availableActions<ShoreUp>()).isEmpty()
         }
@@ -356,7 +356,7 @@ class GameStateAvailableActionsTest {
         @Test
         fun `Explorer can shore up flooded positions adjacent and diagonal to them`() {
             val game = game(Explorer, Messenger)
-                .withLocationFloodStates(Flooded, *Position.allPositions.toTypedArray())
+                .withPositionFloodStates(Flooded, Position.allPositions)
                 .withPlayerPosition(Explorer, Position(4, 4))
 
             assertThat(game.availableActions<ShoreUp>()).containsOnlyElementsOf(positionsFromMap("""
@@ -372,7 +372,7 @@ class GameStateAvailableActionsTest {
         @Test
         fun `Engineer can shore up one or two flooded positions`() {
             val game = game(Engineer, Messenger)
-                .withLocationFloodStates(Flooded, *Position.allPositions.toTypedArray())
+                .withPositionFloodStates(Flooded, Position.allPositions)
                 .withPlayerPosition(Engineer, Position(4, 4))
 
             val validPositions = positionsFromMap("""
@@ -744,8 +744,8 @@ class GameStateAvailableActionsTest {
             """)
 
             val game = game(player1, player2, player3)
-                .withLocationFloodStates(Unflooded, *Position.allPositions.toTypedArray()) // TODO: Provide a variant of this method that doesn't need toTypedArray()
-                .withLocationFloodStates(Flooded, *floodedPositions.toTypedArray())
+                .withPositionFloodStates(Unflooded, Position.allPositions)
+                .withPositionFloodStates(Flooded, floodedPositions)
                 .withPlayerCards(mapOf(
                     player1 to cards(),
                     player2 to cards(SandbagsCard),

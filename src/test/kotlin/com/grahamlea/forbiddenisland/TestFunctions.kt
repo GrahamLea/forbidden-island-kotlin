@@ -7,12 +7,16 @@ import kotlin.reflect.KClass
 
 fun game(vararg players: Adventurer) = Game.newRandomGameFor(immListOf(*players), GameMap.newShuffledMap())
 
-fun Game.withLocationFloodStates(floodState: LocationFloodState, vararg positions: Position): Game {
-    val locations = this.gameSetup.map.mapSites.filter { it.position in positions }.map { it.location }
-    return withLocationFloodStates(floodState,  *locations.toTypedArray())
-}
+fun Game.withPositionFloodStates(floodState: LocationFloodState, vararg positions: Position) =
+    withPositionFloodStates(floodState, positions.asIterable())
 
-fun Game.withLocationFloodStates(floodState: LocationFloodState, vararg locations: Location): Game {
+fun Game.withPositionFloodStates(floodState: LocationFloodState, positions: Iterable<Position>) =
+    withLocationFloodStates(floodState, positions.map { gameSetup.map.locationAt(it) })
+
+fun Game.withLocationFloodStates(floodState: LocationFloodState, vararg locations: Location) =
+    this.withLocationFloodStates(floodState, locations.asIterable())
+
+fun Game.withLocationFloodStates(floodState: LocationFloodState, locations: Iterable<Location>): Game {
     return copy(
         gameState.copy(locationFloodStates = (gameState.locationFloodStates + locations.associate { it to floodState }).imm())
     )

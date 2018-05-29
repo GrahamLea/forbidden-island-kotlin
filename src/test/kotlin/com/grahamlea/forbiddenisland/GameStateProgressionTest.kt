@@ -21,7 +21,7 @@ class GameStateProgressionTest {
     fun `events on game state are recorded in previous events`() {
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
                 .withPlayerPosition(Engineer, Position(4, 4))
-                .withLocationFloodStates(Flooded, Position(2, 3))
+                .withPositionFloodStates(Flooded, Position(2, 3))
 
         val event1 = Move(Engineer, Position(4, 3))
         val event2 = Move(Engineer, Position(3, 3))
@@ -83,7 +83,7 @@ class GameStateProgressionTest {
         val positionToShoreUp = Position(3, 4)
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
                 .withPlayerPosition(Engineer, Position(4, 4))
-                .withLocationFloodStates(Flooded, positionToShoreUp)
+                .withPositionFloodStates(Flooded, positionToShoreUp)
 
         val mapSiteToShoreUp = game.gameSetup.map.mapSiteAt(positionToShoreUp)
 
@@ -184,7 +184,7 @@ class GameStateProgressionTest {
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
                 .withPlayerPosition(Engineer, Position(4, 4))
                 .withPlayerPosition(Messenger, Position(3, 4))
-                .withLocationFloodStates(Flooded, positionToShoreUp)
+                .withPositionFloodStates(Flooded, positionToShoreUp)
                 .withPlayerCards(immMapOf(Engineer to cards(earth, SandbagsCard), Messenger to cards(ocean)))
                 .withTreasureDeckDiscard(cards(earth))
 
@@ -326,7 +326,7 @@ class GameStateProgressionTest {
     fun `draw location from flood deck floods or sinks location and discards card`() {
         val map = GameMap.newShuffledMap()
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), map)
-                .withLocationFloodStates(Unflooded, *Position.allPositions.toTypedArray())
+                .withPositionFloodStates(Unflooded, Position.allPositions)
                 .withLocationFloodStates(Flooded, MistyMarsh, Observatory)
                 .withFloodDeckDiscard(immListOf(MistyMarsh))
                 .withTopOfFloodDeck(CrimsonForest, Observatory)
@@ -356,7 +356,7 @@ class GameStateProgressionTest {
         val floodDeckDiscardBeforeEvent = shuffled<Location>().subtract(listOf(MistyMarsh)) - Observatory
         val map = GameMap.newShuffledMap()
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), map)
-                    .withLocationFloodStates(Unflooded, *Position.allPositions.toTypedArray())
+                    .withPositionFloodStates(Unflooded, Position.allPositions)
                     .withLocationFloodStates(Flooded, DunesOfDeception)
                     .withLocationFloodStates(Sunken, Observatory)
                     .withFloodDeckDiscard(floodDeckDiscardBeforeEvent.imm())

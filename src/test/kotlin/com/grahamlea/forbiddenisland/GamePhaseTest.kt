@@ -211,7 +211,7 @@ class GamePhaseTest {
                     .withPlayerPosition(Messenger, sunkPosition)
                     .withPlayerPosition(Diver, otherPosition)
                     .withPlayerPosition(Explorer, otherPosition)
-                    .withLocationFloodStates(Sunken, randomNewGame.gameSetup.map.locationAt(sunkPosition))
+                    .withPositionFloodStates(Sunken, sunkPosition)
 
                 checkPhaseTransition(
                     firstPhase = AwaitingFloodDeckDraw(Engineer, 3),
@@ -230,7 +230,7 @@ class GamePhaseTest {
                     .withPlayerPosition(Messenger, sunkPosition)
                     .withPlayerPosition(Diver, otherPosition)
                     .withPlayerPosition(Explorer, sunkPosition)
-                    .withLocationFloodStates(Sunken, randomNewGame.gameSetup.map.locationAt(sunkPosition))
+                    .withPositionFloodStates(Sunken, sunkPosition)
 
                 checkPhaseTransition(
                     firstPhase = AwaitingFloodDeckDraw(Engineer, 3),
@@ -249,7 +249,7 @@ class GamePhaseTest {
                     .withPlayerPosition(Messenger, sunkPosition)
                     .withPlayerPosition(Diver, otherPosition)
                     .withPlayerPosition(Explorer, otherPosition)
-                    .withLocationFloodStates(Sunken, randomNewGame.gameSetup.map.locationAt(sunkPosition))
+                    .withPositionFloodStates(Sunken, sunkPosition)
 
                 checkPhaseTransition(
                     firstPhase = AwaitingFloodDeckDraw(Explorer, 1),

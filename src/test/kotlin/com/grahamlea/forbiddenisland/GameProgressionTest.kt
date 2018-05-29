@@ -40,7 +40,7 @@ class GameProgressionTest {
 
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), map)
                 .withPlayerPosition(Engineer, Position(4, 4))
-                .withLocationFloodStates(LocationFloodState.Flooded, Position(2, 3))
+                .withPositionFloodStates(LocationFloodState.Flooded, Position(2, 3))
                 .withTopOfTreasureDeck(TreasureCard(Treasure.EarthStone))
                 .withGamePhase(gamePhase1)
 
