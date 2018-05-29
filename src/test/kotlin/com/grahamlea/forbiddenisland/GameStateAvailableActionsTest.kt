@@ -2,6 +2,7 @@ package com.grahamlea.forbiddenisland
 
 import com.grahamlea.forbiddenisland.Adventurer.*
 import com.grahamlea.forbiddenisland.Game.Companion.newRandomGameFor
+import com.grahamlea.forbiddenisland.Location.*
 import com.grahamlea.forbiddenisland.LocationFloodState.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
@@ -470,7 +471,7 @@ class GameStateAvailableActionsTest {
     inner class CaptureTreasureTests {
 
         private fun Game.permittingTreasureCapture() = this.let {
-            it.withPlayerPosition(it.gameSetup.players[0], it.gameSetup.map.positionOf(Location.TempleOfTheSun))
+            it.withPlayerLocation(it.gameSetup.players[0], TempleOfTheSun)
                 .withPlayerCards(mapOf(
                     it.gameSetup.players[0] to cards(earth, earth, earth, earth),
                     it.gameSetup.players[1] to cards()
@@ -529,7 +530,7 @@ class GameStateAvailableActionsTest {
         @Test
         fun `player with 4 matching treasure cards not on a pickup location CANNOT capture the treasure`() {
             val testGame = gamePermittingCapture.let {
-                it.withPlayerPosition(it.gameSetup.players[0], it.gameSetup.map.positionOf(Location.Observatory)) // TODO: Introduce withPlayerLocation()
+                it.withPlayerLocation(it.gameSetup.players[0], Observatory)
             }
 
             assertThat(testGame.availableActions<CaptureTreasure>()).isEmpty()
@@ -621,7 +622,7 @@ class GameStateAvailableActionsTest {
 
         @Test
         fun `cannot helicopter lift a player to a sunken tile`() {
-            val location = Location.Observatory
+            val location = Observatory
             val game = game(Messenger, Navigator)
                 .withLocationFloodStates(Sunken, location)
                 .withPlayerCards(mapOf(
@@ -758,7 +759,7 @@ class GameStateAvailableActionsTest {
 
         @Test
         fun `cannot sandbag a sunken location`() {
-            val location = Location.Observatory
+            val location = Observatory
             val game = game(Messenger, Navigator)
                 .withLocationFloodStates(Sunken, location)
                 .withPlayerCards(mapOf(
@@ -967,13 +968,11 @@ class GameStateAvailableActionsTest {
             )
             val savingPlayer = cards.keys.toList()[random.nextInt(3)]
 
-            val game = game(Messenger, Navigator, Diver).let { game ->
-                game.gameSetup.map.positionOf(Location.FoolsLanding).let { foolsLandingPosition ->
-                    game.withPlayerPosition(Messenger, foolsLandingPosition)
-                        .withPlayerPosition(Navigator, foolsLandingPosition)
-                        .withPlayerPosition(Diver, foolsLandingPosition)
-                }
-            }.withPlayerCards(cards + (savingPlayer to cards(HelicopterLiftCard)))
+            val game = game(Messenger, Navigator, Diver)
+                .withPlayerLocation(Messenger, FoolsLanding)
+                .withPlayerLocation(Navigator, FoolsLanding)
+                .withPlayerLocation(Diver, FoolsLanding)
+                .withPlayerCards(cards + (savingPlayer to cards(HelicopterLiftCard)))
                 .withTreasuresCollected(*Treasure.values())
                 .withGamePhase(phase)
 
@@ -984,13 +983,11 @@ class GameStateAvailableActionsTest {
         @Test
         fun `helicopter lift off island is NOT available when not all treasures are collected`() {
 
-            val game = game(Messenger, Navigator, Diver).let { game ->
-                game.gameSetup.map.positionOf(Location.FoolsLanding).let { foolsLandingPosition ->
-                    game.withPlayerPosition(Messenger, foolsLandingPosition)
-                        .withPlayerPosition(Navigator, foolsLandingPosition)
-                        .withPlayerPosition(Diver, foolsLandingPosition)
-                }
-            }.withTreasuresCollected(*Treasure.values().toList().shuffled().subList(0, 3).toTypedArray())
+            val game = game(Messenger, Navigator, Diver)
+                    .withPlayerLocation(Messenger, FoolsLanding)
+                        .withPlayerLocation(Navigator, FoolsLanding)
+                        .withPlayerLocation(Diver, FoolsLanding)
+            .withTreasuresCollected(*Treasure.values().toList().shuffled().subList(0, 3).toTypedArray())
                 .withPlayerCards(mapOf(
                 Messenger to cards(HelicopterLiftCard),
                 Navigator to cards(),
@@ -1003,13 +1000,11 @@ class GameStateAvailableActionsTest {
         @Test
         fun `helicopter lift off island is NOT available when not all players are on Fool's Landing`() {
 
-            val game = game(Messenger, Navigator, Diver).let { game ->
-                game.gameSetup.map.positionOf(Location.FoolsLanding).let { foolsLandingPosition ->
-                    game.withPlayerPosition(Messenger, game.gameSetup.map.adjacentSites(foolsLandingPosition)[0].position)
-                        .withPlayerPosition(Navigator, foolsLandingPosition)
-                        .withPlayerPosition(Diver, foolsLandingPosition)
-                }
-            }.withTreasuresCollected(*Treasure.values())
+            val game = game(Messenger, Navigator, Diver)
+                .withPlayerLocation(Messenger, Observatory)
+                .withPlayerLocation(Navigator, FoolsLanding)
+                .withPlayerLocation(Diver, FoolsLanding)
+                .withTreasuresCollected(*Treasure.values())
                 .withPlayerCards(mapOf(
                     Messenger to cards(HelicopterLiftCard),
                     Navigator to cards(),
@@ -1022,13 +1017,11 @@ class GameStateAvailableActionsTest {
         @Test
         fun `helicopter lift off island is NOT available when no one has a Helicopter Lift card`() {
 
-            val game = game(Messenger, Navigator, Diver).let { game ->
-                game.gameSetup.map.positionOf(Location.FoolsLanding).let { foolsLandingPosition ->
-                    game.withPlayerPosition(Messenger, foolsLandingPosition)
-                        .withPlayerPosition(Navigator, foolsLandingPosition)
-                        .withPlayerPosition(Diver, foolsLandingPosition)
-                }
-            }.withTreasuresCollected(*Treasure.values())
+            val game = game(Messenger, Navigator, Diver)
+                .withPlayerLocation(Messenger, FoolsLanding)
+                .withPlayerLocation(Navigator, FoolsLanding)
+                .withPlayerLocation(Diver, FoolsLanding)
+                .withTreasuresCollected(*Treasure.values())
                 .withPlayerCards(mapOf(
                     Messenger to cards(),
                     Navigator to cards(),
@@ -1041,13 +1034,11 @@ class GameStateAvailableActionsTest {
         @Test
         fun `helicopter lift off island is available when player with a Helicopter Lift card has to discard a card`() {
 
-            val game = game(Messenger, Navigator, Diver).let { game ->
-                game.gameSetup.map.positionOf(Location.FoolsLanding).let { foolsLandingPosition ->
-                    game.withPlayerPosition(Messenger, foolsLandingPosition)
-                        .withPlayerPosition(Navigator, foolsLandingPosition)
-                        .withPlayerPosition(Diver, foolsLandingPosition)
-                }
-            }.withTreasuresCollected(*Treasure.values())
+            val game = game(Messenger, Navigator, Diver)
+                .withPlayerLocation(Messenger, FoolsLanding)
+                .withPlayerLocation(Navigator, FoolsLanding)
+                .withPlayerLocation(Diver, FoolsLanding)
+                .withTreasuresCollected(*Treasure.values())
                 .withPlayerCards(mapOf(
                     Messenger to cards(ocean, ocean, ocean, ocean, ocean, HelicopterLiftCard),
                     Navigator to cards(),
@@ -1061,13 +1052,11 @@ class GameStateAvailableActionsTest {
         @Test
         fun `helicopter lift off island is NOT available when a player other than one with a Helicopter Lift card has to discard a card`() {
 
-            val game = game(Messenger, Navigator, Diver).let { game ->
-                game.gameSetup.map.positionOf(Location.FoolsLanding).let { foolsLandingPosition ->
-                    game.withPlayerPosition(Messenger, foolsLandingPosition)
-                        .withPlayerPosition(Navigator, foolsLandingPosition)
-                        .withPlayerPosition(Diver, foolsLandingPosition)
-                }
-            }.withTreasuresCollected(*Treasure.values())
+            val game = game(Messenger, Navigator, Diver)
+                .withPlayerLocation(Messenger, FoolsLanding)
+                .withPlayerLocation(Navigator, FoolsLanding)
+                .withPlayerLocation(Diver, FoolsLanding)
+                .withTreasuresCollected(*Treasure.values())
                 .withPlayerCards(mapOf(
                     Messenger to cards(ocean, ocean, ocean, ocean, ocean, earth),
                     Navigator to cards(HelicopterLiftCard),
@@ -1082,13 +1071,11 @@ class GameStateAvailableActionsTest {
         @MethodSource("notAllowedPhases")
         fun `helicopter lift off island is NOT available when someone needs to swim to safety or the game is already over`(phase: GamePhase) {
 
-            val game = game(Messenger, Navigator, Diver).let { game ->
-                game.gameSetup.map.positionOf(Location.FoolsLanding).let { foolsLandingPosition ->
-                    game.withPlayerPosition(Messenger, foolsLandingPosition)
-                        .withPlayerPosition(Navigator, foolsLandingPosition)
-                        .withPlayerPosition(Diver, foolsLandingPosition)
-                }
-            }.withTreasuresCollected(*Treasure.values())
+            val game = game(Messenger, Navigator, Diver)
+                .withPlayerLocation(Messenger, FoolsLanding)
+                .withPlayerLocation(Navigator, FoolsLanding)
+                .withPlayerLocation(Diver, FoolsLanding)
+                .withTreasuresCollected(*Treasure.values())
                 .withPlayerCards(mapOf(
                     Messenger to cards(HelicopterLiftCard),
                     Navigator to cards(),

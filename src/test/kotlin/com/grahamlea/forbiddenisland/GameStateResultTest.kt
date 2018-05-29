@@ -43,8 +43,8 @@ class GameStateResultTest {
                         treasureDeckDiscard = immListOf(TreasureCard(EarthStone), HelicopterLiftCard),
                         playerCards = players.associate { it to immListOf<HoldableCard>() }.imm()
                     ))
-                        .withPlayerPosition(players[0], game.gameSetup.map.positionOf(FoolsLanding))
-                        .withPlayerPosition(players[1], game.gameSetup.map.positionOf(FoolsLanding))
+                        .withPlayerLocation(players[0], FoolsLanding)
+                        .withPlayerLocation(players[1], FoolsLanding)
                 }
 
                 assertThat(game.gameState.result).isNull()
@@ -67,8 +67,8 @@ class GameStateResultTest {
                 val game = Game.newRandomGameFor(players).let { game ->
                     game.copy(gameState = game.gameState.copy(
                         treasuresCollected = Treasure.values().associate { it to true }.imm()))
-                        .withPlayerPosition(players[0], game.gameSetup.map.positionOf(FoolsLanding))
-                        .withPlayerPosition(players[1], game.gameSetup.map.positionOf(FoolsLanding))
+                        .withPlayerLocation(players[0], FoolsLanding)
+                        .withPlayerLocation(players[1], FoolsLanding)
                 }
 
                 assertThat(game.gameState.result).isNull()
@@ -84,8 +84,8 @@ class GameStateResultTest {
                         treasureDeckDiscard = immListOf(TreasureCard(EarthStone), HelicopterLiftCard),
                         playerCards = players.associate { it to immListOf<HoldableCard>() }.imm()
                     ))
-                        .withPlayerPosition(players[0], game.gameSetup.map.positionOf(FoolsLanding))
-                        .withPlayerPosition(players[1], game.gameSetup.map.positionOf(TempleOfTheSun))
+                        .withPlayerLocation(players[0], FoolsLanding)
+                        .withPlayerLocation(players[1], TempleOfTheSun)
                 }
 
                 assertThat(game.gameState.result).isNull()
@@ -101,8 +101,8 @@ class GameStateResultTest {
                         treasureDeckDiscard = immListOf(TreasureCard(EarthStone), HelicopterLiftCard),
                         playerCards = players.associate { it to immListOf<HoldableCard>() }.imm()
                     ))
-                        .withPlayerPosition(players[0], game.gameSetup.map.positionOf(FoolsLanding))
-                        .withPlayerPosition(players[1], game.gameSetup.map.positionOf(FoolsLanding))
+                        .withPlayerLocation(players[0], FoolsLanding)
+                        .withPlayerLocation(players[1], FoolsLanding)
                 }
 
                 assertThat(game.gameState.result).isNull()

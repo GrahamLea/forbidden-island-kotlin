@@ -108,7 +108,7 @@ class GameStateProgressionTest {
     fun `capture treasure event captures treasure, and discards treasure cards`() {
         val gameSetup = GameSetup(immListOf(Messenger, Engineer), GameMap.newShuffledMap())
         val game = Game.newRandomGameFor(gameSetup)
-                .withPlayerPosition(Messenger, gameSetup.map.positionOf(TempleOfTheSun))
+                .withPlayerLocation(Messenger, TempleOfTheSun)
                 .withPlayerCards(
                     immMapOf(Messenger to cards(earth, earth, earth, earth, ocean),
                              Engineer to cards(ocean, ocean)))

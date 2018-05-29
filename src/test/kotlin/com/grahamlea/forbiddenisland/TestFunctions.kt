@@ -42,6 +42,14 @@ fun Game.withPlayerPosition(player: Adventurer, newPosition: Position): Game {
     )
 }
 
+fun Game.withPlayerLocation(player: Adventurer, newLocation: Location): Game {
+    return copy(
+        gameState.copy(
+            playerPositions = gameState.playerPositions + (player to gameSetup.map.positionOf(newLocation))
+        )
+    )
+}
+
 fun Game.withPlayerCards(playerCards: Map<Adventurer, ImmutableList<HoldableCard>>): Game {
     if (!gameState.treasureDeckDiscard.isEmpty()) throw IllegalStateException("If you need to manipulate the treasureDeckDiscard, do it after setting the player cards")
     return copy(
