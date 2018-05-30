@@ -35,6 +35,8 @@ data class Position(val x: Int, val y: Int): Comparable<Position> {
         require(isValid(x, y)) { "$this is not a valid position" }
     }
 
+    fun adjacentPositions(includeDiagonals: Boolean) = Position.adjacentPositions(this, includeDiagonals)
+
     fun neighbour(direction: Direction): Position? {
         val newX = x + direction.xTravel
         val newY = y + direction.yTravel

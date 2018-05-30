@@ -105,6 +105,7 @@ data class GameState(
             is AwaitingFloodDeckDraw -> listOf(DrawFromFloodDeck(phase.player))
             is AwaitingPlayerToDiscardExtraCard ->
                 playerCards.getValue(phase.playerWithTooManyCards).distinct().map { DiscardCard(phase.playerWithTooManyCards, it) }
+            is AwaitingPlayerToSwimToSafety -> availableSwimToSafetyActions(phase.player)
             else -> emptyList()
         } + ((allHelicopterLiftActions() + allSandbagActions() + helicopterLiftOffIslandIfAvailable()).let { actions ->
             when (phase) {
@@ -212,6 +213,25 @@ data class GameState(
                 floodedPositions.map { Sandbag(playerWithCard, it) }
             }
         }
+
+    private fun availableSwimToSafetyActions(player: Adventurer): List<GameEvent> =
+        when (player) {
+            Pilot -> locationFloodStates.filterValues { it != Sunken }.keys.map(gameSetup.map::positionOf)
+            Diver -> diverSwimToSafetyPositions()
+            else -> playerPositions.getValue(player).adjacentPositions(includeDiagonals = player == Explorer)
+                        .filter { locationFloodStates.getValue(gameSetup.map.locationAt(it)) != Sunken }
+        }.map { SwimToSafety(player, it) }
+
+    private fun diverSwimToSafetyPositions(): List<Position> {
+        tailrec fun closestUnsunkenPositions(positions: List<MapSite>): List<Position> {
+            val allAdjacentSites = positions.flatMap { gameSetup.map.adjacentSites(it.position, false) }
+            val unsunkenAdjacentSites = allAdjacentSites.filter { locationFloodStates.getValue(it.location) != Sunken }
+            return if (unsunkenAdjacentSites.any()) unsunkenAdjacentSites.map { it.position }
+                else closestUnsunkenPositions(allAdjacentSites)
+        }
+
+        return closestUnsunkenPositions(listOf(gameSetup.map.mapSiteAt(playerPositions.getValue(Diver))))
+    }
 
     private fun helicopterLiftOffIslandIfAvailable(): List<GameEvent> =
         if (treasuresCollected.values.all { it } &&

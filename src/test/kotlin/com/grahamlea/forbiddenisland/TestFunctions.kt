@@ -130,6 +130,15 @@ fun <C: Any> KClass<C>.getPrivateFieldValue(fieldName: String, target: C): Any? 
     return field.get(target)
 }
 
+fun printGameOnFailure(game: Game, block: () -> Unit) {
+    try {
+        block()
+    } catch (t: Throwable) {
+        System.err.println(GamePrinter.toString(game))
+        throw t
+    }
+}
+
 fun <T> time(block: () -> T): T {
     val start = System.currentTimeMillis()
     try {

@@ -942,8 +942,149 @@ class GameStateAvailableActionsTest {
     }
 
     @Nested
+    @DisplayName("Swim to Safety actions")
+    inner class SwimToSafetyTests {
+
+        @RunForEachAdventurer(except = [Explorer, Pilot])
+        fun `Diver, Engineer, Messenger and Navigator can all swim to safety at any adjacent flooded or unflooded location`(
+            player1: Adventurer, player2: Adventurer
+        ) {
+            val player1Position = Position(4, 4)
+
+            val adjacentPositions = player1Position.adjacentPositions(false)
+            val map = GameMap.newShuffledMap().withLocationNotAtAnyOf(FoolsLanding, adjacentPositions)
+
+            val unfloodedPosition = adjacentPositions.shuffled()[0]
+            val sunkenPosition = (adjacentPositions - unfloodedPosition).shuffled()[0]
+            val floodedPositions = adjacentPositions - unfloodedPosition - sunkenPosition
+
+            val game = newRandomGameFor(immListOf(player1, player2), map)
+                .withPlayerPosition(player1, player1Position)
+                .withPlayerPosition(player2, Position(1, 3))
+                .withPositionFloodStates(Unflooded, unfloodedPosition)
+                .withPositionFloodStates(Sunken, sunkenPosition)
+                .withPositionFloodStates(Flooded, floodedPositions)
+                .withGamePhase(AwaitingPlayerToSwimToSafety(player1, AwaitingPlayerAction(player2, 2)))
+
+            printGameOnFailure(game) {
+                assertThat(game.availableActions<GameEvent>()).containsOnly(
+                    SwimToSafety(player1, unfloodedPosition),
+                    SwimToSafety(player1, floodedPositions[0]),
+                    SwimToSafety(player1, floodedPositions[1])
+                )
+            }
+        }
+
+        @Test
+        fun `Explorer can swim to safety at any adjacent or diagonal flooded or unflooded location`() {
+            val explorerPosition = Position(4, 4)
+
+            val adjacentPositions = explorerPosition.adjacentPositions(false)
+            val diagonalPositions = explorerPosition.adjacentPositions(true) - adjacentPositions
+            val map = GameMap.newShuffledMap().withLocationNotAtAnyOf(FoolsLanding, adjacentPositions + diagonalPositions)
+
+            val unfloodedPositions = listOf(adjacentPositions.shuffled()[0], diagonalPositions.shuffled()[0])
+            val sunkenPositions = listOf(
+                (adjacentPositions - unfloodedPositions[0]).shuffled()[0],
+                (diagonalPositions - unfloodedPositions[1]).shuffled()[0]
+            )
+            val floodedPositions = adjacentPositions + diagonalPositions - unfloodedPositions - sunkenPositions
+
+            val game = newRandomGameFor(immListOf(Explorer, Engineer), map)
+                .withPlayerPosition(Explorer, explorerPosition)
+                .withPlayerPosition(Engineer, Position(1, 3))
+                .withPositionFloodStates(Unflooded, unfloodedPositions)
+                .withPositionFloodStates(Sunken, sunkenPositions)
+                .withPositionFloodStates(Flooded, floodedPositions)
+                .withGamePhase(AwaitingPlayerToSwimToSafety(Explorer, AwaitingPlayerAction(Engineer, 2)))
+
+            printGameOnFailure(game) {
+                assertThat(game.availableActions<GameEvent>()).containsOnly(
+                    SwimToSafety(Explorer, unfloodedPositions[0]),
+                    SwimToSafety(Explorer, unfloodedPositions[1]),
+                    SwimToSafety(Explorer, floodedPositions[0]),
+                    SwimToSafety(Explorer, floodedPositions[1]),
+                    SwimToSafety(Explorer, floodedPositions[2]),
+                    SwimToSafety(Explorer, floodedPositions[3])
+                )
+            }
+        }
+
+        @Test
+        fun `Pilot can "swim" to safety at any un-Sunken location`() {
+            val pilotPosition = Position(4, 4)
+
+            val map = GameMap.newShuffledMap().withLocationNotAtAnyOf(FoolsLanding, listOf(pilotPosition))
+
+            val foolsLandingPos = map.positionOf(FoolsLanding)
+            val unfloodedPositions = (Position.allPositions - pilotPosition - foolsLandingPos).shuffled().subList(0, 7) + foolsLandingPos
+            val sunkenPositions = (Position.allPositions - pilotPosition - unfloodedPositions).shuffled().subList(0, 7) + pilotPosition
+            val floodedPositions = Position.allPositions - unfloodedPositions - sunkenPositions
+
+            val game = newRandomGameFor(immListOf(Pilot, Engineer), map)
+                .withPlayerPosition(Pilot, pilotPosition)
+                .withPlayerPosition(Engineer, Position(1, 3))
+                .withPositionFloodStates(Unflooded, unfloodedPositions)
+                .withPositionFloodStates(Sunken, sunkenPositions)
+                .withPositionFloodStates(Flooded, floodedPositions)
+                .withGamePhase(AwaitingPlayerToSwimToSafety(Pilot, AwaitingPlayerAction(Engineer, 2)))
+
+            printGameOnFailure(game) {
+                assertThat(game.availableActions<GameEvent>()).containsOnlyElementsOf(
+                    (0..7).map { SwimToSafety(Pilot, unfloodedPositions[it]) } +
+                    (0..7).map { SwimToSafety(Pilot, floodedPositions[it]) }
+                )
+            }
+        }
+
+        @Test
+        fun `Diver can swim to safety at the closest unsunken location(s)`() {
+            // "Closest" is determined by the number of *adjacent* moves (not diagonals) required to reach a position
+            // In the map below, the equal closest unsunken positions are (5, 4), (2, 4), (5, 5) and (4, 6), each two moves away
+
+            val diverPosition = Position(4, 4)
+
+            val sunkenPositions = positionsFromMap("""
+                  ..
+                 ..o.
+                ..oo..
+                ..oooo
+                 .oo.
+                  ..
+            """)
+
+            val floodedPositions = positionsFromMap("""
+                  ..
+                 ....
+                ......
+                .o....
+                 ...o
+                  ..
+            """)
+
+            val map = GameMap.newShuffledMap().withLocationNotAtAnyOf(FoolsLanding, sunkenPositions)
+
+            val game = newRandomGameFor(immListOf(Diver, Messenger), map)
+                .withPlayerPosition(Diver, diverPosition)
+                .withPositionFloodStates(Unflooded, Position.allPositions)
+                .withPositionFloodStates(Flooded, floodedPositions)
+                .withPositionFloodStates(Sunken, sunkenPositions)
+                .withGamePhase(AwaitingPlayerToSwimToSafety(Diver, AwaitingPlayerAction(Messenger, 2)))
+
+            printGameOnFailure(game) {
+                assertThat(game.availableActions<GameEvent>()).containsOnly(
+                    SwimToSafety(Diver, Position(5, 3)),
+                    SwimToSafety(Diver, Position(2, 4)),
+                    SwimToSafety(Diver, Position(5, 5)),
+                    SwimToSafety(Diver, Position(4, 6))
+                )
+            }
+        }
+    }
+
+    @Nested
     @DisplayName("Helicopter Lift Off Island action")
-    inner class HelicopterLifOffIslandDeckTests {
+    inner class HelicopterLifOffIslandTests {
 
         @Suppress("unused")
         private fun allowedPhases(): List<GamePhase> = listOf(
