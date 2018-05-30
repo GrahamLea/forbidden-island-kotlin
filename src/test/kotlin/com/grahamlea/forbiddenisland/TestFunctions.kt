@@ -130,11 +130,12 @@ fun <C: Any> KClass<C>.getPrivateFieldValue(fieldName: String, target: C): Any? 
     return field.get(target)
 }
 
-fun printGameOnFailure(game: Game, block: () -> Unit) {
+fun <T> printGameOnFailure(game: Game, block: () -> T): T {
     try {
-        block()
+        return block()
     } catch (t: Throwable) {
-        System.err.println(GamePrinter.toString(game))
+        System.out.println(GamePrinter.toString(game))
+        System.out.println(game.gameState)
         throw t
     }
 }

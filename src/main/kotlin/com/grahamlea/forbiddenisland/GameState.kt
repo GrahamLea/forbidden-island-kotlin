@@ -99,7 +99,8 @@ data class GameState(
                     availableMoveAndFlyActions(phase.player, playerPosition) +
                         availableShoreUpActions(phase.player, playerPosition) +
                         availableGiveTreasureCardActions(phase.player, playerPosition) +
-                        availableCaptureTreasureActions(phase.player, playerPosition)
+                        availableCaptureTreasureActions(phase.player, playerPosition) +
+                        DrawFromTreasureDeck(phase.player)
                 }
             is AwaitingTreasureDeckDraw -> listOf(DrawFromTreasureDeck(phase.player))
             is AwaitingFloodDeckDraw -> listOf(DrawFromFloodDeck(phase.player))

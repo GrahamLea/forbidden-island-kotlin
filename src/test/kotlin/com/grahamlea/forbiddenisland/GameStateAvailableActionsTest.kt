@@ -848,9 +848,19 @@ class GameStateAvailableActionsTest {
             )
         }
 
+        @Test
+        fun `draw from treasure deck allowed by player instead of using remaining actions in turn`() {
+            val game = game(Messenger, Navigator, Diver)
+                .withGamePhase(AwaitingPlayerAction(Navigator, 2))
+
+            assertThat(game.availableActions<DrawFromTreasureDeck>()).containsOnly(
+                DrawFromTreasureDeck(Navigator)
+            )
+        }
+
         @ParameterizedTest
-        @MethodSource("non-DrawFromTreasureDeck phases")
-        fun `draw from treasure deck not available in any other phase`(phase: GamePhase) {
+        @MethodSource("non-available phases")
+        fun `draw from treasure deck not available in most other phases`(phase: GamePhase) {
             val game = game(Messenger, Navigator, Diver)
                 .withGamePhase(phase)
 
@@ -858,9 +868,8 @@ class GameStateAvailableActionsTest {
         }
 
         @Suppress("unused")
-        private fun `non-DrawFromTreasureDeck phases`(): List<GamePhase> =
+        private fun `non-available phases`(): List<GamePhase> =
             listOf(
-                AwaitingPlayerAction(Navigator, 1),
                 AwaitingFloodDeckDraw(Navigator, 2),
                 AwaitingPlayerToSwimToSafety(Navigator, AwaitingPlayerAction(Navigator, 1)),
                 AwaitingPlayerToDiscardExtraCard(Navigator, AwaitingPlayerAction(Navigator, 1)),
