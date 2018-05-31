@@ -19,12 +19,12 @@ class GamePhaseTest {
     private val randomNewGameState = randomNewGame.gameState
 
     private val engineerHasSixCards = Game.newRandomGameFor(immListOf(Engineer, Messenger, Diver, Explorer))
-            .withPlayerCards(immMapOf(
+            .withPlayerCards(
                     Engineer to (TreasureCard(OceansChalice) * 5 + TreasureCard(EarthStone)).imm(),
                     Messenger to cards(),
                     Diver to cards(),
                     Explorer to cards()
-            ))
+            )
 
     @Nested @DisplayName("awaiting player action")
     inner class AwaitingPlayerActionTests {
@@ -76,12 +76,12 @@ class GamePhaseTest {
         @Test
         fun `+ give treasure card to player with 5 cards = awaiting receiving player to discard card, then back to this player`() {
             val messengerHasSixCards = Game.newRandomGameFor(immListOf(Engineer, Messenger, Diver, Explorer))
-                .withPlayerCards(immMapOf(
+                .withPlayerCards(
                     Engineer to cards(),
                     Messenger to (TreasureCard(OceansChalice) * 5 + TreasureCard(EarthStone)).imm(),
                     Diver to cards(),
                     Explorer to cards()
-                ))
+                )
 
             checkPhaseTransition(
                 firstPhase = AwaitingPlayerAction(Engineer, 3),

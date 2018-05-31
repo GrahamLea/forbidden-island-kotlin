@@ -75,9 +75,7 @@ class Game(val gameSetup: GameSetup, gameState: GameState, val random: Random = 
             }
 
             val initialPlayerPositions = gameSetup.players.associate { player ->
-                player to
-                        (Location.values().first { it.startingLocationForAdventurer == player }
-                                .let { location -> gameSetup.map.mapSites.first { it.location == location }.position })
+                player to gameSetup.map.mapSites.first { it.location.startingLocationForAdventurer == player }.position
             }
 
             val gameState = GameState(
@@ -105,6 +103,14 @@ data class GameSetup(val players: ImmutableList<Adventurer>, val map: GameMap) {
         require(players.size in 2..4) { "The game must have 2, 3 or 4 players." }
         require(players.distinct().size == players.size) { "Each Adventurer can only be played by one player." }
     }
+
+    fun mapSiteAt(position: Position): MapSite = map.mapSiteAt(position)
+
+    fun mapSiteOf(location: Location): MapSite = map.mapSiteOf(location)
+
+    fun positionOf(location: Location): Position = map.positionOf(location)
+
+    fun locationAt(position: Position): Location = map.locationAt(position)
 
     companion object {
         @Suppress("RemoveExplicitTypeArguments")

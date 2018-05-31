@@ -67,7 +67,7 @@ data class GameState(
             floodLevel == DEAD -> MaximumWaterLevelReached
             drownedPlayers.any() -> PlayerDrowned(drownedPlayers.first())
             lostTreasures.any() -> BothPickupLocationsSankBeforeCollectingTreasure(lostTreasures.first())
-            locationFloodStates[FoolsLanding] == Sunken -> FoolsLandingSank
+            isSunken(FoolsLanding) -> FoolsLandingSank
             previousEvents.lastOrNull() is HelicopterLiftOffIsland -> AdventurersWon
             else -> null
         }
@@ -76,26 +76,25 @@ data class GameState(
     private fun uncollectedTreasures(): Set<Treasure> = treasuresCollected.filterValues { !it }.keys
 
     private fun unreachableTreasures(): Set<Treasure> =
-            locationFloodStates
-                    .filterKeys { it.pickupLocationForTreasure != null }
-                    .toList()
-                    .groupBy { it.first.pickupLocationForTreasure!! }
-                    .filterValues { it.all { it.second == Sunken } }
-                    .keys
+            Location.values()
+                .filter { it.pickupLocationForTreasure != null }
+                .groupBy { it.pickupLocationForTreasure!! }
+                .filterValues { it.all(::isSunken) }
+                .keys
 
     private fun drownedPlayers() =
             playerPositions
                     .filterKeys { it != Diver && it != Pilot }
-                    .filter { locationFloodStates.getValue(gameSetup.map.locationAt(it.value)) == Sunken }
-                    .filter { gameSetup.map.adjacentSites(it.value, includeDiagonals = (it.key == Explorer))
-                            .all { locationFloodStates.getValue(it.location) == Sunken } }
-                    .keys
+                    .filterValues(::isSunken)
+                    .filter { (player, position) ->
+                        gameSetup.map.adjacentSites(position, includeDiagonals = (player == Explorer)).all(::isSunken)
+                    }.keys
 
     val availableActions: List<GameEvent> by lazy {
         if (phase == GameOver) emptyList()
         else when (phase) {
             is AwaitingPlayerAction ->
-                playerPositions.getValue(phase.player).let { playerPosition ->
+                positionOf(phase.player).let { playerPosition ->
                     availableMoveAndFlyActions(phase.player, playerPosition) +
                         availableShoreUpActions(phase.player, playerPosition) +
                         availableGiveTreasureCardActions(phase.player, playerPosition) +
@@ -107,7 +106,7 @@ data class GameState(
             is AwaitingPlayerToDiscardExtraCard ->
                 playerCards.getValue(phase.playerWithTooManyCards).distinct().map { DiscardCard(phase.playerWithTooManyCards, it) }
             is AwaitingPlayerToSwimToSafety -> availableSwimToSafetyActions(phase.player)
-            else -> emptyList()
+            is GameOver -> emptyList()
         } + ((allHelicopterLiftActions() + allSandbagActions() + helicopterLiftOffIslandIfAvailable()).let { actions ->
             when (phase) {
                 is AwaitingPlayerToSwimToSafety -> emptyList()
@@ -119,7 +118,7 @@ data class GameState(
     private fun availableMoveAndFlyActions(player: Adventurer, playerPosition: Position): List<GameEvent> {
         val moves = accessiblePositionsAdjacentTo(playerPosition, includeDiagonals = player == Explorer).toMovesFor(player)
         return moves + when (player) {
-            Diver -> diverSwimPositionsFrom(gameSetup.map.mapSiteAt(playerPosition)).toMovesFor(Diver)
+            Diver -> diverSwimPositionsFrom(gameSetup.mapSiteAt(playerPosition)).toMovesFor(Diver)
             Navigator -> (gameSetup.players - Navigator).flatMap { sitesNavigatorCanSend(it).toMovesFor(it) }
             Pilot -> if (!pilotHasAlreadyUsedAFlightThisTurn()) availablePilotFlights(moves, playerPosition, player) else emptyList()
             else -> emptyList<GameEvent>()
@@ -128,23 +127,22 @@ data class GameState(
 
     private fun Iterable<MapSite>.toMovesFor(player: Adventurer) = this.map { Move(player, it.position) }
 
-    private fun accessiblePositionsAdjacentTo(p: Position, includeDiagonals: Boolean = false, includeSunkenTiles: Boolean = false): List<MapSite> =
-        gameSetup.map.adjacentSites(p, includeDiagonals)
-            .filter { locationFloodStates.getValue(it.location) != Sunken || includeSunkenTiles }
+    private fun accessiblePositionsAdjacentTo(p: Position, includeDiagonals: Boolean = false, includeSunkenLocations: Boolean = false): List<MapSite> =
+        gameSetup.map.adjacentSites(p, includeDiagonals).filter { !isSunken(it) || includeSunkenLocations }
 
     private fun sitesNavigatorCanSend(player: Adventurer): List<MapSite> =
-        playerPositions.getValue(player).let { playersCurrentPosition ->
+        positionOf(player).let { playersCurrentPosition ->
             accessiblePositionsAdjacentTo(
                 playersCurrentPosition,
                 includeDiagonals = player == Explorer,
-                includeSunkenTiles = player == Diver
+                includeSunkenLocations = player == Diver
             ).flatMap { immediateNeighbourSite ->
                 accessiblePositionsAdjacentTo(
                     immediateNeighbourSite.position,
                     includeDiagonals = player == Explorer,
-                    includeSunkenTiles = false
+                    includeSunkenLocations = false
                 ) + immediateNeighbourSite
-            }.distinct() - gameSetup.map.mapSiteAt(playersCurrentPosition)
+            }.distinct() - gameSetup.mapSiteAt(playersCurrentPosition)
         }
 
     private fun pilotHasAlreadyUsedAFlightThisTurn() =
@@ -152,29 +150,27 @@ data class GameState(
 
     private fun availablePilotFlights(pilotAvailableMoves: List<Move>, playerPosition: Position, player: Adventurer) =
         (gameSetup.map.mapSites
-            .filterNot { locationFloodStates[it.location] == Sunken }
+            .filterNot(::isSunken)
             .map(MapSite::position)
             - pilotAvailableMoves.map(Move::position)
             - playerPosition)
             .map { Fly(player, it) }
 
     private fun diverSwimPositionsFrom(playersCurrentSite: MapSite): List<MapSite> {
-        tailrec fun positions(startingPoints: List<MapSite>, reachable: MutableList<MapSite>): List<MapSite> {
-            val neighbours = startingPoints.flatMap { accessiblePositionsAdjacentTo(it.position, includeSunkenTiles = true) }
+        tailrec fun findPositions(startingPoints: List<MapSite>, reachable: MutableList<MapSite>): List<MapSite> {
+            val neighbours = startingPoints.flatMap { accessiblePositionsAdjacentTo(it.position, includeSunkenLocations = true) }
             val floodedAndSunkenNeighbours = neighbours.filterNot { locationFloodStates.getValue(it.location) == Unflooded }
             val newStartingPoints = floodedAndSunkenNeighbours - reachable
             reachable += neighbours
-            return if (newStartingPoints.any()) positions(newStartingPoints, reachable) else reachable
+            return if (newStartingPoints.any()) findPositions(newStartingPoints, reachable) else reachable
         }
 
-        return positions(listOf(playersCurrentSite), mutableListOf())
-            .filterNot { locationFloodStates[it.location] == Sunken } -
-            playersCurrentSite
+        return findPositions(listOf(playersCurrentSite), mutableListOf()).filterNot(::isSunken) - playersCurrentSite
     }
 
     private fun availableShoreUpActions(player: Adventurer, playerPosition: Position): List<GameEvent> {
         val floodedPositions = (gameSetup.map.adjacentSites(playerPosition, includeDiagonals = player == Explorer)
-            + gameSetup.map.mapSiteAt(playerPosition))
+            + gameSetup.mapSiteAt(playerPosition))
             .filter { locationFloodStates[it.location] == Flooded }
             .map(MapSite::position)
         return floodedPositions.map { ShoreUp(player, it) } +
@@ -192,7 +188,7 @@ data class GameState(
             }
 
     private fun availableCaptureTreasureActions(player: Adventurer, playerPosition: Position): List<GameEvent> =
-        gameSetup.map.locationAt(playerPosition).pickupLocationForTreasure?.let { treasureAtLocation ->
+        gameSetup.locationAt(playerPosition).pickupLocationForTreasure?.let { treasureAtLocation ->
             if (!treasuresCollected.getValue(treasureAtLocation) &&
                 playerCards.getValue(player).count { it is TreasureCard && it.treasure == treasureAtLocation } >= 4)
                 listOf(CaptureTreasure(player, treasureAtLocation))
@@ -200,8 +196,8 @@ data class GameState(
         } ?: listOf()
 
     private fun allHelicopterLiftActions(): List<GameEvent> =
-        playerCards.filterValues { it.contains(HelicopterLiftCard) }.keys.flatMap { playerWithCard ->
-            locationFloodStates.filterValues { it != Sunken }.keys.map { gameSetup.map.positionOf(it) }.let { accessiblePositions ->
+        playerCards.filterValues { HelicopterLiftCard in it }.keys.flatMap { playerWithCard ->
+            locationFloodStates.filterValues { it != Sunken }.keys.map(gameSetup::positionOf).let { accessiblePositions ->
                 playerPositions.toCombinations().mapValues { accessiblePositions - it.value }.flatMap { (otherPlayers, destinations) ->
                     destinations.map { HelicopterLift(playerWithCard, otherPlayers, it) }
                 }
@@ -209,35 +205,34 @@ data class GameState(
         }
 
     private fun allSandbagActions(): List<GameEvent> =
-        playerCards.filterValues { it.contains(SandbagsCard) }.keys.flatMap { playerWithCard ->
-            locationFloodStates.filterValues { it == Flooded }.keys.map { gameSetup.map.positionOf(it) }.let { floodedPositions ->
+        playerCards.filterValues { SandbagsCard in it }.keys.flatMap { playerWithCard ->
+            locationsWithState(Flooded).map(gameSetup::positionOf).let { floodedPositions ->
                 floodedPositions.map { Sandbag(playerWithCard, it) }
             }
         }
 
     private fun availableSwimToSafetyActions(player: Adventurer): List<GameEvent> =
         when (player) {
-            Pilot -> locationFloodStates.filterValues { it != Sunken }.keys.map(gameSetup.map::positionOf)
+            Pilot -> locationFloodStates.filterValues { it != Sunken }.keys.map(gameSetup::positionOf)
             Diver -> diverSwimToSafetyPositions()
-            else -> playerPositions.getValue(player).adjacentPositions(includeDiagonals = player == Explorer)
-                        .filter { locationFloodStates.getValue(gameSetup.map.locationAt(it)) != Sunken }
+            else -> positionOf(player).adjacentPositions(includeDiagonals = player == Explorer).filterNot(::isSunken)
         }.map { SwimToSafety(player, it) }
 
     private fun diverSwimToSafetyPositions(): List<Position> {
         tailrec fun closestUnsunkenPositions(positions: List<MapSite>): List<Position> {
             val allAdjacentSites = positions.flatMap { gameSetup.map.adjacentSites(it.position, false) }
-            val unsunkenAdjacentSites = allAdjacentSites.filter { locationFloodStates.getValue(it.location) != Sunken }
-            return if (unsunkenAdjacentSites.any()) unsunkenAdjacentSites.map { it.position }
+            val unsunkenAdjacentSites = allAdjacentSites.filterNot(::isSunken)
+            return if (unsunkenAdjacentSites.any()) unsunkenAdjacentSites.map(MapSite::position)
                 else closestUnsunkenPositions(allAdjacentSites)
         }
 
-        return closestUnsunkenPositions(listOf(gameSetup.map.mapSiteAt(playerPositions.getValue(Diver))))
+        return closestUnsunkenPositions(listOf(gameSetup.mapSiteAt(positionOf(Diver))))
     }
 
     private fun helicopterLiftOffIslandIfAvailable(): List<GameEvent> =
-        if (treasuresCollected.values.all { it } &&
-            listOf(gameSetup.map.positionOf(FoolsLanding)) == playerPositions.values.distinct())
-            playerCards.filterValues { it.contains(HelicopterLiftCard) }.keys.map { HelicopterLiftOffIsland(it) }
+        if (treasuresCollected.values.all { it == true } &&
+            listOf(gameSetup.positionOf(FoolsLanding)) == playerPositions.values.distinct())
+            playerCards.filterValues { HelicopterLiftCard in it }.keys.map(::HelicopterLiftOffIsland)
         else
             emptyList()
 
@@ -247,10 +242,10 @@ data class GameState(
             when (event) {
                 is DiscardCard, is HelicopterLiftOffIsland -> this
                 is PlayerMovingEvent -> copy(playerPositions = playerPositions + (event.player to event.position))
-                is ShoreUp -> copy(locationFloodStates = locationFloodStates + (gameSetup.map.locationAt(event.position) to Unflooded))
+                is ShoreUp -> copy(locationFloodStates = locationFloodStates + (gameSetup.locationAt(event.position) to Unflooded))
                 is CaptureTreasure -> copy(treasuresCollected = treasuresCollected + (event.treasure to true))
                 is HelicopterLift -> copy(playerPositions = (playerPositions + event.playersBeingMoved.map { (it to event.position) }).imm())
-                is Sandbag -> copy(locationFloodStates = locationFloodStates + (gameSetup.map.locationAt(event.position) to Unflooded))
+                is Sandbag -> copy(locationFloodStates = locationFloodStates + (gameSetup.locationAt(event.position) to Unflooded))
                 is GiveTreasureCard -> copy(playerCards =
                     playerCards + (event.player   to playerCards.getValue(event.player)  .subtract(listOf(event.card))) +
                                   (event.receiver to playerCards.getValue(event.receiver).plus(    listOf(event.card)))
@@ -269,7 +264,10 @@ data class GameState(
                             playerCards = playerCards + (event.player to playerCards.getValue(event.player).plus(drawnCard)),
                             treasureDeck = treasureDeck.drop(1).imm()
                         )
-                    }.let { if (it.treasureDeck.isEmpty()) it.copy(treasureDeck = it.treasureDeckDiscard.shuffled(random).imm(), treasureDeckDiscard = cards()) else it }
+                    }.let {
+                        if (it.treasureDeck.any()) it
+                        else it.copy(treasureDeck = it.treasureDeckDiscard.shuffled(random).imm(), treasureDeckDiscard = cards())
+                    }
                 }
                 is DrawFromFloodDeck -> floodDeck.first().let { floodedLocation ->
                     locationFloodStates.getValue(floodedLocation).flooded().let { newFloodState ->
@@ -278,7 +276,10 @@ data class GameState(
                             locationFloodStates = locationFloodStates + (floodedLocation to newFloodState),
                             floodDeckDiscard = if (newFloodState == Sunken) floodDeckDiscard else floodDeckDiscard + floodedLocation
                         )
-                    }.let { if (it.floodDeck.isEmpty()) it.copy(floodDeck = it.floodDeckDiscard.shuffled().imm(), floodDeckDiscard = immListOf()) else it }
+                    }.let {
+                        if (it.floodDeck.any()) it
+                        else it.copy(floodDeck = it.floodDeckDiscard.shuffled().imm(), floodDeckDiscard = immListOf())
+                    }
                 }
                 else -> throw IllegalStateException("Unhandled event: $event")
             }.let { newState -> newState.copy(
@@ -294,11 +295,21 @@ data class GameState(
                     treasureDeckDiscard = treasureDeckDiscard + cardList
             )
 
-    val sunkPlayers: Set<Adventurer> by lazy { playerPositions.filter { locationFloodStates.getValue(gameSetup.map.locationAt(it.value)) == Sunken }.keys }
+    val sunkPlayers: Set<Adventurer> by lazy { playerPositions.filter { isSunken(it.value) }.keys }
 
     fun locationsWithState(state: LocationFloodState) = locationFloodStates.filterValues { it == state }.keys
 
     val playerCardCounts: Map<Adventurer, Int> = playerCards.mapValues { it.value.size }
+
+    fun positionOf(player: Adventurer): Position = playerPositions.getValue(player)
+
+    fun locationOf(player: Adventurer): Location = gameSetup.locationAt(positionOf(player))
+
+    fun isSunken(location: Location): Boolean = locationFloodStates.getValue(location) == Sunken
+
+    fun isSunken(position: Position): Boolean = isSunken(gameSetup.locationAt(position))
+
+    fun isSunken(mapSite: MapSite): Boolean = isSunken(mapSite.location)
 }
 
 private fun ImmutableMap<Adventurer, Position>.toCombinations(): Map<ImmutableSet<Adventurer>, Position> {

@@ -421,12 +421,12 @@ class GameStateAvailableActionsTest {
                 .withPlayerPosition(player2, Position(4, 4))
                 .withPlayerPosition(player3, Position(4, 4))
                 .withPlayerPosition(player4, Position(3, 3)) // DIFFERENT!
-                .withPlayerCards(mapOf(
+                .withPlayerCards(
                     player1 to cards(earth, fire, fire),
                     player2 to cards(ocean),
                     player3 to cards(),
                     player4 to cards()
-                ))
+                )
 
             assertThat(game.availableActions<GiveTreasureCard>()).containsOnly(
                 GiveTreasureCard(player1, player2, earth),
@@ -441,10 +441,10 @@ class GameStateAvailableActionsTest {
             val game = game(Messenger, Diver)
                 .withPlayerPosition(Messenger, Position(4, 4))
                 .withPlayerPosition(Diver, Position(1, 3))
-                .withPlayerCards(mapOf(
+                .withPlayerCards(
                     Messenger to cards(earth, fire, fire),
                     Diver to cards(ocean)
-                ))
+                )
 
             assertThat(game.availableActions<GiveTreasureCard>()).containsOnly(
                 GiveTreasureCard(Messenger, Diver, earth),
@@ -472,10 +472,10 @@ class GameStateAvailableActionsTest {
 
         private fun Game.permittingTreasureCapture() = this.let {
             it.withPlayerLocation(it.gameSetup.players[0], TempleOfTheSun)
-                .withPlayerCards(mapOf(
+                .withPlayerCards(
                     it.gameSetup.players[0] to cards(earth, earth, earth, earth),
                     it.gameSetup.players[1] to cards()
-                ))
+                )
         }
 
         private val gamePermittingCapture = newRandomGameFor(2).permittingTreasureCapture()
@@ -492,10 +492,10 @@ class GameStateAvailableActionsTest {
         @Test
         fun `player with 5 matching treasure cards can capture the treasure too`() {
             val testGame = gamePermittingCapture.let {
-                it.withPlayerCards(mapOf(
+                it.withPlayerCards(
                     it.gameSetup.players[0] to cards(earth, earth, earth, earth, earth),
                     it.gameSetup.players[1] to cards()
-                ))
+                )
             }
 
             assertThat(testGame.availableActions<CaptureTreasure>()).containsOnly(
@@ -506,10 +506,10 @@ class GameStateAvailableActionsTest {
         @Test
         fun `player on a treasure location with less than 4 matching treasure cards CANNOT capture the treasure`() {
             val testGame = gamePermittingCapture.let {
-                it.withPlayerCards(mapOf(
+                it.withPlayerCards(
                     it.gameSetup.players[0] to cards(earth, earth, earth),
                     it.gameSetup.players[1] to cards()
-                ))
+                )
             }
 
             assertThat(testGame.availableActions<CaptureTreasure>()).isEmpty()
@@ -518,10 +518,10 @@ class GameStateAvailableActionsTest {
         @Test
         fun `player on a treasure location with 4 matching treasure cards of another treasure CANNOT capture the treasure`() {
             val testGame = gamePermittingCapture.let {
-                it.withPlayerCards(mapOf(
+                it.withPlayerCards(
                     it.gameSetup.players[0] to cards(ocean, ocean, ocean, ocean),
                     it.gameSetup.players[1] to cards()
-                ))
+                )
             }
 
             assertThat(testGame.availableActions<CaptureTreasure>()).isEmpty()
@@ -577,11 +577,11 @@ class GameStateAvailableActionsTest {
                 .withPlayerPosition(player1, player1Position)
                 .withPlayerPosition(player2, player2Position)
                 .withPlayerPosition(player3, player3Position)
-                .withPlayerCards(mapOf(
+                .withPlayerCards(
                     player1 to cards(),
                     player2 to cards(HelicopterLiftCard),
                     player3 to cards()
-                ))
+                )
 
             val player1FlightDestinations = positionsFromMap("""
                       .o
@@ -625,11 +625,11 @@ class GameStateAvailableActionsTest {
             val location = Observatory
             val game = game(Messenger, Navigator)
                 .withLocationFloodStates(Sunken, location)
-                .withPlayerCards(mapOf(
+                .withPlayerCards(
                     Messenger to cards(HelicopterLiftCard),
                     Navigator to cards()
-                ))
-            val position = game.gameSetup.map.positionOf(location)
+                )
+            val position = game.gameSetup.positionOf(location)
 
             assertThat(game.availableActions<HelicopterLift>()).doesNotContain(
                 HelicopterLift(Messenger, immSetOf(Messenger), position),
@@ -644,12 +644,12 @@ class GameStateAvailableActionsTest {
                 .withPlayerPosition(Explorer, Position(4, 4))
                 .withPlayerPosition(Messenger, Position(3, 3))
                 .withPlayerPosition(Navigator, Position(4, 4))
-                .withPlayerCards(mapOf(
+                .withPlayerCards(
                     Diver to cards(),
                     Explorer to cards(),
                     Messenger to cards(HelicopterLiftCard),
                     Navigator to cards()
-                ))
+                )
 
             assertThat(game.availableActions<HelicopterLift>()).contains(
                 HelicopterLift(Messenger, immSetOf(Diver), Position(1, 3)),
@@ -668,10 +668,10 @@ class GameStateAvailableActionsTest {
         @Test
         fun `helicopter lift can be used while awaiting a Treasure Deck Draw`() {
             val game = game(Messenger, Navigator)
-                .withPlayerCards(mapOf(
+                .withPlayerCards(
                     Messenger to cards(HelicopterLiftCard),
                     Navigator to cards()
-                ))
+                )
                 .withGamePhase(AwaitingTreasureDeckDraw(Navigator, 2))
 
             assertThat(game.availableActions<HelicopterLift>()).isNotEmpty()
@@ -680,10 +680,10 @@ class GameStateAvailableActionsTest {
         @Test
         fun `helicopter lift can be used while awaiting a Flood Deck Draw`() {
             val game = game(Messenger, Navigator)
-                .withPlayerCards(mapOf(
+                .withPlayerCards(
                     Messenger to cards(HelicopterLiftCard),
                     Navigator to cards()
-                ))
+                )
                 .withGamePhase(AwaitingFloodDeckDraw(Navigator, 2))
 
             assertThat(game.availableActions<HelicopterLift>()).isNotEmpty()
@@ -692,10 +692,10 @@ class GameStateAvailableActionsTest {
         @Test
         fun `helicopter lift can be used by discarding player when card needs to be discarded`() {
             val game = game(Messenger, Navigator)
-                .withPlayerCards(mapOf(
+                .withPlayerCards(
                     Messenger to cards(HelicopterLiftCard),
                     Navigator to cards()
-                ))
+                )
                 .withGamePhase(AwaitingPlayerToDiscardExtraCard(Messenger, AwaitingTreasureDeckDraw(Messenger, 1)))
 
             assertThat(game.availableActions<HelicopterLift>()).isNotEmpty()
@@ -704,10 +704,10 @@ class GameStateAvailableActionsTest {
         @Test
         fun `helicopter lift CANNOT be used by another player when card needs to be discarded`() {
             val game = game(Messenger, Navigator)
-                .withPlayerCards(mapOf(
+                .withPlayerCards(
                     Messenger to cards(),
                     Navigator to cards(HelicopterLiftCard)
-                ))
+                )
                 .withGamePhase(AwaitingPlayerToDiscardExtraCard(Messenger, AwaitingTreasureDeckDraw(Messenger, 1)))
 
             assertThat(game.availableActions<HelicopterLift>()).isEmpty()
@@ -716,10 +716,10 @@ class GameStateAvailableActionsTest {
         @Test
         fun `helicopter lift cannot be used when a player needs to swim to safety`() {
             val game = game(Messenger, Navigator)
-                .withPlayerCards(mapOf(
+                .withPlayerCards(
                     Messenger to cards(HelicopterLiftCard),
                     Navigator to cards()
-                ))
+                )
                 .withGamePhase(AwaitingPlayerToSwimToSafety(Navigator, AwaitingFloodDeckDraw(Messenger, 1)))
 
             assertThat(game.availableActions<HelicopterLift>()).isEmpty()
@@ -746,11 +746,11 @@ class GameStateAvailableActionsTest {
             val game = game(player1, player2, player3)
                 .withPositionFloodStates(Unflooded, Position.allPositions)
                 .withPositionFloodStates(Flooded, floodedPositions)
-                .withPlayerCards(mapOf(
+                .withPlayerCards(
                     player1 to cards(),
                     player2 to cards(SandbagsCard),
                     player3 to cards()
-                ))
+                )
 
             assertThat(game.availableActions<Sandbag>()).containsOnlyElementsOf(
                 floodedPositions.map { Sandbag(player2, it) }
@@ -762,11 +762,11 @@ class GameStateAvailableActionsTest {
             val location = Observatory
             val game = game(Messenger, Navigator)
                 .withLocationFloodStates(Sunken, location)
-                .withPlayerCards(mapOf(
+                .withPlayerCards(
                     Messenger to cards(SandbagsCard),
                     Navigator to cards()
-                ))
-            val position = game.gameSetup.map.positionOf(location)
+                )
+            val position = game.gameSetup.positionOf(location)
 
             assertThat(game.availableActions<Sandbag>()).doesNotContain(
                 Sandbag(Messenger, position)
@@ -776,10 +776,10 @@ class GameStateAvailableActionsTest {
         @Test
         fun `sandbag can be used while awaiting a Treasure Deck Draw`() {
             val game = game(Messenger, Navigator)
-                .withPlayerCards(mapOf(
+                .withPlayerCards(
                     Messenger to cards(SandbagsCard),
                     Navigator to cards()
-                ))
+                )
                 .withGamePhase(AwaitingTreasureDeckDraw(Navigator, 2))
 
             assertThat(game.availableActions<Sandbag>()).isNotEmpty()
@@ -788,10 +788,10 @@ class GameStateAvailableActionsTest {
         @Test
         fun `sandbag can be used while awaiting a Flood Deck Draw`() {
             val game = game(Messenger, Navigator)
-                .withPlayerCards(mapOf(
+                .withPlayerCards(
                     Messenger to cards(SandbagsCard),
                     Navigator to cards()
-                ))
+                )
                 .withGamePhase(AwaitingFloodDeckDraw(Navigator, 2))
 
             assertThat(game.availableActions<Sandbag>()).isNotEmpty()
@@ -800,10 +800,10 @@ class GameStateAvailableActionsTest {
         @Test
         fun `sandbag can be used by discarding player when card needs to be discarded`() {
             val game = game(Messenger, Navigator)
-                .withPlayerCards(mapOf(
+                .withPlayerCards(
                     Messenger to cards(SandbagsCard),
                     Navigator to cards()
-                ))
+                )
                 .withGamePhase(AwaitingPlayerToDiscardExtraCard(Messenger, AwaitingTreasureDeckDraw(Messenger, 1)))
 
             assertThat(game.availableActions<Sandbag>()).isNotEmpty()
@@ -812,10 +812,10 @@ class GameStateAvailableActionsTest {
         @Test
         fun `sandbag CANNOT be used by another player when card needs to be discarded`() {
             val game = game(Messenger, Navigator)
-                .withPlayerCards(mapOf(
+                .withPlayerCards(
                     Messenger to cards(),
                     Navigator to cards(SandbagsCard)
-                ))
+                )
                 .withGamePhase(AwaitingPlayerToDiscardExtraCard(Messenger, AwaitingTreasureDeckDraw(Messenger, 1)))
 
             assertThat(game.availableActions<Sandbag>()).isEmpty()
@@ -824,10 +824,10 @@ class GameStateAvailableActionsTest {
         @Test
         fun `sandbag cannot be used when a player needs to swim to safety`() {
             val game = game(Messenger, Navigator)
-                .withPlayerCards(mapOf(
+                .withPlayerCards(
                     Messenger to cards(SandbagsCard),
                     Navigator to cards()
-                ))
+                )
                 .withGamePhase(AwaitingPlayerToSwimToSafety(Navigator, AwaitingFloodDeckDraw(Messenger, 1)))
 
             assertThat(game.availableActions<Sandbag>()).isEmpty()
@@ -918,10 +918,10 @@ class GameStateAvailableActionsTest {
         @Test
         fun `discard card is the only action available when a player has 6 treasure cards`() {
             val game = game(Messenger, Navigator)
-                .withPlayerCards(mapOf(
+                .withPlayerCards(
                     Messenger to cards(),
                     Navigator to cards(earth, earth, earth, earth, earth, ocean)
-                ))
+                )
                 .withGamePhase(AwaitingPlayerToDiscardExtraCard(Navigator, AwaitingPlayerAction(Messenger, 2)))
 
             assertThat(game.availableActions<GameEvent>()).containsOnly(
@@ -1138,11 +1138,11 @@ class GameStateAvailableActionsTest {
                         .withPlayerLocation(Navigator, FoolsLanding)
                         .withPlayerLocation(Diver, FoolsLanding)
             .withTreasuresCollected(*Treasure.values().toList().shuffled().subList(0, 3).toTypedArray())
-                .withPlayerCards(mapOf(
+                .withPlayerCards(
                 Messenger to cards(HelicopterLiftCard),
                 Navigator to cards(),
                 Diver to cards()
-            ))
+            )
 
             assertThat(game.availableActions<HelicopterLiftOffIsland>()).isEmpty()
         }
@@ -1155,11 +1155,11 @@ class GameStateAvailableActionsTest {
                 .withPlayerLocation(Navigator, FoolsLanding)
                 .withPlayerLocation(Diver, FoolsLanding)
                 .withTreasuresCollected(*Treasure.values())
-                .withPlayerCards(mapOf(
+                .withPlayerCards(
                     Messenger to cards(HelicopterLiftCard),
                     Navigator to cards(),
                     Diver to cards()
-                ))
+                )
 
             assertThat(game.availableActions<HelicopterLiftOffIsland>()).isEmpty()
         }
@@ -1172,11 +1172,11 @@ class GameStateAvailableActionsTest {
                 .withPlayerLocation(Navigator, FoolsLanding)
                 .withPlayerLocation(Diver, FoolsLanding)
                 .withTreasuresCollected(*Treasure.values())
-                .withPlayerCards(mapOf(
+                .withPlayerCards(
                     Messenger to cards(),
                     Navigator to cards(),
                     Diver to cards()
-                ))
+                )
 
             assertThat(game.availableActions<HelicopterLiftOffIsland>()).isEmpty()
         }
@@ -1189,11 +1189,11 @@ class GameStateAvailableActionsTest {
                 .withPlayerLocation(Navigator, FoolsLanding)
                 .withPlayerLocation(Diver, FoolsLanding)
                 .withTreasuresCollected(*Treasure.values())
-                .withPlayerCards(mapOf(
+                .withPlayerCards(
                     Messenger to cards(ocean, ocean, ocean, ocean, ocean, HelicopterLiftCard),
                     Navigator to cards(),
                     Diver to cards()
-                ))
+                )
                 .withGamePhase(AwaitingPlayerToDiscardExtraCard(Messenger, AwaitingPlayerAction(Navigator, 2)))
 
             assertThat(game.availableActions<HelicopterLiftOffIsland>()).isNotEmpty()
@@ -1207,11 +1207,11 @@ class GameStateAvailableActionsTest {
                 .withPlayerLocation(Navigator, FoolsLanding)
                 .withPlayerLocation(Diver, FoolsLanding)
                 .withTreasuresCollected(*Treasure.values())
-                .withPlayerCards(mapOf(
+                .withPlayerCards(
                     Messenger to cards(ocean, ocean, ocean, ocean, ocean, earth),
                     Navigator to cards(HelicopterLiftCard),
                     Diver to cards()
-                ))
+                )
                 .withGamePhase(AwaitingPlayerToDiscardExtraCard(Messenger, AwaitingPlayerAction(Navigator, 2)))
 
             assertThat(game.availableActions<HelicopterLiftOffIsland>()).isEmpty()
@@ -1226,11 +1226,11 @@ class GameStateAvailableActionsTest {
                 .withPlayerLocation(Navigator, FoolsLanding)
                 .withPlayerLocation(Diver, FoolsLanding)
                 .withTreasuresCollected(*Treasure.values())
-                .withPlayerCards(mapOf(
+                .withPlayerCards(
                     Messenger to cards(HelicopterLiftCard),
                     Navigator to cards(),
                     Diver to cards()
-                ))
+                )
                 .withGamePhase(phase)
 
             assertThat(game.availableActions<HelicopterLiftOffIsland>()).isEmpty()

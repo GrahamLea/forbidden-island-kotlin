@@ -37,8 +37,8 @@ class GameStateProgressionTest {
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
                 .withPlayerPosition(Engineer, Position(4, 4))
 
-        val engineerOriginalPosition = game.gameState.playerPositions.getValue(Engineer)
-        val messengerOriginalPosition = game.gameState.playerPositions.getValue(Messenger)
+        val engineerOriginalPosition = game.gameState.positionOf(Engineer)
+        val messengerOriginalPosition = game.gameState.positionOf(Messenger)
 
         assertThat(game.gameState.playerPositions).isEqualTo(immMapOf(Engineer to engineerOriginalPosition, Messenger to messengerOriginalPosition))
 
@@ -54,7 +54,7 @@ class GameStateProgressionTest {
         val game = Game.newRandomGameFor(immListOf(Pilot, Messenger), GameMap.newShuffledMap())
                 .withPlayerPosition(Pilot, pilotOriginalPosition)
 
-        val messengerOriginalPosition = game.gameState.playerPositions.getValue(Messenger)
+        val messengerOriginalPosition = game.gameState.positionOf(Messenger)
 
         val pilotNewPosition = Position(1, 3)
         after (Fly(Pilot, pilotNewPosition) playedOn game) {
@@ -67,8 +67,8 @@ class GameStateProgressionTest {
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
                 .withPlayerPosition(Engineer, Position(4, 4))
 
-        val engineerOriginalPosition = game.gameState.playerPositions.getValue(Engineer)
-        val messengerOriginalPosition = game.gameState.playerPositions.getValue(Messenger)
+        val engineerOriginalPosition = game.gameState.positionOf(Engineer)
+        val messengerOriginalPosition = game.gameState.positionOf(Messenger)
 
         assertThat(game.gameState.playerPositions).isEqualTo(immMapOf(Engineer to engineerOriginalPosition, Messenger to messengerOriginalPosition))
 
@@ -85,7 +85,7 @@ class GameStateProgressionTest {
                 .withPlayerPosition(Engineer, Position(4, 4))
                 .withPositionFloodStates(Flooded, positionToShoreUp)
 
-        val mapSiteToShoreUp = game.gameSetup.map.mapSiteAt(positionToShoreUp)
+        val mapSiteToShoreUp = game.gameSetup.mapSiteAt(positionToShoreUp)
 
         assertThat(game.gameState.locationFloodStates[mapSiteToShoreUp.location]).isEqualTo(Flooded)
 
@@ -97,7 +97,7 @@ class GameStateProgressionTest {
     @Test
     fun `give treasure card event on game state changes player cards`() {
         val game = Game.newRandomGameFor(immListOf(Messenger, Engineer), GameMap.newShuffledMap())
-                .withPlayerCards(immMapOf(Messenger to cards(earth, earth), Engineer to cards(earth, earth)))
+                .withPlayerCards(Messenger to cards(earth, earth), Engineer to cards(earth, earth))
 
         after (GiveTreasureCard(Messenger, Engineer, earth) playedOn game) {
             assertThat(playerCards).isEqualTo(immMapOf(Messenger to cards(earth), Engineer to cards(earth, earth, earth)))
@@ -140,18 +140,18 @@ class GameStateProgressionTest {
                 .withPlayerPosition(Engineer, Position(2, 2))
                 .withPlayerPosition(Explorer, Position(2, 2))
                 .withPlayerPosition(Diver, Position(2, 2))
-                .withPlayerCards(immMapOf(
+                .withPlayerCards(
                     Messenger to cards(HelicopterLiftCard, earth),
                     Engineer to cards(ocean),
                     Explorer to cards(earth),
                     Diver to cards(fire)
-                ))
+                )
                 .withTreasureDeckDiscard(cards(ocean))
 
-        val messengerOriginalPosition = game.gameState.playerPositions.getValue(Messenger)
-        val engineerOriginalPosition = game.gameState.playerPositions.getValue(Engineer)
-        val explorerOriginalPosition = game.gameState.playerPositions.getValue(Explorer)
-        val diverOriginalPosition = game.gameState.playerPositions.getValue(Diver)
+        val messengerOriginalPosition = game.gameState.positionOf(Messenger)
+        val engineerOriginalPosition = game.gameState.positionOf(Engineer)
+        val explorerOriginalPosition = game.gameState.positionOf(Explorer)
+        val diverOriginalPosition = game.gameState.positionOf(Diver)
 
         assertThat(game.gameState.playerPositions).isEqualTo(immMapOf(
             Messenger to messengerOriginalPosition,
@@ -185,10 +185,10 @@ class GameStateProgressionTest {
                 .withPlayerPosition(Engineer, Position(4, 4))
                 .withPlayerPosition(Messenger, Position(3, 4))
                 .withPositionFloodStates(Flooded, positionToShoreUp)
-                .withPlayerCards(immMapOf(Engineer to cards(earth, SandbagsCard), Messenger to cards(ocean)))
+                .withPlayerCards(Engineer to cards(earth, SandbagsCard), Messenger to cards(ocean))
                 .withTreasureDeckDiscard(cards(earth))
 
-        val mapSiteToShoreUp = game.gameSetup.map.mapSiteAt(positionToShoreUp)
+        val mapSiteToShoreUp = game.gameSetup.mapSiteAt(positionToShoreUp)
 
         assertThat(game.gameState.locationFloodStates[mapSiteToShoreUp.location]).isEqualTo(Flooded)
 
@@ -202,7 +202,7 @@ class GameStateProgressionTest {
     @Test
     fun `discard card on game changes just discards the card`() {
         val game = Game.newRandomGameFor(immListOf(Messenger, Engineer), GameMap.newShuffledMap())
-                .withPlayerCards(immMapOf(Messenger to cards(HelicopterLiftCard, earth, ocean), Engineer to cards(ocean)))
+                .withPlayerCards(Messenger to cards(HelicopterLiftCard, earth, ocean), Engineer to cards(ocean))
                 .withTreasureDeckDiscard(cards(ocean))
 
         after (DiscardCard(Messenger, earth) playedOn game) {
@@ -216,7 +216,7 @@ class GameStateProgressionTest {
     @Test
     fun `draw treasure card from treasure deck moves card from treasure deck to player`() {
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
-                .withPlayerCards(immMapOf(Engineer to cards(earth), Messenger to cards(ocean)))
+                .withPlayerCards(Engineer to cards(earth), Messenger to cards(ocean))
                 .withTopOfTreasureDeck(fire, ocean, earth)
 
         val draw = DrawFromTreasureDeck(Engineer)
@@ -232,7 +232,7 @@ class GameStateProgressionTest {
     @Test
     fun `draw Sandbags from treasure deck moves card from treasure deck to player`() {
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
-                .withPlayerCards(immMapOf(Engineer to cards(earth), Messenger to cards(ocean)))
+                .withPlayerCards(Engineer to cards(earth), Messenger to cards(ocean))
                 .withTopOfTreasureDeck(SandbagsCard)
 
         after (DrawFromTreasureDeck(Engineer) playedOn game) {
@@ -243,7 +243,7 @@ class GameStateProgressionTest {
     @Test
     fun `draw Helicopter Lift from treasure deck moves card from treasure deck to player`() {
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
-                .withPlayerCards(immMapOf(Engineer to cards(earth), Messenger to cards(ocean)))
+                .withPlayerCards(Engineer to cards(earth), Messenger to cards(ocean))
                 .withTopOfTreasureDeck(HelicopterLiftCard)
 
         after (DrawFromTreasureDeck(Engineer) playedOn game) {
@@ -255,7 +255,7 @@ class GameStateProgressionTest {
     fun `drawing last card from treasure deck shuffles treasure discard back to deck`() {
         val treasureDeckDiscardBeforeEvent = TreasureDeck.newShuffledDeck().subtract(listOf(earth))
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
-                .withPlayerCards(immMapOf(Engineer to cards(), Messenger to cards()))
+                .withPlayerCards(Engineer to cards(), Messenger to cards())
                 .withTreasureDeckDiscard(treasureDeckDiscardBeforeEvent)
 
         assertThat(game.gameState.treasureDeck).isEqualTo(cards(earth))
@@ -272,7 +272,7 @@ class GameStateProgressionTest {
     @Test
     fun `drawing waters rise card from treasure deck raises flood level, discards card, and shuffles flood deck discard back to flood deck`() {
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
-                .withPlayerCards(immMapOf(Engineer to cards(earth), Messenger to cards(ocean)))
+                .withPlayerCards(Engineer to cards(earth), Messenger to cards(ocean))
                 .withTopOfTreasureDeck(WatersRiseCard)
 
         val floodDeckBeforeEvent = game.gameState.floodDeck
@@ -297,7 +297,7 @@ class GameStateProgressionTest {
     fun `drawing waters rise card as last card from treasure deck does all the expected things from the two test cases above`() {
         val treasureDeckDiscardBeforeEvent = TreasureDeck.newShuffledDeck().subtract(listOf(earth, ocean, WatersRiseCard))
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
-                .withPlayerCards(immMapOf(Engineer to cards(earth), Messenger to cards(ocean)))
+                .withPlayerCards(Engineer to cards(earth), Messenger to cards(ocean))
                 .withTreasureDeckDiscard(treasureDeckDiscardBeforeEvent)
 
         val floodDeckBeforeEvent = game.gameState.floodDeck
@@ -376,11 +376,11 @@ class GameStateProgressionTest {
     fun `helicopter lift off island played on game goes into treasure discard pile and players stay put`() {
         val game = Game.newRandomGameFor(immListOf(Messenger, Engineer), GameMap.newShuffledMap())
                 .withPlayerPosition(Engineer, Position(2, 2))
-                .withPlayerCards(immMapOf(Messenger to cards(HelicopterLiftCard, earth), Engineer to cards(ocean)))
+                .withPlayerCards(Messenger to cards(HelicopterLiftCard, earth), Engineer to cards(ocean))
                 .withTreasureDeckDiscard(cards(ocean))
 
-        val messengerOriginalPosition = game.gameState.playerPositions.getValue(Messenger)
-        val engineerOriginalPosition = game.gameState.playerPositions.getValue(Engineer)
+        val messengerOriginalPosition = game.gameState.positionOf(Messenger)
+        val engineerOriginalPosition = game.gameState.positionOf(Engineer)
 
         assertThat(game.gameState.playerPositions).isEqualTo(immMapOf(Messenger to messengerOriginalPosition, Engineer to engineerOriginalPosition))
 

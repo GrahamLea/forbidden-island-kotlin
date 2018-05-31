@@ -11,7 +11,7 @@ fun Game.withPositionFloodStates(floodState: LocationFloodState, vararg position
     withPositionFloodStates(floodState, positions.asIterable())
 
 fun Game.withPositionFloodStates(floodState: LocationFloodState, positions: Iterable<Position>) =
-    withLocationFloodStates(floodState, positions.map { gameSetup.map.locationAt(it) })
+    withLocationFloodStates(floodState, positions.map { gameSetup.locationAt(it) })
 
 fun Game.withLocationFloodStates(floodState: LocationFloodState, vararg locations: Location) =
     this.withLocationFloodStates(floodState, locations.asIterable())
@@ -49,10 +49,13 @@ fun Game.withPlayerPosition(player: Adventurer, newPosition: Position): Game {
 fun Game.withPlayerLocation(player: Adventurer, newLocation: Location): Game {
     return copy(
         gameState.copy(
-            playerPositions = gameState.playerPositions + (player to gameSetup.map.positionOf(newLocation))
+            playerPositions = gameState.playerPositions + (player to gameSetup.positionOf(newLocation))
         )
     )
 }
+
+fun Game.withPlayerCards(vararg playerCards: Pair<Adventurer, List<HoldableCard>>) =
+    withPlayerCards(playerCards.toMap().mapValues { it.value.imm() }.imm())
 
 fun Game.withPlayerCards(playerCards: Map<Adventurer, ImmutableList<HoldableCard>>): Game {
     if (!gameState.treasureDeckDiscard.isEmpty()) throw IllegalStateException("If you need to manipulate the treasureDeckDiscard, do it after setting the player cards")
@@ -140,6 +143,7 @@ fun <T> printGameOnFailure(game: Game, block: () -> T): T {
     }
 }
 
+@Suppress("unused")
 fun <T> time(block: () -> T): T {
     val start = System.currentTimeMillis()
     try {

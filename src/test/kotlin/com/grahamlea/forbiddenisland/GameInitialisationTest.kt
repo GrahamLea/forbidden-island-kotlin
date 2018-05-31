@@ -2,10 +2,10 @@
 
 package com.grahamlea.forbiddenisland
 
-import com.grahamlea.forbiddenisland.Adventurer.Diver
-import com.grahamlea.forbiddenisland.Adventurer.Messenger
+import com.grahamlea.forbiddenisland.Adventurer.*
 import com.grahamlea.forbiddenisland.FloodLevel.*
 import com.grahamlea.forbiddenisland.GameSetup.Companion.newRandomGameSetupFor
+import com.grahamlea.forbiddenisland.Location.*
 import com.grahamlea.forbiddenisland.LocationFloodState.Flooded
 import com.grahamlea.forbiddenisland.LocationFloodState.Unflooded
 import com.grahamlea.forbiddenisland.StartingFloodLevel.*
@@ -68,11 +68,19 @@ class GameInitialisationTest {
         while (checksPerAdventurer.values.any { it < 2 }) {
             val game = Game.newRandomGameFor(4)
             for (player in game.gameSetup.players) {
-                val expectedStartingLocation = Location.values().first { it.startingLocationForAdventurer == player }
-                assertThat(game.gameSetup.map.locationAt(game.gameState.playerPositions[player]!!)).isEqualTo(expectedStartingLocation)
+                assertThat(game.gameState.locationOf(player)).isEqualTo(expectedStartingLocationFor(player))
                 checksPerAdventurer[player] = checksPerAdventurer[player]!! + 1
             }
         }
+    }
+
+    private fun expectedStartingLocationFor(player: Adventurer) = when(player) {
+        Diver -> IronGate
+        Engineer -> BronzeGate
+        Explorer -> CopperGate
+        Messenger -> SilverGate
+        Navigator -> GoldGate
+        Pilot -> FoolsLanding
     }
 
     @Test
