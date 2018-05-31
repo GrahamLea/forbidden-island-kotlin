@@ -91,8 +91,7 @@ data class GameState(
                     }.keys
 
     val availableActions: List<GameEvent> by lazy {
-        if (phase == GameOver) emptyList()
-        else when (phase) {
+        when (phase) {
             is AwaitingPlayerAction ->
                 positionOf(phase.player).let { playerPosition ->
                     availableMoveAndFlyActions(phase.player, playerPosition) +
@@ -109,10 +108,10 @@ data class GameState(
             is GameOver -> emptyList()
         } + ((allHelicopterLiftActions() + allSandbagActions() + helicopterLiftOffIslandIfAvailable()).let { actions ->
             when (phase) {
-                is AwaitingPlayerToSwimToSafety -> emptyList()
+                is AwaitingPlayerToSwimToSafety, is GameOver -> emptyList()
                 is AwaitingPlayerToDiscardExtraCard -> actions.filter { (it as CardDiscardingEvent).playerDiscardingCard == phase.playerWithTooManyCards }
                 else -> actions
-            }})
+        }})
     }
 
     private fun availableMoveAndFlyActions(player: Adventurer, playerPosition: Position): List<GameEvent> {
@@ -237,7 +236,7 @@ data class GameState(
             emptyList()
 
     fun after(event: GameEvent, random: Random): GameState {
-        // TODO Check that event is in list of possible events
+        require(event in availableActions) { "'$event' is not an available action in this state" }
         return with(if (event is CardDiscardingEvent) event.playerDiscardingCard discards event.discardedCards else this) {
             when (event) {
                 is DiscardCard, is HelicopterLiftOffIsland -> this

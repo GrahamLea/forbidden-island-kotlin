@@ -14,7 +14,7 @@ fun Game.withPositionFloodStates(floodState: LocationFloodState, positions: Iter
     withLocationFloodStates(floodState, positions.map { gameSetup.locationAt(it) })
 
 fun Game.withLocationFloodStates(floodState: LocationFloodState, vararg locations: Location) =
-    this.withLocationFloodStates(floodState, locations.asIterable())
+    withLocationFloodStates(floodState, locations.asIterable())
 
 fun Game.withLocationFloodStates(floodState: LocationFloodState, locations: Iterable<Location>): Game {
     return copy(
