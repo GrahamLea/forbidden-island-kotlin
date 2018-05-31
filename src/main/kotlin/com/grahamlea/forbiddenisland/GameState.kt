@@ -235,7 +235,7 @@ data class GameState(
         else
             emptyList()
 
-    fun after(event: GameEvent, random: Random): GameState {
+    fun nextStateAfter(event: GameEvent, random: Random): GameState {
         require(event in availableActions) { "'$event' is not an available action in this state" }
         return with(if (event is CardDiscardingEvent) event.playerDiscardingCard discards event.discardedCards else this) {
             when (event) {

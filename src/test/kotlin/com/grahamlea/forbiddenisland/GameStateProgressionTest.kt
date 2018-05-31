@@ -411,6 +411,6 @@ class GameStateProgressionTest {
 
     private inline fun <T, R> after(receiver: T, block: T.() -> R): R = with(receiver, block)
 
-    private infix fun GameEvent.playedOn(game: Game): GameState = game.gameState.after(this, game.random)
-    private infix fun List<GameEvent>.playedOn(game: Game): GameState = this.fold(game.gameState) { state, event -> state.after(event, random) }
+    private infix fun GameEvent.playedOn(game: Game): GameState = game.gameState.nextStateAfter(this, game.random)
+    private infix fun List<GameEvent>.playedOn(game: Game): GameState = this.fold(game.gameState) { state, event -> state.nextStateAfter(event, random) }
 }
