@@ -16,6 +16,13 @@ class GameSetupTest {
     }
 
     @Test
+    fun `can setup game 2, 3 or 4 players`() {
+        for (i in 2..4) {
+            GameSetup(shuffled(count = i), GameMap.newShuffledMap())
+        }
+    }
+
+    @Test
     fun `can't setup game with more than 4 players`() {
         Assertions.assertThrows(IllegalArgumentException::class.java) {
             GameSetup(listOf(Diver, Engineer, Explorer, Messenger, Navigator).imm(), GameMap.newShuffledMap())
