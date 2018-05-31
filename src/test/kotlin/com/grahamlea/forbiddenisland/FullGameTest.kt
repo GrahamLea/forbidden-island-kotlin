@@ -1,14 +1,17 @@
 package com.grahamlea.forbiddenisland
 
+import com.grahamlea.forbiddenisland.StartingFloodLevel.Novice
 import org.junit.jupiter.api.Assertions.assertTimeout
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.api.Test
+import java.text.NumberFormat
 import java.time.Duration
 import java.util.*
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
-import kotlin.concurrent.thread
 
 @DisplayName("Full games")
 class FullGameTest {
@@ -30,36 +33,36 @@ class FullGameTest {
     @Disabled
     @Test
     fun `can random moves win a game?`() {
-        val random = Random()
-
+        val format = NumberFormat.getIntegerInstance()
         val availableProcessors = Runtime.getRuntime().availableProcessors()
         println("availableProcessors = ${availableProcessors}")
 
         val games = AtomicLong(0)
         val gamesWon = AtomicLong(0)
 
-        // TODO Use an ExecutorService so the test runs until the threads return...
+        val executorService = Executors.newFixedThreadPool(7)
 
         (0 until (availableProcessors - 1)).forEach {
-            thread {
+            executorService.submit({
                 println("Started thread ${it + 1}")
+                val random = Random()
                 while (gamesWon.get() < 2) {
                     val game = `play a random game`(random, false)
                     val gamesDone = games.incrementAndGet()
                     if (game.gameState.result == AdventurersWon) {
                         gamesWon.incrementAndGet()
                         println(GamePrinter.toString(game))
-                        println("Won a game! Have won $gamesWon/$games so far")
+                        println("Won a game! Have won $gamesWon/$gamesDone so far")
                     }
-                    if (gamesDone  % 50000L == 0L) {
-                        println("Played $games games so far")
+                    if (gamesDone  % 100000L == 0L) {
+                        println("Played ${format.format(gamesDone)} games so far")
                     }
                 }
-            }
+            })
         }
 
-        Thread.sleep(1000L * 60 * 60 * 24) // Because JUnit kills the process once the test returns, regardless of non-daemon threads
-
+        executorService.shutdown()
+        executorService.awaitTermination(1, TimeUnit.HOURS)
     }
 
     private fun `play a random game`(random: Random, debug: Boolean): Game {
@@ -67,7 +70,11 @@ class FullGameTest {
         val numberOfPlayers = 2 + (Math.random() * 3).toInt()
         if (debug) println("numberOfPlayers = ${numberOfPlayers}")
 
-        val game = Game.newRandomGameFor(numberOfPlayers, random)
+        val game = Game.newRandomGameFor(
+            GameSetup.newRandomGameSetupFor(numberOfPlayers),
+            startingFloodLevel = Novice,
+            random = random
+        )
         if (debug) println(GamePrinter.toString(game))
 
         printGameOnFailure(game) {
