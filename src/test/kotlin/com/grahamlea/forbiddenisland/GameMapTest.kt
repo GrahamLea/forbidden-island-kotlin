@@ -35,7 +35,7 @@ class GameMapTest {
     }
 
     @Test
-    fun `GameMap can return adjacent sites`() {
+    fun `GameMap can return adjacent positions and sites`() {
         val map = GameMap.newShuffledMap()
         val position = Position(3, 4)
         val neighbours = positionsFromMap("""
@@ -47,11 +47,12 @@ class GameMapTest {
               ..
         """)
         val expectedSites = map.mapSites.filter { it.position in neighbours }
+        assertThat(position.adjacentPositions()).containsOnlyElementsOf(expectedSites.map(MapSite::position))
         assertThat(map.adjacentSites(position)).containsOnlyElementsOf(expectedSites)
     }
 
     @Test
-    fun `GameMap can return adjacent sites including diagonals`() {
+    fun `GameMap can return adjacent positions and sites including diagonals`() {
         val map = GameMap.newShuffledMap()
         val position = Position(4, 3)
         val neighbours = positionsFromMap("""
@@ -63,11 +64,12 @@ class GameMapTest {
               ..
         """)
         val expectedSites = map.mapSites.filter { it.position in neighbours }
+        assertThat(position.adjacentPositions(includeDiagonals = true)).containsOnlyElementsOf(expectedSites.map(MapSite::position))
         assertThat(map.adjacentSites(position, includeDiagonals = true)).containsOnlyElementsOf(expectedSites)
     }
 
     @Test
-    fun `GameMap doesn't return invalid sites adjacent to edge sites`() {
+    fun `GameMap doesn't return invalid positions or sites adjacent to edge positions`() {
         val map = GameMap.newShuffledMap()
         val position = Position(5, 2)
         val neighbours = positionsFromMap("""
@@ -79,6 +81,7 @@ class GameMapTest {
               ..
         """)
         val expectedSites = map.mapSites.filter { it.position in neighbours }
+        assertThat(position.adjacentPositions(includeDiagonals = true)).containsOnlyElementsOf(expectedSites.map(MapSite::position))
         assertThat(map.adjacentSites(position, includeDiagonals = true).toSet()).isEqualTo(expectedSites.toSet())
     }
 }
