@@ -281,10 +281,9 @@ data class GameState(
                     }
                 }
                 else -> throw IllegalStateException("Unhandled action: $action")
-            }.let { newState -> newState.copy(
-                phase = phase.phaseAfter(action, newState),
-                previousActions = previousActions + action
-            )}
+            }
+                .copy(previousActions = previousActions + action)
+                .let { newState -> newState.copy(phase = phase.phaseAfter(action, newState))}
         }
     }
 
