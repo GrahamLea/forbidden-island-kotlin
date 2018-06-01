@@ -12,6 +12,7 @@ class CollectionsTest {
     fun `shuffled enum lists produce random results`() {
         // These can fail randomly, but only 1 in 24! times on average
         assertThat(shuffled<Location>()).isNotEqualTo(Location.values().toList())
+        assertThat(shuffled<Location>()).containsAll(Location.values().toList())
         assertThat(shuffled<Location>()).isNotEqualTo(shuffled<Location>())
     }
 
