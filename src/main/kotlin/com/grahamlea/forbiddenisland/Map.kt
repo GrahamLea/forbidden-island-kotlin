@@ -13,9 +13,12 @@ data class GameMap(val mapSites: ImmutableList<MapSite>) {
         }
     }
 
-    fun mapSiteAt(position: Position): MapSite = mapSites.first { it.position == position }
+    private val sitesByPosition = mapSites.associateBy(MapSite::position)
+    private val sitesByLocation = mapSites.associateBy(MapSite::location)
 
-    fun mapSiteOf(location: Location): MapSite = mapSites.first { it.location == location }
+    fun mapSiteAt(position: Position): MapSite = sitesByPosition.getValue(position)
+
+    fun mapSiteOf(location: Location): MapSite = sitesByLocation.getValue(location)
 
     fun positionOf(location: Location): Position = mapSiteOf(location).position
 
