@@ -6,11 +6,22 @@ import com.grahamlea.forbiddenisland.Location.FoolsLanding
 import com.grahamlea.forbiddenisland.LocationFloodState.*
 import java.util.*
 
+/**
+ * Everything representing the current state of a [Game] of Forbidden Island.
+ */
 data class GameState(
         val gameSetup: GameSetup,
         val floodLevel: FloodLevel,
+        /**
+         * Shuffled cards to be dealt in future. Private because players are allowed to inspect the
+         * [treasureDeckDiscard], but obviously not the hidden ones not dealt yet.
+         */
         private val treasureDeck: ImmutableList<HoldableCard>,
         val treasureDeckDiscard: ImmutableList<HoldableCard>,
+        /**
+         * Shuffled cards to be dealt in future. Private because players are allowed to inspect the
+         * [floodDeckDiscard], but obviously not the hidden ones not dealt yet.
+         */
         private val floodDeck: ImmutableList<Location>,
         val floodDeckDiscard: ImmutableList<Location>,
         val treasuresCollected: ImmutableMap<Treasure, Boolean>,
@@ -60,6 +71,9 @@ data class GameState(
         }
     }
 
+    /**
+     * The [result][GameResult] of the [Game], if it has finished, otherwise null.
+     */
     val result: GameResult? by lazy {
         val lostTreasures = unreachableTreasures() intersect uncollectedTreasures()
         val drownedPlayers = drownedPlayers()
@@ -90,6 +104,9 @@ data class GameState(
                         gameSetup.map.adjacentSites(position, includeDiagonals = (player == Explorer)).all(::isSunken)
                     }.keys
 
+    /**
+     * All the actions available to be legally played in the current state, according to the rules.
+     */
     val availableActions: List<GameAction> by lazy {
         when (phase) {
             is AwaitingPlayerAction ->
@@ -234,6 +251,9 @@ data class GameState(
         else
             emptyList()
 
+    /**
+     * Calculates the new state of the [Game] after the effects of the provided [action].
+     */
     fun nextStateAfter(action: GameAction, random: Random): GameState {
         require(action in availableActions) { "'$action' is not an available action in this state" }
         return with(if (action is CardDiscardingAction) action.playerDiscardingCard discards action.discardedCards else this) {
@@ -292,10 +312,18 @@ data class GameState(
                     treasureDeckDiscard = treasureDeckDiscard + cardList
             )
 
+    /**
+     * List of all players who are on [Sunken] [Location]s. As players can't stay on sunken locations, this will be
+     * empty unless the [phase] is [AwaitingPlayerToSwimToSafety].
+     *
+     * @see playerPositions
+     * @see locationFloodStates
+     */
     val sunkPlayers: Set<Adventurer> by lazy { playerPositions.filter { isSunken(it.value) }.keys }
 
     fun locationsWithState(state: LocationFloodState) = locationFloodStates.filterValues { it == state }.keys
 
+    /** Returns the number of [cards][HoldableCard] currently held by each player. */
     val playerCardCounts: Map<Adventurer, Int> = playerCards.mapValues { it.value.size }
 
     fun positionOf(player: Adventurer): Position = playerPositions.getValue(player)

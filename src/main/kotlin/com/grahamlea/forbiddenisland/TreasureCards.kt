@@ -2,6 +2,7 @@ package com.grahamlea.forbiddenisland
 
 import java.util.*
 
+/** Represents a card that can be held by a [player][Adventurer]. */
 sealed class HoldableCard(val displayName: String): Comparable<HoldableCard> {
 
     override fun compareTo(other: HoldableCard) = this.displayName.compareTo(other.displayName)
@@ -31,6 +32,10 @@ object TreasureDeck {
 
     val totalCardCounts by lazy { newShuffledDeck().groupingBy { it }.eachCount() }
 
+    /**
+     * Returns a new shuffled "Treasure Deck", which includes all [TreasureCard]s, [HelicopterLiftCard]s,
+     * [SandbagsCard]s and [WatersRiseCard]s.
+     */
     fun newShuffledDeck(random: Random = Random()): ImmutableList<HoldableCard> =
         (HelicopterLiftCard * numberOfHelicopterLiftCards +
          SandbagsCard * numberOfSandbagsCards +
@@ -40,7 +45,8 @@ object TreasureDeck {
         .imm()
 }
 
+/** Helper method that returns an [ImmutableList] of the provided [cards] */
 fun cards(vararg cards: HoldableCard): ImmutableList<HoldableCard> = immListOf(*cards)
 
+/** Helper method that returns a list containing [n] instances the card that is the receiver. */
 infix operator fun HoldableCard.times(n: Int) = List(n, {this})
-

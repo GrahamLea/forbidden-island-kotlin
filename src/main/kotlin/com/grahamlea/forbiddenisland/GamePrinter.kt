@@ -4,9 +4,21 @@ import com.grahamlea.forbiddenisland.LocationFloodState.Flooded
 import com.grahamlea.forbiddenisland.LocationFloodState.Sunken
 
 object GamePrinter {
+
+    /**
+     * Generates a graphical representation of parts a [Game]'s current state.
+     *
+     * Includes:
+     * * the layout of the [GameMap] ([Position]s and [Location]s)
+     * * [player positions][GameState.playerPositions]
+     * * [location flood states][GameState.locationFloodStates]
+     *
+     * Doesn't include:
+     * * everything else in [GameState]
+     */
     fun toString(game: Game) = toString(game.gameSetup.map, game.gameState.locationFloodStates, game.gameState.playerPositions)
 
-    fun toString(
+    private fun toString(
             map: GameMap,
             locationFloodStates: ImmutableMap<Location, LocationFloodState>,
             playerPositions: ImmutableMap<Adventurer, Position>
@@ -40,7 +52,7 @@ object GamePrinter {
         }
     }
 
-    fun toString(
+    private fun toString(
             mapSite: MapSite,
             players: Set<Adventurer>? = null,
             maxPlayersOnSingleSiteInColumn: Int = 0,

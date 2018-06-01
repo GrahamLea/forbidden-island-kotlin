@@ -1,7 +1,18 @@
 package com.grahamlea.forbiddenisland
 
+import com.grahamlea.forbiddenisland.LocationFloodState.*
 import java.util.*
 
+/**
+ * Represents the result of a [Game] once it has finished.
+ *
+ * @see GameState.result
+ * @see AdventurersWon
+ * @see FoolsLandingSank
+ * @see MaximumWaterLevelReached
+ * @see BothPickupLocationsSankBeforeCollectingTreasure
+ * @see PlayerDrowned
+ */
 sealed class GameResult(val detail: String? = null) {
     override fun toString() = this::class.simpleName!! + (detail?.let { " $it" } ?: "")
 }
@@ -20,6 +31,7 @@ data class BothPickupLocationsSankBeforeCollectingTreasure(
 
 data class PlayerDrowned(val player: Adventurer): GameResult("$player was on an island that sank and couldn't swim to an adjacent one")
 
+/** The treasures which must be collected in order to win the game of Forbidden Island. */
 enum class Treasure(val displayName: String) {
     CrystalOfFire("The Crystal of Fire"),
     EarthStone("The Earth Stone"),
@@ -27,6 +39,11 @@ enum class Treasure(val displayName: String) {
     StatueOfTheWind("The Statue of the Wind")
 }
 
+/**
+ * The different roles played by the "Adventurers" (players) in the game.
+ *
+ * Each player is randomly assigned one Adventurer role, and only one player can have each role per game.
+ */
 enum class Adventurer {
     Diver, Engineer, Explorer, Messenger, Navigator, Pilot;
 
@@ -37,15 +54,29 @@ enum class Adventurer {
     }
 }
 
+/**
+ * The current "Flood Level" of the game. This determines how many cards are dealt from the
+ * [flood deck][GameState.floodDeck] during each turn, and rises over the course of the game whenever a
+ * [Waters Rise!][WatersRiseCard] card is dealt, causing the [Location]s on the [GameMap] to flood quicker as the game
+ * progresses. Reaching the [top flood level][FloodLevel.DEAD] is one way that the game ends.
+ */
 enum class FloodLevel(val tilesFloodingPerTurn: Int) {
     ONE(2), TWO(2), THREE(3), FOUR(3), FIVE(3), SIX(4), SEVEN(4), EIGHT(5), NINE(5), DEAD(0);
 
+    /**
+     * Returns the next highest flood level to this one
+     *
+     * @throws IllegalStateException if called on the [DEAD] level
+     */
     fun next(): FloodLevel {
         if (this == DEAD) throw IllegalStateException("There is no next flood level after dead")
         return FloodLevel.values()[this.ordinal + 1]
     }
 }
 
+/**
+ * A list of named starting points for the [FloodLevel].
+ */
 enum class StartingFloodLevel(val floodLevel: FloodLevel) {
     Novice(FloodLevel.ONE),
     Normal(FloodLevel.TWO),
@@ -53,6 +84,12 @@ enum class StartingFloodLevel(val floodLevel: FloodLevel) {
     Legendary(FloodLevel.FOUR)
 }
 
+/**
+ * Represents whether a [Location] is [Unflooded], [Flooded] or [Sunken]. Locations become flooded when they are dealt
+ * from the [flood deck][GameState.floodDeck]. Flooded locations can be unflooded by being [shored up][ShoreUp] or
+ * [sandbagged][Sandbag]. If an already-flooded location is dealt from the flood deck again, it is sunken and becomes
+ * inaccessible for the remained of the game.
+ */
 enum class LocationFloodState {
     Unflooded, Flooded, Sunken;
 
@@ -63,6 +100,10 @@ enum class LocationFloodState {
     }
 }
 
+/**
+ * All the locations that appear on the map. There is one [starting location][startingLocationForAdventurer] for each
+ * [Adventurer] and two [pickup locations][pickupLocationForTreasure] for each [Treasure].
+ */
 enum class Location(
         val displayName: String,
         val startingLocationForAdventurer: Adventurer? = null,

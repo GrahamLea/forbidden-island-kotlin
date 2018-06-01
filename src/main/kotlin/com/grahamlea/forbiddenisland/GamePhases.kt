@@ -1,7 +1,24 @@
 package com.grahamlea.forbiddenisland
 
+/**
+ * Represents the phase of play that the current game is in, i.e. whether a player should be taking an action next,
+ * or a card needs to be drawn, etc.
+ *
+ * @see AwaitingPlayerAction
+ * @see AwaitingTreasureDeckDraw
+ * @see AwaitingFloodDeckDraw
+ * @see AwaitingPlayerToDiscardExtraCard
+ * @see AwaitingPlayerToSwimToSafety
+ */
 sealed class GamePhase {
 
+    /**
+     * Calculates the next [GamePhase] after this phase based on the given [action] having just been applied to the
+     * current [GameState], which resulted in the [nextGameState].
+     *
+     * @param nextGameState the next GameState that is about to be updated in the [Game], calculated by applying the
+     * [action] to the current GameState, with the exception that [GameState.phase] has obviously not been updated.
+     */
     open fun phaseAfter(action: GameAction, nextGameState: GameState): GamePhase =
             when {
                 this is ForcedOutOfTurnPhase -> calculateNextPhase(action, nextGameState)

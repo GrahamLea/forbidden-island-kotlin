@@ -3,11 +3,38 @@ package com.grahamlea.forbiddenisland
 import com.grahamlea.forbiddenisland.Adventurer.Engineer
 import com.grahamlea.forbiddenisland.Adventurer.Pilot
 
+/**
+ * Represents an _action_ that can occur in a [Game], being a user-driven change to the game.
+ *
+ * Note that:
+ * * the Forbidden Island rules often use 'action' to mean a more specific subset of actions, being those a player
+ * takes during their turn.
+ * * some actions made by physical players in the real game are not represented here as actions but instead are made
+ * automatically by the [GameState] while processing a [GameAction], e.g. discarding cards that have been used,
+ * shuffling discard decks back to draw decks upon depletion.
+ *
+ * @see Game.process
+ * @see Move
+ * @see Fly
+ * @see ShoreUp
+ * @see GiveTreasureCard
+ * @see CaptureTreasure
+ * @see DrawFromTreasureDeck
+ * @see DrawFromFloodDeck
+ * @see HelicopterLift
+ * @see Sandbag
+ * @see SwimToSafety
+ * @see DiscardCard
+ * @see HelicopterLiftOffIsland
+ */
 sealed class GameAction {
     companion object {
 
         private val players = Adventurer.values().sorted()
 
+        /**
+         * Returns a list of every single action that could ever happen in any game.
+         */
         val ALL_POSSIBLE_ACTIONS: List<GameAction> by lazy {
             val allPlayerCombinations: List<ImmutableSet<Adventurer>> = (1..4).flatMap { setsOfPlayersOfLength(it) }
             val positions = Position.allPositions.sorted()
@@ -80,6 +107,16 @@ data class CaptureTreasure(val player:Adventurer, val treasure: Treasure): Playe
     override fun toString() = "$treasure is captured by $player"
 }
 
+sealed class PlayerObligationAction: GameAction()
+
+data class DrawFromTreasureDeck(val player: Adventurer): PlayerObligationAction() {
+    override fun toString() = "$player draws from the Treasure Deck"
+}
+
+data class DrawFromFloodDeck(val player: Adventurer): PlayerObligationAction() {
+    override fun toString() = "$player draws from the Flood Deck"
+}
+
 sealed class OutOfTurnAction: GameAction()
 
 sealed class PlayerSpecialAction: OutOfTurnAction()
@@ -114,14 +151,4 @@ data class HelicopterLiftOffIsland(val player: Adventurer): PlayerSpecialAction(
     override val playerDiscardingCard = player
     override val discardedCards = immListOf(HelicopterLiftCard)
     override fun toString() = "All players are lifted off the island by $player"
-}
-
-sealed class PlayerObligationAction: GameAction()
-
-data class DrawFromTreasureDeck(val player: Adventurer): PlayerObligationAction() {
-    override fun toString() = "$player draws from the Treasure Deck"
-}
-
-data class DrawFromFloodDeck(val player: Adventurer): PlayerObligationAction() {
-    override fun toString() = "$player draws from the Flood Deck"
 }
