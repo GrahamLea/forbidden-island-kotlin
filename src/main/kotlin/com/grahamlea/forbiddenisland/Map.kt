@@ -25,7 +25,7 @@ data class GameMap(val mapSites: ImmutableList<MapSite>) {
     fun locationAt(position: Position): Location = mapSiteAt(position).location
 
     fun adjacentSites(position: Position, includeDiagonals: Boolean = false): List<MapSite> =
-        Position.adjacentPositions(position, includeDiagonals).map { mapSiteAt(it) }
+        position.adjacentPositions(includeDiagonals).map { mapSiteAt(it) }
 
     companion object {
         fun newShuffledMap(random: Random = Random()) =
@@ -38,13 +38,16 @@ data class Position(val x: Int, val y: Int): Comparable<Position> {
         require(isValid(x, y)) { "$this is not a valid position" }
     }
 
-    fun adjacentPositions(includeDiagonals: Boolean) = Position.adjacentPositions(this, includeDiagonals)
-
     fun neighbour(direction: Direction): Position? {
         val newX = x + direction.xTravel
         val newY = y + direction.yTravel
         return if (isValid(newX, newY)) Position(newX, newY) else null
     }
+
+    fun adjacentPositions(includeDiagonals: Boolean) = when (includeDiagonals) {
+        false -> listOf(North, South, East, West)
+        true -> values().toList()
+    }.mapNotNull { this.neighbour(it) }
 
     override fun compareTo(other: Position): Int = when {
         this.y < other.y -> -1
@@ -75,12 +78,6 @@ data class Position(val x: Int, val y: Int): Comparable<Position> {
         )
 
         fun isValid(x: Int, y: Int) = x in 1..6 && y in 1..6 && Pair(x, y) !in unfilledPositions
-
-        fun adjacentPositions(position: Position, includeDiagonals: Boolean = false): List<Position> =
-            when (includeDiagonals) {
-                false -> listOf(North, South, East, West)
-                true -> Direction.values().toList()
-            }.mapNotNull { position.neighbour(it) }
 
     }
 }
