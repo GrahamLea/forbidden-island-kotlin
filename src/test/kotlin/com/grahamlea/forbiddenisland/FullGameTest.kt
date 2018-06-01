@@ -21,7 +21,7 @@ class FullGameTest {
         val debug = false
 
         val seed = System.currentTimeMillis() xor System.nanoTime()
-        println("seed = ${seed}")
+        if (debug) println("seed = ${seed}")
 
         val random = Random(seed)
 
