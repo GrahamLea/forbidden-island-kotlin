@@ -148,9 +148,8 @@ data class GameState(
         previousActions.takeLastWhile { it !is DrawFromFloodDeck }.any { it is Fly }
 
     private fun availablePilotFlights(pilotAvailableMoves: List<Move>, playerPosition: Position, player: Adventurer) =
-        (gameSetup.map.mapSites
+        (Position.allPositions
             .filterNot(::isSunken)
-            .map(MapSite::position)
             - pilotAvailableMoves.map(Move::position)
             - playerPosition)
             .map { Fly(player, it) }
