@@ -32,7 +32,7 @@ class GamePhaseTest {
         fun `+ move = awaiting player action with one less action`() {
             checkPhaseTransition(
                 firstPhase = AwaitingPlayerAction(Engineer, 3),
-                event = Move(Engineer, position33),
+                action = Move(Engineer, position33),
                 expectedPhase = AwaitingPlayerAction(Engineer, 2)
             )
         }
@@ -41,7 +41,7 @@ class GamePhaseTest {
         fun `+ fly = awaiting player action with one less action`() {
             checkPhaseTransition(
                 firstPhase = AwaitingPlayerAction(Pilot, 3),
-                event = Fly(Pilot, position33),
+                action = Fly(Pilot, position33),
                 expectedPhase = AwaitingPlayerAction(Pilot, 2)
             )
         }
@@ -50,7 +50,7 @@ class GamePhaseTest {
         fun `+ shore up = awaiting player action with one less action`() {
             checkPhaseTransition(
                 firstPhase = AwaitingPlayerAction(Engineer, 2),
-                event = ShoreUp(Engineer, position33),
+                action = ShoreUp(Engineer, position33),
                 expectedPhase = AwaitingPlayerAction(Engineer, 1)
             )
         }
@@ -59,7 +59,7 @@ class GamePhaseTest {
         fun `+ capture treasure = awaiting player action with one less action`() {
             checkPhaseTransition(
                 firstPhase = AwaitingPlayerAction(Engineer, 3),
-                event = CaptureTreasure(Engineer, EarthStone),
+                action = CaptureTreasure(Engineer, EarthStone),
                 expectedPhase = AwaitingPlayerAction(Engineer, 2)
             )
         }
@@ -68,7 +68,7 @@ class GamePhaseTest {
         fun `+ give treasure card = awaiting player action with one less action`() {
             checkPhaseTransition(
                 firstPhase = AwaitingPlayerAction(Engineer, 3),
-                event = GiveTreasureCard(Engineer, Messenger, TreasureCard(EarthStone)),
+                action = GiveTreasureCard(Engineer, Messenger, TreasureCard(EarthStone)),
                 expectedPhase = AwaitingPlayerAction(Engineer, 2)
             )
         }
@@ -85,8 +85,8 @@ class GamePhaseTest {
 
             checkPhaseTransition(
                 firstPhase = AwaitingPlayerAction(Engineer, 3),
-                event = GiveTreasureCard(Engineer, Messenger, TreasureCard(EarthStone)),
-                gameStateAfterEventProcessed = messengerHasSixCards.gameState,
+                action = GiveTreasureCard(Engineer, Messenger, TreasureCard(EarthStone)),
+                gameStateAfterActionProcessed = messengerHasSixCards.gameState,
                 expectedPhase = AwaitingPlayerToDiscardExtraCard(Messenger, AwaitingPlayerAction(Engineer, 2))
             )
         }
@@ -95,8 +95,8 @@ class GamePhaseTest {
         fun `+ early treasure deck draw with 5 cards = awaiting player to discard card, then continuing to draw 1 more treasure card`() {
             checkPhaseTransition(
                 firstPhase = AwaitingPlayerAction(Engineer, 2),
-                event = DrawFromTreasureDeck(Engineer),
-                gameStateAfterEventProcessed = engineerHasSixCards.gameState,
+                action = DrawFromTreasureDeck(Engineer),
+                gameStateAfterActionProcessed = engineerHasSixCards.gameState,
                 expectedPhase = AwaitingPlayerToDiscardExtraCard(Engineer, AwaitingTreasureDeckDraw(Engineer, 1))
             )
         }
@@ -107,7 +107,7 @@ class GamePhaseTest {
             fun `+ move = awaiting draw 2 treasure cards for same player`() {
                 checkPhaseTransition(
                     firstPhase = AwaitingPlayerAction(Engineer, 1),
-                    event = Move(Engineer, position33),
+                    action = Move(Engineer, position33),
                     expectedPhase = AwaitingTreasureDeckDraw(Engineer, 2)
                 )
             }
@@ -116,7 +116,7 @@ class GamePhaseTest {
             fun `+ early treasure deck draw = awaiting draw 1 treasure cards for same player`() {
                 checkPhaseTransition(
                     firstPhase = AwaitingPlayerAction(Engineer, 1),
-                    event = DrawFromTreasureDeck(Engineer),
+                    action = DrawFromTreasureDeck(Engineer),
                     expectedPhase = AwaitingTreasureDeckDraw(Engineer, 1)
                 )
             }
@@ -129,7 +129,7 @@ class GamePhaseTest {
         fun `+ treasure deck draw = awaiting one less treasure deck draw`() {
             checkPhaseTransition(
                 firstPhase = AwaitingTreasureDeckDraw(Engineer, 2),
-                event = DrawFromTreasureDeck(Engineer),
+                action = DrawFromTreasureDeck(Engineer),
                 expectedPhase = AwaitingTreasureDeckDraw(Engineer, 1)
             )
         }
@@ -138,8 +138,8 @@ class GamePhaseTest {
         fun `+ treasure deck draw to have 6 cards = awaiting player to discard card, then continuing to draw 1 more treasure card`() {
             checkPhaseTransition(
                 firstPhase = AwaitingTreasureDeckDraw(Engineer, 2),
-                event = DrawFromTreasureDeck(Engineer),
-                gameStateAfterEventProcessed = engineerHasSixCards.gameState,
+                action = DrawFromTreasureDeck(Engineer),
+                gameStateAfterActionProcessed = engineerHasSixCards.gameState,
                 expectedPhase = AwaitingPlayerToDiscardExtraCard(Engineer, AwaitingTreasureDeckDraw(Engineer, 1))
             )
         }
@@ -150,8 +150,8 @@ class GamePhaseTest {
             fun `awaiting LAST treasure deck draw + treasure deck draw = awaiting flood deck draw corresponding to flood level`() {
                 checkPhaseTransition(
                     firstPhase = AwaitingTreasureDeckDraw(Engineer, 1),
-                    event = DrawFromTreasureDeck(Engineer),
-                    gameStateAfterEventProcessed = randomNewGameState.copy(floodLevel = FloodLevel.SEVEN),
+                    action = DrawFromTreasureDeck(Engineer),
+                    gameStateAfterActionProcessed = randomNewGameState.copy(floodLevel = FloodLevel.SEVEN),
                     expectedPhase = AwaitingFloodDeckDraw(Engineer, 4)
                 )
             }
@@ -160,8 +160,8 @@ class GamePhaseTest {
             fun `awaiting LAST treasure deck draw + treasure deck draw to have 6 cards = awaiting player to discard card, then continuing to awaiting flood deck draw corresponding to flood level`() {
                 checkPhaseTransition(
                     firstPhase = AwaitingTreasureDeckDraw(Engineer, 1),
-                    event = DrawFromTreasureDeck(Engineer),
-                    gameStateAfterEventProcessed = engineerHasSixCards.gameState.copy(floodLevel = FloodLevel.SEVEN),
+                    action = DrawFromTreasureDeck(Engineer),
+                    gameStateAfterActionProcessed = engineerHasSixCards.gameState.copy(floodLevel = FloodLevel.SEVEN),
                     expectedPhase = AwaitingPlayerToDiscardExtraCard(Engineer, AwaitingFloodDeckDraw(Engineer, 4))
                 )
             }
@@ -174,7 +174,7 @@ class GamePhaseTest {
         fun `+ flood deck draw = awaiting one less flood deck draw`() {
             checkPhaseTransition(
                 firstPhase = AwaitingFloodDeckDraw(Engineer, 3),
-                event = DrawFromFloodDeck(Engineer),
+                action = DrawFromFloodDeck(Engineer),
                 expectedPhase = AwaitingFloodDeckDraw(Engineer, 2)
             )
         }
@@ -185,7 +185,7 @@ class GamePhaseTest {
             fun `+ flood deck draw = awaiting NEXT player action`() {
                 checkPhaseTransition(
                     firstPhase = AwaitingFloodDeckDraw(Engineer, 1),
-                    event = DrawFromFloodDeck(Engineer),
+                    action = DrawFromFloodDeck(Engineer),
                     expectedPhase = AwaitingPlayerAction(Messenger, 3)
                 )
             }
@@ -194,7 +194,7 @@ class GamePhaseTest {
             fun `of LAST player + flood deck draw = awaiting FIRST player action`() {
                 checkPhaseTransition(
                     firstPhase = AwaitingFloodDeckDraw(Explorer, 1),
-                    event = DrawFromFloodDeck(Explorer),
+                    action = DrawFromFloodDeck(Explorer),
                     expectedPhase = AwaitingPlayerAction(Engineer, 3)
                 )
             }
@@ -215,8 +215,8 @@ class GamePhaseTest {
 
                 checkPhaseTransition(
                     firstPhase = AwaitingFloodDeckDraw(Engineer, 3),
-                    event = DrawFromFloodDeck(Engineer),
-                    gameStateAfterEventProcessed = messengerIsSunk.gameState,
+                    action = DrawFromFloodDeck(Engineer),
+                    gameStateAfterActionProcessed = messengerIsSunk.gameState,
                     expectedPhase = AwaitingPlayerToSwimToSafety(Messenger, AwaitingFloodDeckDraw(Engineer, 2))
                 )
             }
@@ -234,8 +234,8 @@ class GamePhaseTest {
 
                 checkPhaseTransition(
                     firstPhase = AwaitingFloodDeckDraw(Engineer, 3),
-                    event = DrawFromFloodDeck(Engineer),
-                    gameStateAfterEventProcessed = messengerAndExplorerAreSunk.gameState,
+                    action = DrawFromFloodDeck(Engineer),
+                    gameStateAfterActionProcessed = messengerAndExplorerAreSunk.gameState,
                     expectedPhase = AwaitingPlayerToSwimToSafety(Messenger, AwaitingPlayerToSwimToSafety(Explorer, AwaitingFloodDeckDraw(Engineer, 2)))
                 )
             }
@@ -253,8 +253,8 @@ class GamePhaseTest {
 
                 checkPhaseTransition(
                     firstPhase = AwaitingFloodDeckDraw(Explorer, 1),
-                    event = DrawFromFloodDeck(Explorer),
-                    gameStateAfterEventProcessed = messengerIsSunk.gameState,
+                    action = DrawFromFloodDeck(Explorer),
+                    gameStateAfterActionProcessed = messengerIsSunk.gameState,
                     expectedPhase = AwaitingPlayerToSwimToSafety(Messenger, AwaitingPlayerAction(Engineer, 3))
                 )
             }
@@ -267,7 +267,7 @@ class GamePhaseTest {
         fun `+ discard card = back to play of previous phase`() {
             checkPhaseTransition(
                 firstPhase = AwaitingPlayerToDiscardExtraCard(Messenger, AwaitingPlayerAction(Engineer, 2)),
-                event = DiscardCard(Messenger, TreasureCard(EarthStone)),
+                action = DiscardCard(Messenger, TreasureCard(EarthStone)),
                 expectedPhase = AwaitingPlayerAction(Engineer, 2)
             )
         }
@@ -276,7 +276,7 @@ class GamePhaseTest {
         fun `+ player sandbags card = back to play of previous phase`() {
             checkPhaseTransition(
                 firstPhase = AwaitingPlayerToDiscardExtraCard(Messenger, AwaitingPlayerAction(Diver, 3)),
-                event = Sandbag(Messenger, position33),
+                action = Sandbag(Messenger, position33),
                 expectedPhase = AwaitingPlayerAction(Diver, 3)
             )
         }
@@ -285,24 +285,24 @@ class GamePhaseTest {
         fun `+ player helicopter lift card = back to play of previous phase`() {
             checkPhaseTransition(
                 firstPhase = AwaitingPlayerToDiscardExtraCard(Messenger, AwaitingPlayerAction(Engineer, 1)),
-                event = HelicopterLift(Messenger, immSetOf(Pilot), position33),
+                action = HelicopterLift(Messenger, immSetOf(Pilot), position33),
                 expectedPhase = AwaitingPlayerAction(Engineer, 1)
             )
         }
 
         @Test
-        fun `+ non-card-discarding event is illegal`() {
+        fun `+ non-card-discarding action is illegal`() {
             Assertions.assertThrows(IllegalStateException::class.java) {
                 AwaitingPlayerToDiscardExtraCard(Messenger, AwaitingPlayerAction(Engineer, 1))
-                    .phaseAfter(event = DrawFromTreasureDeck(Engineer), nextGameState = randomNewGameState)
+                    .phaseAfter(action = DrawFromTreasureDeck(Engineer), nextGameState = randomNewGameState)
             }
         }
 
         @Test
-        fun `+ card-discarding event for another player is illegal`() {
+        fun `+ card-discarding action for another player is illegal`() {
             Assertions.assertThrows(IllegalStateException::class.java) {
                 AwaitingPlayerToDiscardExtraCard(Messenger, AwaitingPlayerAction(Engineer, 1))
-                    .phaseAfter(event = DiscardCard(Engineer, TreasureCard(EarthStone)), nextGameState = randomNewGameState)
+                    .phaseAfter(action = DiscardCard(Engineer, TreasureCard(EarthStone)), nextGameState = randomNewGameState)
             }
         }
     }
@@ -313,24 +313,24 @@ class GamePhaseTest {
         fun `+ swim = back to play of next phase`() {
             checkPhaseTransition(
                 firstPhase = AwaitingPlayerToSwimToSafety(Messenger, AwaitingFloodDeckDraw(Engineer, 1)),
-                event = SwimToSafety(Messenger, position33),
+                action = SwimToSafety(Messenger, position33),
                 expectedPhase = AwaitingFloodDeckDraw(Engineer, 1)
             )
         }
 
         @Test
-        fun `+ non-swim event is illegal`() {
+        fun `+ non-swim action is illegal`() {
             Assertions.assertThrows(IllegalStateException::class.java) {
                 AwaitingPlayerToSwimToSafety(Messenger, AwaitingPlayerAction(Engineer, 1))
-                    .phaseAfter(event = DrawFromTreasureDeck(Engineer), nextGameState = randomNewGameState)
+                    .phaseAfter(action = DrawFromTreasureDeck(Engineer), nextGameState = randomNewGameState)
             }
         }
 
         @Test
-        fun `+ swim event for another player is illegal`() {
+        fun `+ swim action for another player is illegal`() {
             Assertions.assertThrows(IllegalStateException::class.java) {
                 AwaitingPlayerToSwimToSafety(Messenger, AwaitingPlayerAction(Engineer, 1))
-                    .phaseAfter(event = SwimToSafety(Engineer, position33), nextGameState = randomNewGameState)
+                    .phaseAfter(action = SwimToSafety(Engineer, position33), nextGameState = randomNewGameState)
             }
         }
 
@@ -338,7 +338,7 @@ class GamePhaseTest {
         fun `nested awaiting to swims are unfolded sequentially`() {
             checkPhaseTransition(
                 firstPhase = AwaitingPlayerToSwimToSafety(Messenger, AwaitingPlayerToSwimToSafety(Explorer, AwaitingFloodDeckDraw(Engineer, 1))),
-                event = SwimToSafety(Messenger, position33),
+                action = SwimToSafety(Messenger, position33),
                 expectedPhase = AwaitingPlayerToSwimToSafety(Explorer, AwaitingFloodDeckDraw(Engineer, 1))
             )
         }
@@ -353,22 +353,22 @@ class GamePhaseTest {
             // AwaitingPlayerToDiscardExtraCard and AwaitingPlayerToSwimToSafety behave differently
         )
 
-        val events = listOf(
+        val actions = listOf(
             HelicopterLift(Engineer, immSetOf(Diver), position33),
             Sandbag(Engineer, position33),
             SwimToSafety(Engineer, position33)
         )
 
         for (phase in phases) {
-            for (event in events) {
-                assertThat(phase.phaseAfter(event, randomNewGameState)).isEqualTo(phase)
+            for (action in actions) {
+                assertThat(phase.phaseAfter(action, randomNewGameState)).isEqualTo(phase)
             }
         }
     }
 
     @Test
-    fun `any event played on game over is an error`() {
-        val events = listOf(
+    fun `any action played on game over is an error`() {
+        val actions = listOf(
                 Move(Engineer, position33),
                 ShoreUp(Engineer, position33),
                 GiveTreasureCard(Engineer, Messenger, TreasureCard(EarthStone)),
@@ -381,9 +381,9 @@ class GamePhaseTest {
                 HelicopterLiftOffIsland(Engineer)
         )
 
-        for (event in events) {
+        for (action in actions) {
             try {
-                GameOver.phaseAfter(event, randomNewGameState)
+                GameOver.phaseAfter(action, randomNewGameState)
                 fail("Expected IllegalStateException")
             } catch (e: IllegalStateException) {
                 // expected
@@ -391,8 +391,8 @@ class GamePhaseTest {
         }
     }
 
-    private fun checkPhaseTransition(firstPhase: GamePhase, event: GameEvent, gameStateAfterEventProcessed: GameState = randomNewGameState, expectedPhase: GamePhase) {
-        assertThat(firstPhase.phaseAfter(event, gameStateAfterEventProcessed)).isEqualTo(expectedPhase)
+    private fun checkPhaseTransition(firstPhase: GamePhase, action: GameAction, gameStateAfterActionProcessed: GameState = randomNewGameState, expectedPhase: GamePhase) {
+        assertThat(firstPhase.phaseAfter(action, gameStateAfterActionProcessed)).isEqualTo(expectedPhase)
     }
 }
 

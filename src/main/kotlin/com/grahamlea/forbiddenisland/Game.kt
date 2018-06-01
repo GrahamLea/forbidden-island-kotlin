@@ -19,8 +19,8 @@ class Game(val gameSetup: GameSetup, gameState: GameState, val random: Random = 
 
     override fun toString() = "Game($gameSetup, $gameState)"
 
-    fun process(event: GameEvent) {
-        gameState = gameState.nextStateAfter(event, random)
+    fun process(action: GameAction) {
+        gameState = gameState.nextStateAfter(action, random)
     }
 
     companion object {

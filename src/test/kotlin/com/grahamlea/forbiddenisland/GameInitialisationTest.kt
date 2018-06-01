@@ -109,8 +109,8 @@ class GameInitialisationTest {
     }
 
     @Test
-    fun `new game has empty previous event list`() {
-        assertThat(Game.newRandomGameFor(4).gameState.previousEvents).isEmpty()
+    fun `new game has empty previous action list`() {
+        assertThat(Game.newRandomGameFor(4).gameState.previousActions).isEmpty()
     }
 
     @Test

@@ -270,7 +270,7 @@ class GameStateAvailableActionsTest {
         fun `Pilot cannot fly to any tile a second time in the same turn`() {
             val game = game(Pilot, Explorer)
                 .withPlayerPosition(Pilot, Position(4, 4))
-                .withPreviousEvents(Fly(Pilot, Position(4, 4)))
+                .withPreviousActions(Fly(Pilot, Position(4, 4)))
 
             assertThat(game.availableActions<Fly>()).isEmpty()
         }
@@ -279,7 +279,7 @@ class GameStateAvailableActionsTest {
         fun `Pilot can fly to any tile on the turn after having moved to any tile`() {
             val game = game(Pilot, Explorer)
                 .withPlayerPosition(Pilot, Position(4, 4))
-                .withPreviousEvents(
+                .withPreviousActions(
                     Fly(Pilot, Position(3, 4)), DrawFromTreasureDeck(Pilot), DrawFromFloodDeck(Pilot),
                     Move(Explorer, Position(4, 4)), DrawFromTreasureDeck(Explorer), DrawFromFloodDeck(Explorer),
                     Move(Pilot, Position(4, 4)))
@@ -924,7 +924,7 @@ class GameStateAvailableActionsTest {
                 )
                 .withGamePhase(AwaitingPlayerToDiscardExtraCard(Navigator, AwaitingPlayerAction(Messenger, 2)))
 
-            assertThat(game.availableActions<GameEvent>()).containsOnly(
+            assertThat(game.availableActions<GameAction>()).containsOnly(
                 DiscardCard(Navigator, earth),
                 DiscardCard(Navigator, ocean)
             ).hasSize(2)
@@ -976,7 +976,7 @@ class GameStateAvailableActionsTest {
                 .withGamePhase(AwaitingPlayerToSwimToSafety(player1, AwaitingPlayerAction(player2, 2)))
 
             printGameOnFailure(game) {
-                assertThat(game.availableActions<GameEvent>()).containsOnly(
+                assertThat(game.availableActions<GameAction>()).containsOnly(
                     SwimToSafety(player1, unfloodedPosition),
                     SwimToSafety(player1, floodedPositions[0]),
                     SwimToSafety(player1, floodedPositions[1])
@@ -1008,7 +1008,7 @@ class GameStateAvailableActionsTest {
                 .withGamePhase(AwaitingPlayerToSwimToSafety(Explorer, AwaitingPlayerAction(Engineer, 2)))
 
             printGameOnFailure(game) {
-                assertThat(game.availableActions<GameEvent>()).containsOnly(
+                assertThat(game.availableActions<GameAction>()).containsOnly(
                     SwimToSafety(Explorer, unfloodedPositions[0]),
                     SwimToSafety(Explorer, unfloodedPositions[1]),
                     SwimToSafety(Explorer, floodedPositions[0]),
@@ -1039,7 +1039,7 @@ class GameStateAvailableActionsTest {
                 .withGamePhase(AwaitingPlayerToSwimToSafety(Pilot, AwaitingPlayerAction(Engineer, 2)))
 
             printGameOnFailure(game) {
-                assertThat(game.availableActions<GameEvent>()).containsOnlyElementsOf(
+                assertThat(game.availableActions<GameAction>()).containsOnlyElementsOf(
                     (0..7).map { SwimToSafety(Pilot, unfloodedPositions[it]) } +
                     (0..7).map { SwimToSafety(Pilot, floodedPositions[it]) }
                 )
@@ -1081,7 +1081,7 @@ class GameStateAvailableActionsTest {
                 .withGamePhase(AwaitingPlayerToSwimToSafety(Diver, AwaitingPlayerAction(Messenger, 2)))
 
             printGameOnFailure(game) {
-                assertThat(game.availableActions<GameEvent>()).containsOnly(
+                assertThat(game.availableActions<GameAction>()).containsOnly(
                     SwimToSafety(Diver, Position(5, 3)),
                     SwimToSafety(Diver, Position(2, 4)),
                     SwimToSafety(Diver, Position(5, 5)),
@@ -1256,5 +1256,5 @@ private fun Game.availableMoves(player: Adventurer): List<Position> =
 
 private fun Game.availableMoves(): List<Move> = availableActions()
 
-private inline fun <reified T: GameEvent> Game.availableActions(): List<T> =
+private inline fun <reified T: GameAction> Game.availableActions(): List<T> =
     gameState.availableActions.mapNotNull { it as? T }

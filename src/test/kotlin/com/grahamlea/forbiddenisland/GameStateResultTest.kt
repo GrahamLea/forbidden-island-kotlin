@@ -20,10 +20,10 @@ class GameStateResultTest {
     @DisplayName("game is won")
     inner class GameWonTests {
         @RepeatedTest(100)
-        fun `when HelicopterLiftOffIsland event has been played`() {
+        fun `when HelicopterLiftOffIsland action has been played`() {
             val game = Game.newRandomGameFor(randomListOfPlayers(2)).let { game ->
                 game.copy(gameState = game.gameState.copy(
-                    previousEvents = immListOf(HelicopterLiftOffIsland(game.gameSetup.players[0]))
+                    previousActions = immListOf(HelicopterLiftOffIsland(game.gameSetup.players[0]))
                 ))
             }
 

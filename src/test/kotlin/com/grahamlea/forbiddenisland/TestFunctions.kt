@@ -101,10 +101,10 @@ fun Game.withFloodDeckDiscard(discardedCards: ImmutableList<Location>): Game {
     )
 }
 
-fun Game.withPreviousEvents(vararg events: GameEvent): Game {
+fun Game.withPreviousActions(vararg actions: GameAction): Game {
     return copy(
         gameState.copy(
-            previousEvents = immListOf(*events)
+            previousActions = immListOf(*actions)
         )
     )
 }

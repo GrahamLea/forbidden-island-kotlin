@@ -9,7 +9,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import java.util.*
 
-@DisplayName("GameState progressions following events")
+@DisplayName("GameState progressions following actions")
 class GameStateProgressionTest {
 
     private val random = Random()
@@ -18,17 +18,17 @@ class GameStateProgressionTest {
     private val fire = TreasureCard(CrystalOfFire)
 
     @Test
-    fun `events on game state are recorded in previous events`() {
+    fun `actions on game state are recorded in previous actions`() {
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
                 .withPlayerPosition(Engineer, Position(4, 4))
                 .withPositionFloodStates(Flooded, Position(2, 3))
 
-        val event1 = Move(Engineer, Position(4, 3))
-        val event2 = Move(Engineer, Position(3, 3))
-        val event3 = ShoreUp(Engineer, Position(2, 3))
+        val action1 = Move(Engineer, Position(4, 3))
+        val action2 = Move(Engineer, Position(3, 3))
+        val action3 = ShoreUp(Engineer, Position(2, 3))
 
-        after (listOf(event1, event2, event3) playedOn game) {
-            assertThat(previousEvents).isEqualTo(immListOf<GameEvent>(event1, event2, event3))
+        after (listOf(action1, action2, action3) playedOn game) {
+            assertThat(previousActions).isEqualTo(immListOf<GameAction>(action1, action2, action3))
         }
     }
 
@@ -63,7 +63,7 @@ class GameStateProgressionTest {
     }
 
     @Test
-    fun `swim event played on game changes position of the one player`() {
+    fun `swim action played on game changes position of the one player`() {
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger),
                     GameMap.newShuffledMap().withLocationNotAtAnyOf(FoolsLanding, listOf(Position(4, 4))
                 ))
@@ -99,7 +99,7 @@ class GameStateProgressionTest {
     }
 
     @Test
-    fun `give treasure card event on game state changes player cards`() {
+    fun `give treasure card action on game state changes player cards`() {
         val game = Game.newRandomGameFor(immListOf(Messenger, Engineer), GameMap.newShuffledMap())
                 .withPlayerCards(Messenger to cards(earth, earth), Engineer to cards(earth, earth))
 
@@ -109,7 +109,7 @@ class GameStateProgressionTest {
     }
 
     @Test
-    fun `capture treasure event captures treasure, and discards treasure cards`() {
+    fun `capture treasure action captures treasure, and discards treasure cards`() {
         val gameSetup = GameSetup(immListOf(Messenger, Engineer), GameMap.newShuffledMap())
         val game = Game.newRandomGameFor(gameSetup)
                 .withPlayerLocation(Messenger, TempleOfTheSun)
@@ -264,10 +264,10 @@ class GameStateProgressionTest {
 
     @Test
     fun `drawing last card from treasure deck shuffles treasure discard back to deck`() {
-        val treasureDeckDiscardBeforeEvent = TreasureDeck.newShuffledDeck().subtract(listOf(earth))
+        val treasureDeckDiscardBeforeAction = TreasureDeck.newShuffledDeck().subtract(listOf(earth))
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
                 .withPlayerCards(Engineer to cards(), Messenger to cards())
-                .withTreasureDeckDiscard(treasureDeckDiscardBeforeEvent)
+                .withTreasureDeckDiscard(treasureDeckDiscardBeforeAction)
 
         assertThat(game.gameState.treasureDeck).isEqualTo(cards(earth))
 
@@ -275,7 +275,7 @@ class GameStateProgressionTest {
             assertThat(playerCards).isEqualTo(immMapOf(Engineer to cards(earth), Messenger to cards()))
             assertThat(treasureDeck)
                 .hasSize(TreasureDeck.newShuffledDeck().size - 1) // One card dealt to Engineer
-                .isNotEqualTo(treasureDeckDiscardBeforeEvent)
+                .isNotEqualTo(treasureDeckDiscardBeforeAction)
             assertThat(treasureDeckDiscard).isEqualTo(cards())
         }
     }
@@ -286,11 +286,11 @@ class GameStateProgressionTest {
                 .withPlayerCards(Engineer to cards(earth), Messenger to cards(ocean))
                 .withTopOfTreasureDeck(WatersRiseCard)
 
-        val floodDeckBeforeEvent = game.gameState.floodDeck
-        val floodDeckDiscardBeforeEvent = game.gameState.floodDeckDiscard
+        val floodDeckBeforeAction = game.gameState.floodDeck
+        val floodDeckDiscardBeforeAction = game.gameState.floodDeckDiscard
 
         assertThat(game.gameState.floodLevel).isEqualTo(FloodLevel.TWO)
-        assertThat(floodDeckDiscardBeforeEvent).hasSize(6)
+        assertThat(floodDeckDiscardBeforeAction).hasSize(6)
 
         after (DrawFromTreasureDeck(Engineer) playedOn game) {
             assertThat(floodLevel).isEqualTo(FloodLevel.THREE)
@@ -298,24 +298,24 @@ class GameStateProgressionTest {
             assertThat(treasureDeckDiscard).isEqualTo(cards(WatersRiseCard))
             assertThat(floodDeckDiscard).isEmpty()
             assertThat(floodDeck.take(6))
-                .containsOnlyElementsOf(floodDeckDiscardBeforeEvent)
-                .isNotEqualTo(floodDeckDiscardBeforeEvent)
-            assertThat(floodDeck.drop(6)).isEqualTo(floodDeckBeforeEvent)
+                .containsOnlyElementsOf(floodDeckDiscardBeforeAction)
+                .isNotEqualTo(floodDeckDiscardBeforeAction)
+            assertThat(floodDeck.drop(6)).isEqualTo(floodDeckBeforeAction)
         }
     }
 
     @Test
     fun `drawing waters rise card as last card from treasure deck does all the expected things from the two test cases above`() {
-        val treasureDeckDiscardBeforeEvent = TreasureDeck.newShuffledDeck().subtract(listOf(earth, ocean, WatersRiseCard))
+        val treasureDeckDiscardBeforeAction = TreasureDeck.newShuffledDeck().subtract(listOf(earth, ocean, WatersRiseCard))
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
                 .withPlayerCards(Engineer to cards(earth), Messenger to cards(ocean))
-                .withTreasureDeckDiscard(treasureDeckDiscardBeforeEvent)
+                .withTreasureDeckDiscard(treasureDeckDiscardBeforeAction)
 
-        val floodDeckBeforeEvent = game.gameState.floodDeck
-        val floodDeckDiscardBeforeEvent = game.gameState.floodDeckDiscard
+        val floodDeckBeforeAction = game.gameState.floodDeck
+        val floodDeckDiscardBeforeAction = game.gameState.floodDeckDiscard
 
         assertThat(game.gameState.floodLevel).isEqualTo(FloodLevel.TWO)
-        assertThat(floodDeckDiscardBeforeEvent).hasSize(6)
+        assertThat(floodDeckDiscardBeforeAction).hasSize(6)
 
         after (DrawFromTreasureDeck(Engineer) playedOn game) {
             assertThat(floodLevel).isEqualTo(FloodLevel.THREE)
@@ -323,12 +323,12 @@ class GameStateProgressionTest {
             assertThat(treasureDeckDiscard).isEqualTo(cards())
             assertThat(floodDeckDiscard).isEmpty()
             assertThat(floodDeck.take(6))
-                .containsOnlyElementsOf(floodDeckDiscardBeforeEvent)
-                .isNotEqualTo(floodDeckDiscardBeforeEvent)
-            assertThat(floodDeck.drop(6)).isEqualTo(floodDeckBeforeEvent)
+                .containsOnlyElementsOf(floodDeckDiscardBeforeAction)
+                .isNotEqualTo(floodDeckDiscardBeforeAction)
+            assertThat(floodDeck.drop(6)).isEqualTo(floodDeckBeforeAction)
             assertThat(treasureDeck)
                 .hasSize(TreasureDeck.newShuffledDeck().size - 2) // Players have two cards
-                .isNotEqualTo(treasureDeckDiscardBeforeEvent)
+                .isNotEqualTo(treasureDeckDiscardBeforeAction)
             assertThat(treasureDeckDiscard).isEqualTo(cards())
         }
     }
@@ -364,13 +364,13 @@ class GameStateProgressionTest {
 
     @Test
     fun `drawing last card from flood deck shuffles flood discard back to deck without sunken locations`() {
-        val floodDeckDiscardBeforeEvent = shuffled<Location>().subtract(listOf(MistyMarsh)) - Observatory
+        val floodDeckDiscardBeforeAction = shuffled<Location>().subtract(listOf(MistyMarsh)) - Observatory
         val map = GameMap.newShuffledMap()
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), map)
                     .withPositionFloodStates(Unflooded, Position.allPositions)
                     .withLocationFloodStates(Flooded, DunesOfDeception)
                     .withLocationFloodStates(Sunken, Observatory)
-                    .withFloodDeckDiscard(floodDeckDiscardBeforeEvent.imm())
+                    .withFloodDeckDiscard(floodDeckDiscardBeforeAction.imm())
                     .withGamePhase(AwaitingFloodDeckDraw(Engineer, 3))
 
         assertThat(game.gameState.floodDeck).isEqualTo(immListOf(MistyMarsh))
@@ -378,7 +378,7 @@ class GameStateProgressionTest {
 
         after (DrawFromFloodDeck(Engineer) playedOn game) {
             assertThat(floodDeck).containsOnlyElementsOf(Location.values().toList() - Observatory)
-            assertThat(floodDeck.dropLast(1)).isNotEqualTo(floodDeckDiscardBeforeEvent)
+            assertThat(floodDeck.dropLast(1)).isNotEqualTo(floodDeckDiscardBeforeAction)
             assertThat(floodDeckDiscard).isEmpty()
         }
     }
@@ -411,6 +411,6 @@ class GameStateProgressionTest {
 
     private inline fun <T, R> after(receiver: T, block: T.() -> R): R = with(receiver, block)
 
-    private infix fun GameEvent.playedOn(game: Game): GameState = game.gameState.nextStateAfter(this, game.random)
-    private infix fun List<GameEvent>.playedOn(game: Game): GameState = this.fold(game.gameState) { state, event -> state.nextStateAfter(event, random) }
+    private infix fun GameAction.playedOn(game: Game): GameState = game.gameState.nextStateAfter(this, game.random)
+    private infix fun List<GameAction>.playedOn(game: Game): GameState = this.fold(game.gameState) { state, action -> state.nextStateAfter(action, random) }
 }
