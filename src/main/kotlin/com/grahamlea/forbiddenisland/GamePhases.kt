@@ -9,6 +9,7 @@ package com.grahamlea.forbiddenisland
  * @see AwaitingFloodDeckDraw
  * @see AwaitingPlayerToDiscardExtraCard
  * @see AwaitingPlayerToSwimToSafety
+ * @see GameOver
  */
 sealed class GamePhase {
 
