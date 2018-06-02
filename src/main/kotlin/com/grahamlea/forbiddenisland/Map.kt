@@ -85,7 +85,7 @@ data class Position(val x: Int, val y: Int): Comparable<Position> {
      *
      * @param includeDiagonals whether or not to include diagonally adjacent sites
      */
-    fun adjacentPositions(includeDiagonals: Boolean = false) = when (includeDiagonals) {
+    fun adjacentPositions(includeDiagonals: Boolean = false): List<Position> = when (includeDiagonals) {
         false -> listOf(North, South, East, West)
         true -> values().toList()
     }.mapNotNull { this.neighbour(it) }
