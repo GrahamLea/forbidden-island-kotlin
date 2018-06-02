@@ -101,7 +101,7 @@ data class Position(val x: Int, val y: Int): Comparable<Position> {
     override fun toString() = "($x,$y)"
 
     companion object {
-        val allPositions by lazy {
+        val allPositions: List<Position> by lazy {
             listOf(      3, 4      ).map { Position(it, 1) } +
             listOf(   2, 3, 4, 5   ).map { Position(it, 2) } +
             listOf(1, 2, 3, 4, 5, 6).map { Position(it, 3) } +
@@ -118,7 +118,8 @@ data class Position(val x: Int, val y: Int): Comparable<Position> {
             Pair(1, 6), Pair(2, 6), /* ... */ Pair(5, 6), Pair(6, 6)
         )
 
-        fun isValid(x: Int, y: Int) = x in 1..6 && y in 1..6 && Pair(x, y) !in unfilledPositions
+        /** Returns whether a pair of coordinates constitute a valid Forbidden Island [Position]. */
+        fun isValid(x: Int, y: Int): Boolean = x in 1..6 && y in 1..6 && Pair(x, y) !in unfilledPositions
 
     }
 }
