@@ -4,9 +4,17 @@ import com.grahamlea.forbiddenisland.Direction.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 @DisplayName("GameMap")
 class GameMapTest {
+    @Test
+    fun `invalid Positions can't be created`() {
+        assertThrows<IllegalArgumentException> { Position(1, 1) }
+        assertThrows<IllegalArgumentException> { Position(2, 6) }
+        assertThrows<IllegalArgumentException> { Position(6, 5) }
+    }
+
     @Test
     fun `new random map should have 24 distinct locations`() {
         assertThat(GameMap.newRandomMap().mapSites.map { it.location }.distinct()).hasSize(Location.values().size)
