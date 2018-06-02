@@ -9,6 +9,20 @@ import org.junit.jupiter.api.assertThrows
 @DisplayName("GameMap")
 class GameMapTest {
     @Test
+    fun `the validity of Positions can be tested`() {
+        assertThat(Position.isValid(1, 1)).isFalse()
+        assertThat(Position.isValid(2, 1)).isFalse()
+        assertThat(Position.isValid(1, 2)).isFalse()
+        assertThat(Position.isValid(2, 2)).isTrue()
+        assertThat(Position.isValid(3, 1)).isTrue()
+        assertThat(Position.isValid(1, 3)).isTrue()
+        assertThat(Position.isValid(3, 3)).isTrue()
+        assertThat(Position.isValid(4, 4)).isTrue()
+        assertThat(Position.isValid(5, 5)).isTrue()
+        assertThat(Position.isValid(6, 6)).isFalse()
+    }
+
+    @Test
     fun `invalid Positions can't be created`() {
         assertThrows<IllegalArgumentException> { Position(1, 1) }
         assertThrows<IllegalArgumentException> { Position(2, 6) }
