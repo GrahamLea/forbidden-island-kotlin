@@ -16,7 +16,7 @@ object GamePrinter {
      * Doesn't include:
      * * everything else in [GameState]
      */
-    fun toString(game: Game) = toString(game.gameSetup.map, game.gameState.locationFloodStates, game.gameState.playerPositions)
+    fun toString(game: Game): String = toString(game.gameSetup.map, game.gameState.locationFloodStates, game.gameState.playerPositions)
 
     private fun toString(
             map: GameMap,
