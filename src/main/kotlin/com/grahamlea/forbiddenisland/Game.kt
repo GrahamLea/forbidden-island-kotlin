@@ -130,7 +130,7 @@ data class GameSetup(val players: ImmutableList<Adventurer>, val map: GameMap) {
 
     companion object {
         @Suppress("RemoveExplicitTypeArguments")
-        fun newRandomGameSetupFor(numberOfPlayers: Int, random: Random = Random()) =
+        fun newRandomGameSetupFor(numberOfPlayers: Int, random: Random = Random()): GameSetup =
                 GameSetup(shuffled<Adventurer>(random, numberOfPlayers), GameMap.newRandomMap(random))
     }
 }
