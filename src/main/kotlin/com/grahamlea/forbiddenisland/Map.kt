@@ -73,11 +73,10 @@ data class Position(val x: Int, val y: Int): Comparable<Position> {
     /**
      * Gives the [Position] one step in the given direction __if that is a valid position__, otherwise null.
      */
-    fun neighbour(direction: Direction): Position? {
-        val newX = x + direction.xTravel
-        val newY = y + direction.yTravel
-        return if (isValid(newX, newY)) Position(newX, newY) else null
-    }
+    fun neighbour(direction: Direction): Position? =
+        Pair(x + direction.xTravel, y + direction.yTravel).let { (newX, newY) ->
+            if (isValid(newX, newY)) Position(newX, newY) else null
+        }
 
     /**
      * Returns the [Position]s adjacent to this position.
