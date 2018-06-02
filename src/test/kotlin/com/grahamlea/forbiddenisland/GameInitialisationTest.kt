@@ -140,11 +140,6 @@ class GameInitialisationTest {
         assertThat(game.gameState.phase).isEqualTo(AwaitingPlayerAction(Diver, 3))
     }
 
-    @Test()
-    fun `new game has no result`() {
-        assertThat(Game.newRandomGameFor(4).gameState.result).isNull()
-    }
-
     @Test
     fun `can't create game with less than 2 players`() {
         assertThrows(IllegalArgumentException::class.java) { Game.newRandomGameFor(numberOfPlayers = 1) }

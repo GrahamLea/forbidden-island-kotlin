@@ -16,6 +16,11 @@ class GameStateResultTest {
 
     private val allLocationsUnflooded = Location.values().associate { it to Unflooded }
 
+    @RepeatedTest(100)
+    fun `new game has no result`() {
+        assertThat(Game.newRandomGameFor(4).gameState.result).isNull()
+    }
+
     @Nested
     @DisplayName("game is won")
     inner class GameWonTests {
