@@ -134,7 +134,7 @@ class GameStateResultTest {
                 .copy(locationFloodStates = (allLocationsUnflooded + (CaveOfEmbers to Sunken) + (CaveOfShadows to Sunken)).imm())
 
             assertThat(gameState.result)
-                .isEqualTo(BothPickupLocationsSankBeforeCollectingTreasure(CrystalOfFire, CaveOfEmbers to CaveOfShadows))
+                .isEqualTo(BothPickupLocationsSankBeforeCollectingTreasure(CrystalOfFire))
         }
 
         @RepeatedTest(100)
@@ -143,7 +143,7 @@ class GameStateResultTest {
                 .copy(locationFloodStates = (allLocationsUnflooded + (CoralPalace to Sunken) + (TidalPalace to Sunken)).imm())
 
             assertThat(gameState.result)
-                .isEqualTo(BothPickupLocationsSankBeforeCollectingTreasure(OceansChalice, CoralPalace to TidalPalace))
+                .isEqualTo(BothPickupLocationsSankBeforeCollectingTreasure(OceansChalice))
         }
 
         @RepeatedTest(100)
@@ -152,7 +152,7 @@ class GameStateResultTest {
                 .copy(locationFloodStates = (allLocationsUnflooded + (HowlingGarden to Sunken) + (WhisperingGarden to Sunken)).imm())
 
             assertThat(gameState.result)
-                .isEqualTo(BothPickupLocationsSankBeforeCollectingTreasure(StatueOfTheWind, HowlingGarden to WhisperingGarden))
+                .isEqualTo(BothPickupLocationsSankBeforeCollectingTreasure(StatueOfTheWind))
         }
 
         @RepeatedTest(100)
@@ -161,7 +161,7 @@ class GameStateResultTest {
                 .copy(locationFloodStates = (allLocationsUnflooded + (TempleOfTheMoon to Sunken) + (TempleOfTheSun to Sunken)).imm())
 
             assertThat(gameState.result)
-                .isEqualTo(BothPickupLocationsSankBeforeCollectingTreasure(EarthStone, TempleOfTheMoon to TempleOfTheSun))
+                .isEqualTo(BothPickupLocationsSankBeforeCollectingTreasure(EarthStone))
         }
 
         @RepeatedTest(100)

@@ -13,23 +13,26 @@ import java.util.*
  * @see BothPickupLocationsSankBeforeCollectingTreasure
  * @see PlayerDrowned
  */
-sealed class GameResult(val detail: String? = null) {
-    override fun toString() = this::class.simpleName!! + (detail?.let { " $it" } ?: "")
+sealed class GameResult() {
+    protected open fun detail(): String? = null
+    override fun toString() = this::class.simpleName!! + (detail()?.let { " $it" } ?: "")
 }
 
-object AdventurersWon: GameResult(null)
+object AdventurersWon: GameResult()
 
 object FoolsLandingSank: GameResult()
 
 object MaximumWaterLevelReached: GameResult()
 
-data class BothPickupLocationsSankBeforeCollectingTreasure(
-    val treasure: Treasure,
-    val locations: Pair<Location, Location> =
-            Location.values().filter { it.pickupLocationForTreasure == treasure }.let { Pair(it[0], it[1]) }):
-    GameResult("${locations.first} and ${locations.second} sank before $treasure was collected")
+data class BothPickupLocationsSankBeforeCollectingTreasure(val treasure: Treasure): GameResult() {
+    private val locations: Pair<Location, Location> =
+        Location.values().filter { it.pickupLocationForTreasure == treasure }.let { Pair(it[0], it[1]) }
+    override fun detail() = "${locations.first} and ${locations.second} sank before $treasure was collected"
+}
 
-data class PlayerDrowned(val player: Adventurer): GameResult("$player was on an island that sank and couldn't swim to an adjacent one")
+data class PlayerDrowned(val player: Adventurer): GameResult() {
+    override fun detail(): String? = "$player was on an island that sank and couldn't swim to an adjacent one"
+}
 
 /** The treasures which must be collected in order to win the game of Forbidden Island. */
 enum class Treasure(val displayName: String) {
