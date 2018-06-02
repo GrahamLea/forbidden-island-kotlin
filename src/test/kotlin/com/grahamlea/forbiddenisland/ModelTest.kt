@@ -5,6 +5,7 @@ import com.grahamlea.forbiddenisland.Location.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 @DisplayName("Model tests")
 class ModelTest {
@@ -30,5 +31,12 @@ class ModelTest {
     fun `toString of player drowning names the adventurer`() {
         assertThat(PlayerDrowned(Messenger).toString())
             .isEqualTo("PlayerDrowned: Messenger was on an island that sank and couldn't swim to an adjacent one")
+    }
+
+    @Test
+    fun `can get the next FloodLevel`() {
+        assertThat(FloodLevel.TWO.next()).isEqualTo(FloodLevel.THREE)
+        assertThat(FloodLevel.NINE.next()).isEqualTo(FloodLevel.DEAD)
+        assertThrows<IllegalStateException> { FloodLevel.DEAD.next() }
     }
 }
