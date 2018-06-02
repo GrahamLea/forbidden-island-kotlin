@@ -15,7 +15,7 @@ import java.util.*
  */
 sealed class GameResult() {
     protected open fun detail(): String? = null
-    override fun toString() = this::class.simpleName!! + (detail()?.let { " $it" } ?: "")
+    override fun toString() = this::class.simpleName!! + (detail()?.let { ": $it" } ?: "")
 }
 
 object AdventurersWon: GameResult()
@@ -28,10 +28,12 @@ data class BothPickupLocationsSankBeforeCollectingTreasure(val treasure: Treasur
     private val locations: Pair<Location, Location> =
         Location.values().filter { it.pickupLocationForTreasure == treasure }.let { Pair(it[0], it[1]) }
     override fun detail() = "${locations.first} and ${locations.second} sank before $treasure was collected"
+    override fun toString() = super.toString() // because data class
 }
 
 data class PlayerDrowned(val player: Adventurer): GameResult() {
     override fun detail(): String? = "$player was on an island that sank and couldn't swim to an adjacent one"
+    override fun toString() = super.toString() // because data class
 }
 
 /** The treasures which must be collected in order to win the game of Forbidden Island. */

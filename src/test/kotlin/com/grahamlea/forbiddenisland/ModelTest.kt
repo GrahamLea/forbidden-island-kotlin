@@ -17,4 +17,18 @@ class ModelTest {
         assertThat(Navigator.startingLocation).isEqualTo(GoldGate)
         assertThat(Pilot.startingLocation).isEqualTo(FoolsLanding)
     }
+
+    @Test
+    fun `toString of both locations sinking names both locations`() {
+        assertThat(BothPickupLocationsSankBeforeCollectingTreasure(Treasure.CrystalOfFire).toString())
+            .isEqualTo(
+                "BothPickupLocationsSankBeforeCollectingTreasure: CaveOfEmbers^ and CaveOfShadows^ sank before CrystalOfFire was collected"
+            )
+    }
+
+    @Test
+    fun `toString of player drowning names the adventurer`() {
+        assertThat(PlayerDrowned(Messenger).toString())
+            .isEqualTo("PlayerDrowned: Messenger was on an island that sank and couldn't swim to an adjacent one")
+    }
 }
