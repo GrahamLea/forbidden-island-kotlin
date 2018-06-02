@@ -86,7 +86,7 @@ class Game(val gameSetup: GameSetup, gameState: GameState, val random: Random = 
             }
 
             val initialPlayerPositions = gameSetup.players.associate { player ->
-                player to gameSetup.map.mapSites.first { it.location.startingLocationForAdventurer == player }.position
+                player to gameSetup.positionOf(player.startingLocation)
             }
 
             val gameState = GameState(
