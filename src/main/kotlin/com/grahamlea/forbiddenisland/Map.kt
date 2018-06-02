@@ -101,6 +101,7 @@ data class Position(val x: Int, val y: Int): Comparable<Position> {
     override fun toString() = "($x,$y)"
 
     companion object {
+        /** A list of all valid [Position]s in a [GameMap]. */
         val allPositions: List<Position> by lazy {
             listOf(      3, 4      ).map { Position(it, 1) } +
             listOf(   2, 3, 4, 5   ).map { Position(it, 2) } +
