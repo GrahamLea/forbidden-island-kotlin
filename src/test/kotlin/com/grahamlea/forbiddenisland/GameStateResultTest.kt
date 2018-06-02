@@ -300,7 +300,7 @@ class GameStateResultTest {
     private fun createGameForSunkPlayerScenario(sunkPositionWithSunkSurroundings: Position, playerToStrand: Adventurer, positionsToSink: List<Position>, otherPlayer: Adventurer, safePosition: Position): Game {
         var game: Game
         do {
-            val gameMap = GameMap.newShuffledMap().withLocationNotAtAnyOf(FoolsLanding, positionsToSink)
+            val gameMap = GameMap.newRandomMap().withLocationNotAtAnyOf(FoolsLanding, positionsToSink)
 
             game = Game.newRandomGameFor(immListOf(playerToStrand, otherPlayer), gameMap)
                     .withPlayerPosition(playerToStrand, sunkPositionWithSunkSurroundings)

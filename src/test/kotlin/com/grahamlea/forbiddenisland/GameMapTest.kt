@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 class GameMapTest {
     @Test
     fun `new random map should have 24 distinct locations`() {
-        assertThat(GameMap.newShuffledMap().mapSites.map { it.location }.distinct()).hasSize(Location.values().size)
+        assertThat(GameMap.newRandomMap().mapSites.map { it.location }.distinct()).hasSize(Location.values().size)
     }
 
     @Test
@@ -36,7 +36,7 @@ class GameMapTest {
 
     @Test
     fun `GameMap can return adjacent positions and sites`() {
-        val map = GameMap.newShuffledMap()
+        val map = GameMap.newRandomMap()
         val position = Position(3, 4)
         val neighbours = positionsFromMap("""
               ..
@@ -53,7 +53,7 @@ class GameMapTest {
 
     @Test
     fun `GameMap can return adjacent positions and sites including diagonals`() {
-        val map = GameMap.newShuffledMap()
+        val map = GameMap.newRandomMap()
         val position = Position(4, 3)
         val neighbours = positionsFromMap("""
               ..
@@ -70,7 +70,7 @@ class GameMapTest {
 
     @Test
     fun `GameMap doesn't return invalid positions or sites adjacent to edge positions`() {
-        val map = GameMap.newShuffledMap()
+        val map = GameMap.newRandomMap()
         val position = Position(5, 2)
         val neighbours = positionsFromMap("""
               .o

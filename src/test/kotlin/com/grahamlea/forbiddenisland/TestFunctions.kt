@@ -5,7 +5,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import kotlin.reflect.KClass
 
-fun game(vararg players: Adventurer) = Game.newRandomGameFor(immListOf(*players), GameMap.newShuffledMap())
+fun game(vararg players: Adventurer) = Game.newRandomGameFor(immListOf(*players), GameMap.newRandomMap())
 
 fun Game.withPositionFloodStates(floodState: LocationFloodState, vararg positions: Position) =
     withPositionFloodStates(floodState, positions.asIterable())

@@ -19,7 +19,7 @@ class GameStateProgressionTest {
 
     @Test
     fun `actions on game state are recorded in previous actions`() {
-        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
+        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newRandomMap())
                 .withPlayerPosition(Engineer, Position(4, 4))
                 .withPositionFloodStates(Flooded, Position(2, 3))
 
@@ -34,7 +34,7 @@ class GameStateProgressionTest {
 
     @Test
     fun `move played on game changes position of the one player`() {
-        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
+        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newRandomMap())
                 .withPlayerPosition(Engineer, Position(4, 4))
 
         val engineerOriginalPosition = game.gameState.positionOf(Engineer)
@@ -51,7 +51,7 @@ class GameStateProgressionTest {
     @Test
     fun `fly played on game changes position of the Pilot`() {
         val pilotOriginalPosition = Position(4, 4)
-        val game = Game.newRandomGameFor(immListOf(Pilot, Messenger), GameMap.newShuffledMap())
+        val game = Game.newRandomGameFor(immListOf(Pilot, Messenger), GameMap.newRandomMap())
                 .withPlayerPosition(Pilot, pilotOriginalPosition)
 
         val messengerOriginalPosition = game.gameState.positionOf(Messenger)
@@ -65,7 +65,7 @@ class GameStateProgressionTest {
     @Test
     fun `swim action played on game changes position of the one player`() {
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger),
-                    GameMap.newShuffledMap().withLocationNotAtAnyOf(FoolsLanding, listOf(Position(4, 4))
+                    GameMap.newRandomMap().withLocationNotAtAnyOf(FoolsLanding, listOf(Position(4, 4))
                 ))
                 .withPlayerPosition(Engineer, Position(4, 4))
                 .withPositionFloodStates(Sunken, Position(4, 4))
@@ -85,7 +85,7 @@ class GameStateProgressionTest {
     @Test
     fun `shore up played on game changes location flood state`() {
         val positionToShoreUp = Position(3, 4)
-        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
+        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newRandomMap())
                 .withPlayerPosition(Engineer, Position(4, 4))
                 .withPositionFloodStates(Flooded, positionToShoreUp)
 
@@ -100,7 +100,7 @@ class GameStateProgressionTest {
 
     @Test
     fun `give treasure card action on game state changes player cards`() {
-        val game = Game.newRandomGameFor(immListOf(Messenger, Engineer), GameMap.newShuffledMap())
+        val game = Game.newRandomGameFor(immListOf(Messenger, Engineer), GameMap.newRandomMap())
                 .withPlayerCards(Messenger to cards(earth, earth), Engineer to cards(earth, earth))
 
         after (GiveTreasureCard(Messenger, Engineer, earth) playedOn game) {
@@ -110,7 +110,7 @@ class GameStateProgressionTest {
 
     @Test
     fun `capture treasure action captures treasure, and discards treasure cards`() {
-        val gameSetup = GameSetup(immListOf(Messenger, Engineer), GameMap.newShuffledMap())
+        val gameSetup = GameSetup(immListOf(Messenger, Engineer), GameMap.newRandomMap())
         val game = Game.newRandomGameFor(gameSetup)
                 .withPlayerLocation(Messenger, TempleOfTheSun)
                 .withPlayerCards(
@@ -140,7 +140,7 @@ class GameStateProgressionTest {
 
     @Test
     fun `helicopter lift played on game changes position of the players and discards the card`() {
-        val game = Game.newRandomGameFor(immListOf(Messenger, Engineer, Explorer, Diver), GameMap.newShuffledMap())
+        val game = Game.newRandomGameFor(immListOf(Messenger, Engineer, Explorer, Diver), GameMap.newRandomMap())
                 .withPlayerPosition(Engineer, Position(2, 2))
                 .withPlayerPosition(Explorer, Position(2, 2))
                 .withPlayerPosition(Diver, Position(2, 2))
@@ -185,7 +185,7 @@ class GameStateProgressionTest {
     @Test
     fun `sandbag played on game shores up location and discards the card`() {
         val positionToShoreUp = Position(2, 2)
-        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
+        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newRandomMap())
                 .withPlayerPosition(Engineer, Position(4, 4))
                 .withPlayerPosition(Messenger, Position(3, 4))
                 .withPositionFloodStates(Flooded, positionToShoreUp)
@@ -205,7 +205,7 @@ class GameStateProgressionTest {
 
     @Test
     fun `discard card on game changes just discards the card`() {
-        val game = Game.newRandomGameFor(immListOf(Messenger, Engineer), GameMap.newShuffledMap())
+        val game = Game.newRandomGameFor(immListOf(Messenger, Engineer), GameMap.newRandomMap())
                 .withPlayerCards(
                     Messenger to cards(HelicopterLiftCard, earth, earth, earth, earth, ocean),
                     Engineer to cards(ocean)
@@ -226,7 +226,7 @@ class GameStateProgressionTest {
 
     @Test
     fun `draw treasure card from treasure deck moves card from treasure deck to player`() {
-        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
+        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newRandomMap())
                 .withPlayerCards(Engineer to cards(earth), Messenger to cards(ocean))
                 .withTopOfTreasureDeck(fire, ocean, earth)
 
@@ -242,7 +242,7 @@ class GameStateProgressionTest {
 
     @Test
     fun `draw Sandbags from treasure deck moves card from treasure deck to player`() {
-        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
+        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newRandomMap())
                 .withPlayerCards(Engineer to cards(earth), Messenger to cards(ocean))
                 .withTopOfTreasureDeck(SandbagsCard)
 
@@ -253,7 +253,7 @@ class GameStateProgressionTest {
 
     @Test
     fun `draw Helicopter Lift from treasure deck moves card from treasure deck to player`() {
-        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
+        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newRandomMap())
                 .withPlayerCards(Engineer to cards(earth), Messenger to cards(ocean))
                 .withTopOfTreasureDeck(HelicopterLiftCard)
 
@@ -265,7 +265,7 @@ class GameStateProgressionTest {
     @Test
     fun `drawing last card from treasure deck shuffles treasure discard back to deck`() {
         val treasureDeckDiscardBeforeAction = TreasureDeck.newShuffledDeck().subtract(listOf(earth))
-        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
+        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newRandomMap())
                 .withPlayerCards(Engineer to cards(), Messenger to cards())
                 .withTreasureDeckDiscard(treasureDeckDiscardBeforeAction)
 
@@ -282,7 +282,7 @@ class GameStateProgressionTest {
 
     @Test
     fun `drawing waters rise card from treasure deck raises flood level, discards card, and shuffles flood deck discard back to flood deck`() {
-        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
+        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newRandomMap())
                 .withPlayerCards(Engineer to cards(earth), Messenger to cards(ocean))
                 .withTopOfTreasureDeck(WatersRiseCard)
 
@@ -307,7 +307,7 @@ class GameStateProgressionTest {
     @Test
     fun `drawing waters rise card as last card from treasure deck does all the expected things from the two test cases above`() {
         val treasureDeckDiscardBeforeAction = TreasureDeck.newShuffledDeck().subtract(listOf(earth, ocean, WatersRiseCard))
-        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
+        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newRandomMap())
                 .withPlayerCards(Engineer to cards(earth), Messenger to cards(ocean))
                 .withTreasureDeckDiscard(treasureDeckDiscardBeforeAction)
 
@@ -335,7 +335,7 @@ class GameStateProgressionTest {
 
     @Test
     fun `draw location from flood deck floods or sinks location and discards card`() {
-        val map = GameMap.newShuffledMap()
+        val map = GameMap.newRandomMap()
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), map)
                 .withPositionFloodStates(Unflooded, Position.allPositions)
                 .withLocationFloodStates(Flooded, MistyMarsh, Observatory)
@@ -365,7 +365,7 @@ class GameStateProgressionTest {
     @Test
     fun `drawing last card from flood deck shuffles flood discard back to deck without sunken locations`() {
         val floodDeckDiscardBeforeAction = shuffled<Location>().subtract(listOf(MistyMarsh)) - Observatory
-        val map = GameMap.newShuffledMap()
+        val map = GameMap.newRandomMap()
         val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), map)
                     .withPositionFloodStates(Unflooded, Position.allPositions)
                     .withLocationFloodStates(Flooded, DunesOfDeception)
@@ -385,7 +385,7 @@ class GameStateProgressionTest {
 
     @Test
     fun `helicopter lift off island played on game goes into treasure discard pile and players stay put`() {
-        val map = GameMap.newShuffledMap()
+        val map = GameMap.newRandomMap()
         val game = Game.newRandomGameFor(immListOf(Messenger, Engineer), map)
                 .withPlayerPosition(Messenger, map.positionOf(FoolsLanding))
                 .withPlayerPosition(Engineer, map.positionOf(FoolsLanding))

@@ -19,7 +19,7 @@ class GameProgressionTest {
 
     @Test
     fun `game phase is updated during action`() {
-        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newShuffledMap())
+        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newRandomMap())
         assertThat(game.gameState.phase).isEqualTo(AwaitingPlayerAction(Engineer, 3))
 
         game.process(game.gameState.availableActions.first { it is Move })

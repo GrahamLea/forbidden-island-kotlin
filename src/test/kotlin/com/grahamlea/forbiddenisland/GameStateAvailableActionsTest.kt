@@ -961,7 +961,7 @@ class GameStateAvailableActionsTest {
             val player1Position = Position(4, 4)
 
             val adjacentPositions = player1Position.adjacentPositions(false)
-            val map = GameMap.newShuffledMap().withLocationNotAtAnyOf(FoolsLanding, adjacentPositions)
+            val map = GameMap.newRandomMap().withLocationNotAtAnyOf(FoolsLanding, adjacentPositions)
 
             val unfloodedPosition = adjacentPositions.shuffled()[0]
             val sunkenPosition = (adjacentPositions - unfloodedPosition).shuffled()[0]
@@ -990,7 +990,7 @@ class GameStateAvailableActionsTest {
 
             val adjacentPositions = explorerPosition.adjacentPositions(false)
             val diagonalPositions = explorerPosition.adjacentPositions(true) - adjacentPositions
-            val map = GameMap.newShuffledMap().withLocationNotAtAnyOf(FoolsLanding, adjacentPositions + diagonalPositions)
+            val map = GameMap.newRandomMap().withLocationNotAtAnyOf(FoolsLanding, adjacentPositions + diagonalPositions)
 
             val unfloodedPositions = listOf(adjacentPositions.shuffled()[0], diagonalPositions.shuffled()[0])
             val sunkenPositions = listOf(
@@ -1023,7 +1023,7 @@ class GameStateAvailableActionsTest {
         fun `Pilot can "swim" to safety at any un-Sunken location`() {
             val pilotPosition = Position(4, 4)
 
-            val map = GameMap.newShuffledMap().withLocationNotAtAnyOf(FoolsLanding, listOf(pilotPosition))
+            val map = GameMap.newRandomMap().withLocationNotAtAnyOf(FoolsLanding, listOf(pilotPosition))
 
             val foolsLandingPos = map.positionOf(FoolsLanding)
             val unfloodedPositions = (Position.allPositions - pilotPosition - foolsLandingPos).shuffled().subList(0, 7) + foolsLandingPos
@@ -1071,7 +1071,7 @@ class GameStateAvailableActionsTest {
                   ..
             """)
 
-            val map = GameMap.newShuffledMap().withLocationNotAtAnyOf(FoolsLanding, sunkenPositions)
+            val map = GameMap.newRandomMap().withLocationNotAtAnyOf(FoolsLanding, sunkenPositions)
 
             val game = newRandomGameFor(immListOf(Diver, Messenger), map)
                 .withPlayerPosition(Diver, diverPosition)
