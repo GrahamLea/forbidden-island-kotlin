@@ -3,13 +3,14 @@ package com.grahamlea.forbiddenisland.play
 import com.grahamlea.forbiddenisland.*
 import com.grahamlea.forbiddenisland.StartingFloodLevel.Novice
 import java.text.DecimalFormat
+import java.text.NumberFormat
 import java.util.*
 
 interface GamePlayer {
     fun selectAction(game: Game): GameAction
 }
 
-class RandomGamePlayer(private val random: Random = Random()): GamePlayer {
+class RandomGamePlayer(private val random: Random = Random(27697235L)): GamePlayer {
     override fun selectAction(game: Game): GameAction =
         game.gameState.availableActions.let { availableActions ->
             availableActions[random.nextInt(availableActions.size)]
@@ -23,25 +24,57 @@ class RandomGamePlayer(private val random: Random = Random()): GamePlayer {
     }
 }
 
-fun testGamePlayer(gamePlayer: GamePlayer, gamesPerCategory: Int = 1000): Map<Pair<Int, StartingFloodLevel>, Pair<Int, Int>> =
-    (2..4).flatMap { numberOfPlayers -> StartingFloodLevel.values().map { startingFloodLevel ->
-        Pair(numberOfPlayers, startingFloodLevel) to
-            Pair(
-                (1..gamesPerCategory).asSequence().map {
-                    playGame(gamePlayer, numberOfPlayers, startingFloodLevel, Random(78345763246952L)).gameState.result
-                }.count { it == AdventurersWon },
-                gamesPerCategory
-            )
-    } }.toMap()
+class GameTestResult(val gamesPerCategory: Int, gameResults: Map<GameTestCategory, List<GameSummary>>) {
 
-fun printGamePlayerTestResult(result: Map<Pair<Int, StartingFloodLevel>, Pair<Int, Int>>) {
-    val format = DecimalFormat("0.0%")
+    val gameResults: Map<GameTestCategory, GameSummaries> = gameResults.mapValues { GameSummaries(it.value) }
+
+    data class GameTestCategory(val startingFloodLevel: StartingFloodLevel, val numberOfPlayers: Int): Comparable<GameTestCategory> {
+        override fun compareTo(other: GameTestCategory): Int {
+            return this.startingFloodLevel.compareTo(other.startingFloodLevel).let {
+                if (it != 0) it
+                else this.numberOfPlayers.compareTo(other.numberOfPlayers)
+            }
+        }
+    }
+
+    operator fun get(startingFloodLevel: StartingFloodLevel, numberOfPlayers: Int) =
+        gameResults.getValue(GameTestCategory(startingFloodLevel, numberOfPlayers))
+
+    data class GameSummary(val result: GameResult, val actions: Int)
+
+    inner class GameSummaries(val summaries: List<GameSummary>) {
+        fun gamesWonRatio() = summaries.count { it.result == AdventurersWon } / gamesPerCategory
+        fun totalActions() = summaries.sumBy { it.actions }
+    }
+}
+
+fun testGamePlayer(gamePlayer: GamePlayer, gamesPerCategory: Int = 1000): GameTestResult =
+    Random(78345763246952L).let { random ->
+        StartingFloodLevel.values().flatMap { startingFloodLevel ->
+            (2..4).map { numberOfPlayers ->
+                GameTestResult.GameTestCategory(startingFloodLevel, numberOfPlayers) to
+                    (1..gamesPerCategory).asSequence().map {
+                        playGame(gamePlayer, numberOfPlayers, startingFloodLevel, random).let { game ->
+                            GameTestResult.GameSummary(game.gameState.result!!, game.gameState.previousActions.size)
+                        }
+                    }.toList()
+            }
+        }
+    }.let { GameTestResult(gamesPerCategory, it.toMap()) }
+
+fun printGamePlayerTestResult(result: GameTestResult) {
+    val decimalFormat = DecimalFormat("0.0%")
+    val intFormat = NumberFormat.getIntegerInstance()
     println("|Number of Players|${StartingFloodLevel.values().joinToString("|")}|")
     println("|---|---:|---:|---:|---:|")
     (2..4).forEach { numberOfPlayers ->
-        val results = StartingFloodLevel.values().map { result.getValue(Pair(numberOfPlayers, it)).let { (it.first.toFloat() / it.second) } }
-        println("|$numberOfPlayers|${results.joinToString("|") { format.format(it) } }|")
+        val results = StartingFloodLevel.values().map { result[it, numberOfPlayers].let { (it.gamesWonRatio()) } }
+        println("|$numberOfPlayers|${results.joinToString("|") { decimalFormat.format(it) } }|")
     }
+    StartingFloodLevel.values()
+        .map { level -> (2..4).sumBy { result[level, it].totalActions() } }
+        .map { it / StartingFloodLevel.values().count() / result.gamesPerCategory }
+        .let { println("|Avg. Actions|${it.joinToString("|") { intFormat.format(it) } }|") }
 }
 
 interface Logger {
@@ -76,7 +109,7 @@ fun playGame(
     logger?.detail("numberOfPlayers = ${numberOfPlayers}")
 
     val game = Game.newRandomGameFor(
-        GameSetup.newRandomGameSetupFor(playerCount),
+        GameSetup.newRandomGameSetupFor(playerCount, random),
         startingFloodLevel = startingFloodLevel,
         random = random
     )
