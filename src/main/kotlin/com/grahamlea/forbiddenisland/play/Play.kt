@@ -15,25 +15,6 @@ interface GamePlayer {
     }
 }
 
-class RandomGamePlayer(private val random: Random = Random(27697235L)): GamePlayer {
-
-    override fun newContext(game: Game): GamePlayer.GamePlayContext {
-        return object: GamePlayer.GamePlayContext {
-            override fun selectNextAction(): GameAction =
-                game.gameState.availableActions.let { availableActions ->
-                    availableActions[random.nextInt(availableActions.size)]
-                }
-        }
-    }
-
-    companion object {
-        @JvmStatic
-        fun main(args: Array<String>) {
-            printGamePlayerTestResult(testGamePlayer(RandomGamePlayer(), 100))
-        }
-    }
-}
-
 class GameTestResult(val gamesPerCategory: Int, gameResults: Map<GameTestCategory, List<GameSummary>>) {
 
     val gameResults: Map<GameTestCategory, GameSummaries> = gameResults.mapValues { GameSummaries(it.value) }
