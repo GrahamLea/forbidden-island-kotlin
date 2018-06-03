@@ -38,6 +38,8 @@ class GameTestResult(val gamesPerCategory: Int, gameResults: Map<GameTestCategor
 
     val gameResults: Map<GameTestCategory, GameSummaries> = gameResults.mapValues { GameSummaries(it.value) }
 
+    val gamesPerFloodLevel = gamesPerCategory * 3 // 2, 3 and 4 players
+
     data class GameTestCategory(val startingFloodLevel: StartingFloodLevel, val numberOfPlayers: Int): Comparable<GameTestCategory> {
         override fun compareTo(other: GameTestCategory): Int {
             return this.startingFloodLevel.compareTo(other.startingFloodLevel).let {
@@ -49,6 +51,9 @@ class GameTestResult(val gamesPerCategory: Int, gameResults: Map<GameTestCategor
 
     operator fun get(startingFloodLevel: StartingFloodLevel, numberOfPlayers: Int) =
         gameResults.getValue(GameTestCategory(startingFloodLevel, numberOfPlayers))
+
+    operator fun get(startingFloodLevel: StartingFloodLevel) =
+        gameResults.filter { it.key.startingFloodLevel == startingFloodLevel }.flatMap { it.value.summaries }
 
     data class GameSummary(val result: GameResult, val actions: Int)
 
@@ -73,18 +78,38 @@ fun testGamePlayer(gamePlayer: GamePlayer, gamesPerCategory: Int = 1000): GameTe
     }.let { GameTestResult(gamesPerCategory, it.toMap()) }
 
 fun printGamePlayerTestResult(result: GameTestResult) {
-    val decimalFormat = DecimalFormat("0.0%")
-    val intFormat = NumberFormat.getIntegerInstance()
-    println("|Number of Players|${StartingFloodLevel.values().joinToString("|")}|")
+    println("| |${StartingFloodLevel.values().joinToString("|")}|")
     println("|---|---:|---:|---:|---:|")
+    printGameWonRatioPerPlayerNumber(result)
+    printGameResultBreakdown(result)
+    printAverageActions(result)
+}
+
+private fun printGameWonRatioPerPlayerNumber(result: GameTestResult) {
+    val percentFormat = DecimalFormat("0.0%")
     (2..4).forEach { numberOfPlayers ->
         val results = StartingFloodLevel.values().map { result[it, numberOfPlayers].let { (it.gamesWonRatio()) } }
-        println("|$numberOfPlayers|${results.joinToString("|") { decimalFormat.format(it) } }|")
+        println("|$numberOfPlayers players win rate|${results.joinToString("|") { percentFormat.format(it) }}|")
     }
+}
+
+private fun printGameResultBreakdown(result: GameTestResult) {
+    val percentFormat = DecimalFormat("0.0%")
+    val resultTypes = result.gameResults.flatMap { it.value.summaries.map { it.result::class } }.toSortedSet(compareBy { it.simpleName })
+    for (resultType in resultTypes) {
+        StartingFloodLevel.values()
+            .map { level -> result[level].count { resultType.isInstance(it.result) } }
+            .map { it.toFloat() / result.gamesPerFloodLevel }
+            .let { println("|${resultType.simpleName}|${it.joinToString("|") { percentFormat.format(it) }}|") }
+    }
+}
+
+private fun printAverageActions(result: GameTestResult) {
+    val intFormat = NumberFormat.getIntegerInstance()
     StartingFloodLevel.values()
         .map { level -> (2..4).sumBy { result[level, it].totalActions() } }
         .map { it / StartingFloodLevel.values().count() / result.gamesPerCategory }
-        .let { println("|Avg. Actions|${it.joinToString("|") { intFormat.format(it) } }|") }
+        .let { println("|Avg. Actions|${it.joinToString("|") { intFormat.format(it) }}|") }
 }
 
 interface Logger {
