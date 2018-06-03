@@ -1,6 +1,8 @@
 package com.grahamlea.forbiddenisland
 
-import com.grahamlea.forbiddenisland.StartingFloodLevel.Novice
+import com.grahamlea.forbiddenisland.play.ConsoleLogger
+import com.grahamlea.forbiddenisland.play.RandomGamePlayer
+import com.grahamlea.forbiddenisland.play.playGame
 import org.junit.jupiter.api.Assertions.assertTimeout
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DisplayName
@@ -25,8 +27,10 @@ class FullGameTest {
 
         val random = Random(seed)
 
+        val randomGamePlayer = RandomGamePlayer(random)
+
         assertTimeout(Duration.ofSeconds(1), {
-            `play a random game`(random, debug)
+            playGame(randomGamePlayer, random = random, logger = ConsoleLogger(debug))
         })
     }
 
@@ -46,8 +50,9 @@ class FullGameTest {
             executorService.submit({
                 println("Started thread ${it + 1}")
                 val random = Random()
+                val randomGamePlayer = RandomGamePlayer(random)
                 while (gamesWon.get() < 2) {
-                    val game = `play a random game`(random, false)
+                    val game = playGame(randomGamePlayer)
                     val gamesDone = games.incrementAndGet()
                     if (game.gameState.result == AdventurersWon) {
                         gamesWon.incrementAndGet()
@@ -63,40 +68,6 @@ class FullGameTest {
 
         executorService.shutdown()
         executorService.awaitTermination(1, TimeUnit.HOURS)
-    }
-
-    private fun `play a random game`(random: Random, debug: Boolean): Game {
-
-        val numberOfPlayers = 2 + (Math.random() * 3).toInt()
-        if (debug) println("numberOfPlayers = ${numberOfPlayers}")
-
-        val game = Game.newRandomGameFor(
-            GameSetup.newRandomGameSetupFor(numberOfPlayers),
-            startingFloodLevel = Novice,
-            random = random
-        )
-        if (debug) println(GamePrinter.toString(game))
-
-        printGameOnFailure(game) {
-            var actions = 0
-
-            while (game.gameState.result == null) {
-                if (debug) println(game.gameState.phase)
-
-                val availableActions = game.gameState.availableActions
-                val action = availableActions[random.nextInt(availableActions.size)]
-                if (debug) {
-                    print("    "); println(action)
-                }
-
-                game.process(action)
-                actions++
-            }
-            if (debug) println("actions = ${actions}")
-            if (debug) println("result = ${game.gameState.result}")
-        }
-
-        return game
     }
 
 }
