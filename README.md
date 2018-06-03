@@ -11,6 +11,13 @@ You could use it to:
 * enjoy the fun and challenge of implementing the rules yourself; or
 * implement a game playable by humans. (Yawn)
 
+## Want to create a program that plays the game?
+
+There is a `play` subpackge in `src/main` that contains a `GamePlayer` interface for 
+developing automata which can 'play' games of Forbidden Island. The package also 
+contains functions which can test the playing automaton and print the results of the
+test as a Markdown table.
+
 ## Want to implement the rules yourself?
 
 The code was developed almost completely using test-driven design.
