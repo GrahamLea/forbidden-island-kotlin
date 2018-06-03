@@ -7,19 +7,29 @@ import java.text.NumberFormat
 import java.util.*
 
 interface GamePlayer {
-    fun selectAction(game: Game): GameAction
+
+    fun newContext(game: Game): GamePlayContext
+
+    interface GamePlayContext {
+        fun selectNextAction(): GameAction
+    }
 }
 
 class RandomGamePlayer(private val random: Random = Random(27697235L)): GamePlayer {
-    override fun selectAction(game: Game): GameAction =
-        game.gameState.availableActions.let { availableActions ->
-            availableActions[random.nextInt(availableActions.size)]
+
+    override fun newContext(game: Game): GamePlayer.GamePlayContext {
+        return object: GamePlayer.GamePlayContext {
+            override fun selectNextAction(): GameAction =
+                game.gameState.availableActions.let { availableActions ->
+                    availableActions[random.nextInt(availableActions.size)]
+                }
         }
+    }
 
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            printGamePlayerTestResult(testGamePlayer(RandomGamePlayer(), 20))
+            printGamePlayerTestResult(testGamePlayer(RandomGamePlayer(), 100))
         }
     }
 }
@@ -115,12 +125,14 @@ fun playGame(
     )
     logger?.detail("game:\n ${GamePrinter.toString(game)}")
 
+    val gamePlayContext = gamePlayer.newContext(game)
+
     var numberOfActions = 0
 
     while (game.gameState.result == null) {
         logger?.detail(game.gameState.phase.toString())
 
-        val action = gamePlayer.selectAction(game)
+        val action = gamePlayContext.selectNextAction()
         logger?.detail("    $action")
 
         game.process(action)
