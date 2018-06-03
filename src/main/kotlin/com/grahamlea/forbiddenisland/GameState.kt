@@ -274,7 +274,7 @@ data class GameState(
                             floodLevel = floodLevel.next(),
                             treasureDeck = treasureDeck.drop(1).imm(),
                             treasureDeckDiscard = treasureDeckDiscard + WatersRiseCard,
-                            floodDeck = (floodDeckDiscard.shuffled() + floodDeck).imm(),
+                            floodDeck = (floodDeckDiscard.shuffled(random) + floodDeck).imm(),
                             floodDeckDiscard = immListOf()
                         )
                     } else {
@@ -296,7 +296,7 @@ data class GameState(
                         )
                     }.let {
                         if (it.floodDeck.any()) it
-                        else it.copy(floodDeck = it.floodDeckDiscard.shuffled().imm(), floodDeckDiscard = immListOf())
+                        else it.copy(floodDeck = it.floodDeckDiscard.shuffled(random).imm(), floodDeckDiscard = immListOf())
                     }
                 }
                 else -> throw IllegalStateException("Unhandled action: $action")
