@@ -232,6 +232,17 @@ class GameStateAvailableActionsTest {
 
                 assertThat(game.availableMoves()).contains(Move(Diver, Position(4, 1))) // top-right
             }
+
+            @Test
+            fun `Diver is not given option to swim to current tile`() {
+
+                val diverPosition = Position(4, 4)
+                val game = game(Diver, Explorer)
+                    .withPlayerPosition(Diver, diverPosition)
+                    .withPositionFloodStates(Flooded, diverPosition)
+
+                assertThat(game.availableMoves()).doesNotContain(Move(Diver, diverPosition))
+            }
         }
 
         @ParameterizedTest

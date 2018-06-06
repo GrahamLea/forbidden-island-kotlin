@@ -172,7 +172,7 @@ data class GameState(
             .map { Fly(player, it) }
 
     private fun diverSwimPositionsFrom(playersCurrentSite: MapSite): List<MapSite> {
-        tailrec fun findPositions(startingPoints: List<MapSite>, reachable: MutableList<MapSite>): List<MapSite> {
+        tailrec fun findPositions(startingPoints: List<MapSite>, reachable: MutableSet<MapSite>): Set<MapSite> {
             val neighbours = startingPoints.flatMap { accessiblePositionsAdjacentTo(it.position, includeSunkenLocations = true) }
             val floodedAndSunkenNeighbours = neighbours.filterNot { locationFloodStates.getValue(it.location) == Unflooded }
             val newStartingPoints = floodedAndSunkenNeighbours - reachable
@@ -180,7 +180,7 @@ data class GameState(
             return if (newStartingPoints.any()) findPositions(newStartingPoints, reachable) else reachable
         }
 
-        return findPositions(listOf(playersCurrentSite), mutableListOf()).filterNot(::isSunken) - playersCurrentSite
+        return findPositions(listOf(playersCurrentSite), mutableSetOf()).filterNot(::isSunken) - playersCurrentSite
     }
 
     private fun availableShoreUpActions(player: Adventurer, playerPosition: Position): List<GameAction> {
