@@ -22,6 +22,7 @@ sealed class GamePhase {
      */
     open fun phaseAfter(action: GameAction, nextGameState: GameState): GamePhase =
             when {
+                nextGameState.result != null -> GameOver
                 this is ForcedOutOfTurnPhase -> calculateNextPhase(action, nextGameState)
                 action is OutOfTurnAction -> this
                 else -> calculateNextPhase(action, nextGameState)

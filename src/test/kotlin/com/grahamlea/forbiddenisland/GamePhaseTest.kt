@@ -367,6 +367,23 @@ class GamePhaseTest {
     }
 
     @Test
+    fun `game is over when next state has result`() {
+        val phases = listOf(
+            AwaitingPlayerAction(Engineer, 2),
+            AwaitingTreasureDeckDraw(Engineer, 3),
+            AwaitingFloodDeckDraw(Engineer, 3),
+            AwaitingPlayerToDiscardExtraCard(Navigator, AwaitingPlayerAction(Navigator, 2)),
+            AwaitingPlayerToSwimToSafety(Navigator, AwaitingPlayerAction(Navigator, 3))
+        )
+
+        val gameWithResult = randomNewGame.withLocationFloodStates(Sunken, Location.FoolsLanding).gameState
+
+        for (phase in phases) {
+            assertThat(phase.phaseAfter(Sandbag(Engineer, position33), gameWithResult)).isEqualTo(GameOver)
+        }
+    }
+
+    @Test
     fun `any action played on game over is an error`() {
         val actions = listOf(
                 Move(Engineer, position33),
