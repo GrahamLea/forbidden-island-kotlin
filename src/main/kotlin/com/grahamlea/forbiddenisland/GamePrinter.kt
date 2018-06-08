@@ -16,9 +16,22 @@ object GamePrinter {
      * Doesn't include:
      * * everything else in [GameState]
      */
-    fun toString(game: Game): String = toString(game.gameSetup.map, game.gameState.locationFloodStates, game.gameState.playerPositions)
+    fun toString(game: Game): String = toString(game.gameState)
 
-    private fun toString(
+    /**
+     * Generates a graphical representation of parts a given [GameState].
+     *
+     * Includes:
+     * * the layout of the [GameMap] ([Position]s and [Location]s)
+     * * [player positions][GameState.playerPositions]
+     * * [location flood states][GameState.locationFloodStates]
+     *
+     * Doesn't include:
+     * * everything else in [GameState]
+     */
+    fun toString(gameState: GameState): String = toString(gameState.gameSetup.map, gameState.locationFloodStates, gameState.playerPositions)
+
+    fun toString(
             map: GameMap,
             locationFloodStates: ImmutableMap<Location, LocationFloodState>,
             playerPositions: ImmutableMap<Adventurer, Position>
