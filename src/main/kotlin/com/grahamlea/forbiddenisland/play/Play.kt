@@ -150,6 +150,6 @@ private fun printAverageActions(result: GameTestResult) {
     val intFormat = NumberFormat.getIntegerInstance()
     StartingFloodLevel.values()
         .map { level -> (2..4).sumBy { result[level, it].totalActions() } }
-        .map { it / StartingFloodLevel.values().count() / result.gamesPerCategory }
+        .map { it / (result.gamesPerCategory * 3) }
         .let { println("|Avg. Actions|${it.joinToString("|") { intFormat.format(it) }}|") }
 }
