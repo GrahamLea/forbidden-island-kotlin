@@ -23,7 +23,11 @@ fun testGamePlayer(gamePlayer: GamePlayer, gamesPerCategory: Int = 250): GameTes
                 GameTestResult.GameTestCategory(startingFloodLevel, numberOfPlayers) to
                     (1..gamesPerCategory).asSequence().map {
                         playGame(gamePlayer, numberOfPlayers, startingFloodLevel, random).let { game ->
-                            GameTestResult.GameSummary(game.gameState.result!!, game.gameState.previousActions.size)
+                            GameTestResult.GameSummary(
+                                game.gameState.result!!,
+                                game.gameState.previousActions.size,
+                                game.gameState.treasuresCollected.count { it.value == true }
+                            )
                         }
                     }.toList()
             }
@@ -111,11 +115,12 @@ class GameTestResult(val gamesPerCategory: Int, gameResults: Map<GameTestCategor
     operator fun get(startingFloodLevel: StartingFloodLevel) =
         gameResults.filter { it.key.startingFloodLevel == startingFloodLevel }.flatMap { it.value.summaries }
 
-    data class GameSummary(val result: GameResult, val actions: Int)
+    data class GameSummary(val result: GameResult, val actions: Int, val treasuresCaptured: Int)
 
     inner class GameSummaries(val summaries: List<GameSummary>) {
         fun gamesWonRatio() = summaries.count { it.result == AdventurersWon } / gamesPerCategory
         fun totalActions() = summaries.sumBy { it.actions }
+        fun totalTreasuresCaptured() = summaries.sumBy { it.treasuresCaptured }
     }
 }
 
@@ -124,6 +129,7 @@ fun printGamePlayerTestResult(result: GameTestResult) {
     println("|---|---:|---:|---:|---:|")
     printGameWonRatioPerPlayerNumber(result)
     printGameResultBreakdown(result)
+    printAverageTreasuresCaptured(result)
     printAverageActions(result)
 }
 
@@ -144,6 +150,14 @@ private fun printGameResultBreakdown(result: GameTestResult) {
             .map { it.toFloat() / result.gamesPerFloodLevel }
             .let { println("|${resultType.simpleName}|${it.joinToString("|") { percentFormat.format(it) }}|") }
     }
+}
+
+private fun printAverageTreasuresCaptured(result: GameTestResult) {
+    val decimalFormat = DecimalFormat("0.00")
+    StartingFloodLevel.values()
+        .map { level -> (2..4).sumBy { result[level, it].totalTreasuresCaptured() } }
+        .map { it.toFloat() / (result.gamesPerCategory * 3) }
+        .let { println("|Avg. Treasures|${it.joinToString("|") { decimalFormat.format(it) }}|") }
 }
 
 private fun printAverageActions(result: GameTestResult) {
