@@ -18,7 +18,7 @@ class RandomGamePlayer(private val random: Random = Random(27697235L)): GamePlay
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            printGamePlayerTestResult(testGamePlayer(RandomGamePlayer(), 100))
+            printGamePlayerTestResult(testGamePlayer(RandomGamePlayer()))
         }
     }
 }

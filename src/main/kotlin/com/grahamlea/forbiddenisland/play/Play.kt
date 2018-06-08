@@ -15,7 +15,7 @@ interface GamePlayer {
     }
 }
 
-fun testGamePlayer(gamePlayer: GamePlayer, gamesPerCategory: Int = 1000): GameTestResult =
+fun testGamePlayer(gamePlayer: GamePlayer, gamesPerCategory: Int = 250): GameTestResult =
     Random(78345763246952L).let { random ->
         StartingFloodLevel.values().flatMap { startingFloodLevel ->
             (2..4).map { numberOfPlayers ->
