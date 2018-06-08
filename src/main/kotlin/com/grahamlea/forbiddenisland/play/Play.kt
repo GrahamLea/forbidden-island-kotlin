@@ -9,6 +9,7 @@ import java.util.*
 interface GamePlayer {
 
     fun newContext(game: Game): GamePlayContext
+    fun done() { }
 
     interface GamePlayContext {
         fun selectNextAction(): GameAction
@@ -26,6 +27,8 @@ fun testGamePlayer(gamePlayer: GamePlayer, gamesPerCategory: Int = 250): GameTes
                         }
                     }.toList()
             }
+        }.also {
+            gamePlayer.done()
         }
     }.let { GameTestResult(gamesPerCategory, it.toMap()) }
 
