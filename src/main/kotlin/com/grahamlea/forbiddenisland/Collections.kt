@@ -1,7 +1,6 @@
 package com.grahamlea.forbiddenisland
 
 import java.util.*
-import kotlin.collections.HashMap
 
 /**
  * Returns a shuffled [ImmutableList] of the specified (or inferred) Enum, or a random subset thereof as specified.
@@ -57,7 +56,7 @@ fun <E> ImmutableList<E>.subtract(es: Iterable<E>): ImmutableList<E> {
  *
  * @see immMapOf
  */
-data class ImmutableMap<K, out V>(private val inner: Map<K, V>) : Map<K, V> by HashMap(inner) {
+data class ImmutableMap<K, out V>(private val inner: Map<K, V>) : Map<K, V> by LinkedHashMap(inner) {
     override fun toString() = "@" + inner.toString()
 }
 

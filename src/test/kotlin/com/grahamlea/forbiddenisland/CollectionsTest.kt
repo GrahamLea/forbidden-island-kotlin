@@ -9,6 +9,13 @@ import java.util.*
 class CollectionsTest {
 
     @Test
+    fun `ImmutableMap should iterate in the order items are added`() {
+        val random = Random()
+        val pairs = Array(10) { i -> random.nextInt().toString() to i }
+        assertThat(immMapOf(*pairs).toList()).isEqualTo(listOf(*pairs))
+    }
+
+    @Test
     fun `shuffled enum lists produce random results`() {
         // These can fail randomly, but only 1 in 24! times on average
         assertThat(shuffled<Location>()).isNotEqualTo(Location.values().toList())
