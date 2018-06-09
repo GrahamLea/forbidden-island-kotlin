@@ -27,7 +27,7 @@ class FullGameTest {
 
         val random = Random(seed)
 
-        val randomGamePlayer = RandomGamePlayer(random)
+        val randomGamePlayer = RandomGamePlayer()
 
         assertTimeout(Duration.ofSeconds(1), {
             playGame(randomGamePlayer, random = random, logger = ConsoleLogger(debug))
@@ -49,8 +49,7 @@ class FullGameTest {
         (0 until (availableProcessors - 1)).forEach {
             executorService.submit({
                 println("Started thread ${it + 1}")
-                val random = Random()
-                val randomGamePlayer = RandomGamePlayer(random)
+                val randomGamePlayer = RandomGamePlayer()
                 while (gamesWon.get() < 2) {
                     val game = playGame(randomGamePlayer)
                     val gamesDone = games.incrementAndGet()

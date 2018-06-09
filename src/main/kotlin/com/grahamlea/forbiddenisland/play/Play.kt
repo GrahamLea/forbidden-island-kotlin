@@ -5,10 +5,13 @@ import com.grahamlea.forbiddenisland.StartingFloodLevel.Novice
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
+import java.util.concurrent.Callable
+import java.util.concurrent.Executors
+import kotlin.math.max
 
 interface GamePlayer {
 
-    fun newContext(game: Game): GamePlayContext
+    fun newContext(game: Game, random: Random): GamePlayContext
     fun done() { }
 
     interface GamePlayContext {
@@ -16,25 +19,45 @@ interface GamePlayer {
     }
 }
 
-fun testGamePlayer(gamePlayer: GamePlayer, gamesPerCategory: Int = 250): GameTestResult =
-    Random(78345763246952L).let { random ->
-        StartingFloodLevel.values().flatMap { startingFloodLevel ->
-            (2..4).map { numberOfPlayers ->
-                GameTestResult.GameTestCategory(startingFloodLevel, numberOfPlayers) to
-                    (1..gamesPerCategory).asSequence().map {
-                        playGame(gamePlayer, numberOfPlayers, startingFloodLevel, random).let { game ->
-                            GameTestResult.GameSummary(
-                                game.gameState.result!!,
-                                game.gameState.previousActions.size,
-                                game.gameState.treasuresCollected.count { it.value == true }
-                            )
-                        }
-                    }.toList()
+private const val gamePlayerTestSeedGeneratorSeed = 78345763246952L
+
+fun testGamePlayer(gamePlayer: GamePlayer, gamesPerCategory: Int = 250): GameTestResult {
+    val seedGenerator = Random(gamePlayerTestSeedGeneratorSeed)
+    val numberOfThreads = max(1, Runtime.getRuntime().availableProcessors() - 1)
+    println("Testing ${gamePlayer::class.qualifiedName?.split('.')?.takeLast(2)?.joinToString(".")} with $numberOfThreads threads")
+    val fixedThreadPool = Executors.newFixedThreadPool(numberOfThreads)
+    val tasks = StartingFloodLevel.values().flatMap { startingFloodLevel ->
+        (2..4).map { numberOfPlayers ->
+            val deterministicRandomForThread = Random(seedGenerator.nextLong())
+            Callable {
+                runGamePlayerTest(startingFloodLevel, numberOfPlayers, gamesPerCategory, gamePlayer, deterministicRandomForThread)
             }
-        }.also {
-            gamePlayer.done()
         }
-    }.let { GameTestResult(gamesPerCategory, it.toMap()) }
+    }
+    val results = fixedThreadPool.invokeAll(tasks)
+    fixedThreadPool.shutdown()
+    gamePlayer.done()
+    return GameTestResult(gamesPerCategory, results.map { it.get() }.toMap())
+}
+
+private fun runGamePlayerTest(
+    startingFloodLevel: StartingFloodLevel,
+    numberOfPlayers: Int,
+    gamesPerCategory: Int,
+    gamePlayer: GamePlayer,
+    random: Random
+): Pair<GameTestResult.GameTestCategory, List<GameTestResult.GameSummary>> {
+    return GameTestResult.GameTestCategory(startingFloodLevel, numberOfPlayers) to
+        (1..gamesPerCategory).asSequence().map {
+            playGame(gamePlayer, numberOfPlayers, startingFloodLevel, random).let { game ->
+                GameTestResult.GameSummary(
+                    game.gameState.result!!,
+                    game.gameState.previousActions.size,
+                    game.gameState.treasuresCollected.count { it.value == true }
+                )
+            }
+        }.toList()
+}
 
 
 interface Logger {
@@ -75,7 +98,7 @@ fun playGame(
     )
     logger?.detail("game:\n ${GamePrinter.toString(game)}")
 
-    val gamePlayContext = gamePlayer.newContext(game)
+    val gamePlayContext = gamePlayer.newContext(game, random)
 
     var numberOfActions = 0
 
