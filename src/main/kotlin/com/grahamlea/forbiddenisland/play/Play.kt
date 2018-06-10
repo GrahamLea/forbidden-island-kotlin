@@ -141,7 +141,7 @@ class GameTestResult(val gamesPerCategory: Int, gameResults: Map<GameTestCategor
     data class GameSummary(val result: GameResult, val actions: Int, val treasuresCaptured: Int)
 
     inner class GameSummaries(val summaries: List<GameSummary>) {
-        fun gamesWonRatio() = summaries.count { it.result == AdventurersWon } / gamesPerCategory
+        fun gamesWonRatio() = summaries.count { it.result == AdventurersWon } / gamesPerCategory.toFloat()
         fun totalActions() = summaries.sumBy { it.actions }
         fun totalTreasuresCaptured() = summaries.sumBy { it.treasuresCaptured }
     }
