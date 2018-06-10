@@ -117,9 +117,19 @@ data class DrawFromFloodDeck(val player: Adventurer): PlayerObligationAction() {
     override fun toString() = "$player draws from the Flood Deck"
 }
 
-sealed class OutOfTurnAction: GameAction()
+interface OutOfTurnAction
 
-sealed class PlayerSpecialAction: OutOfTurnAction()
+data class DiscardCard(val player: Adventurer, val card: HoldableCard): PlayerObligationAction(), OutOfTurnAction, CardDiscardingAction {
+    override val playerDiscardingCard = player
+    override val discardedCards = immListOf(card)
+    override fun toString() = "$player discards $card"
+}
+
+data class SwimToSafety(override val player: Adventurer, override val position: Position): PlayerObligationAction(), OutOfTurnAction, PlayerMovingAction {
+    override fun toString() = "$player swims to safety at $position"
+}
+
+sealed class PlayerSpecialAction: GameAction(), OutOfTurnAction
 
 data class HelicopterLift(val playerWithCard: Adventurer, val playersBeingMoved: Set<Adventurer>, val position: Position):
         PlayerSpecialAction(), CardDiscardingAction {
@@ -137,17 +147,7 @@ data class Sandbag(val player: Adventurer, val position: Position): PlayerSpecia
     override fun toString() = "$position is sand bagged by $player"
 }
 
-data class SwimToSafety(override val player: Adventurer, override val position: Position): OutOfTurnAction(), PlayerMovingAction {
-    override fun toString() = "$player swims to safety at $position"
-}
-
-data class DiscardCard(val player: Adventurer, val card: HoldableCard): OutOfTurnAction(), CardDiscardingAction {
-    override val playerDiscardingCard = player
-    override val discardedCards = immListOf(card)
-    override fun toString() = "$player discards $card"
-}
-
-data class HelicopterLiftOffIsland(val player: Adventurer): PlayerSpecialAction(), CardDiscardingAction {
+data class HelicopterLiftOffIsland(val player: Adventurer): PlayerObligationAction(), CardDiscardingAction {
     override val playerDiscardingCard = player
     override val discardedCards = immListOf(HelicopterLiftCard)
     override fun toString() = "All players are lifted off the island by $player"

@@ -353,7 +353,7 @@ class GamePhaseTest {
             // AwaitingPlayerToDiscardExtraCard and AwaitingPlayerToSwimToSafety behave differently
         )
 
-        val actions = listOf(
+        val actions = listOf<GameAction>(
             HelicopterLift(Engineer, immSetOf(Diver), position33),
             Sandbag(Engineer, position33),
             SwimToSafety(Engineer, position33)

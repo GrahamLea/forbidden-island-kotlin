@@ -52,7 +52,7 @@ private fun runGamePlayerTest(
             playGame(gamePlayer, numberOfPlayers, startingFloodLevel, random).let { game ->
                 GameTestResult.GameSummary(
                     game.gameState.result!!,
-                    game.gameState.previousActions.size,
+                    game.gameState.previousActions.filter { it !is PlayerObligationAction }.size,
                     game.gameState.treasuresCollected.count { it.value == true }
                 )
             }
