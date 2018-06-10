@@ -335,6 +335,23 @@ data class GameState(
     fun isSunken(position: Position): Boolean = isSunken(gameSetup.locationAt(position))
 
     fun isSunken(mapSite: MapSite): Boolean = isSunken(mapSite.location)
+
+    override fun toString(): String {
+        return buildString {
+            append(GamePrinter.toString(this@GameState))
+            append("phase: $phase\n")
+            append("treasuresCollected: ${treasuresCollected.filterValues { it }}\n")
+            append("floodLevel: $floodLevel\n")
+            append("playerCards:\n")
+            append(playerCards.toList().joinToString("\n", postfix = "\n") { "    ${it.first}: ${it.second.sorted()}" })
+            append("last 10 actions:\n")
+            append(previousActions.takeLast(10).joinToString("\n", postfix = "\n") { "    $it" })
+            append("treasureDeckDiscard: $treasureDeckDiscard\n")
+            append("floodDeckDiscard: $floodDeckDiscard\n")
+            append("treasureDeck: $treasureDeck\n")
+            append("floodDeck: $floodDeck\n")
+        }
+    }
 }
 
 private fun ImmutableMap<Adventurer, Position>.toCombinations(): Map<ImmutableSet<Adventurer>, Position> {
