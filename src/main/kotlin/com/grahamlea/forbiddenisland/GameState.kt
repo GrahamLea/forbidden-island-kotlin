@@ -260,10 +260,11 @@ data class GameState(
             when (action) {
                 is DiscardCard, is HelicopterLiftOffIsland -> this
                 is PlayerMovingAction -> copy(playerPositions = playerPositions + (action.player to action.position))
-                is ShoreUp -> copy(locationFloodStates = locationFloodStates + (gameSetup.locationAt(action.position) to Unflooded))
                 is CaptureTreasure -> copy(treasuresCollected = treasuresCollected + (action.treasure to true))
                 is HelicopterLift -> copy(playerPositions = (playerPositions + action.playersBeingMoved.map { (it to action.position) }).imm())
                 is Sandbag -> copy(locationFloodStates = locationFloodStates + (gameSetup.locationAt(action.position) to Unflooded))
+                is ShoreUp -> copy(locationFloodStates = (locationFloodStates +
+                                     listOfNotNull(action.position, action.position2).map { gameSetup.locationAt(it) to Unflooded }).imm())
                 is GiveTreasureCard -> copy(playerCards =
                     playerCards + (action.player   to playerCards.getValue(action.player)  .subtract(listOf(action.card))) +
                                   (action.receiver to playerCards.getValue(action.receiver).plus(    listOf(action.card)))

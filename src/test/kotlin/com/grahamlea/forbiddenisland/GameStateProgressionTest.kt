@@ -99,6 +99,26 @@ class GameStateProgressionTest {
     }
 
     @Test
+    fun `shore up with two positions played on game changes location flood state of both positions`() {
+        val positionToShoreUp = Position(3, 4)
+        val position2ToShoreUp = Position(5, 4)
+        val game = Game.newRandomGameFor(immListOf(Engineer, Messenger), GameMap.newRandomMap())
+                .withPlayerPosition(Engineer, Position(4, 4))
+                .withPositionFloodStates(Flooded, positionToShoreUp, position2ToShoreUp)
+
+        val mapSiteToShoreUp = game.gameSetup.mapSiteAt(positionToShoreUp)
+        val mapSite2ToShoreUp = game.gameSetup.mapSiteAt(position2ToShoreUp)
+
+        assertThat(game.gameState.locationFloodStates[mapSiteToShoreUp.location]).isEqualTo(Flooded)
+        assertThat(game.gameState.locationFloodStates[mapSite2ToShoreUp.location]).isEqualTo(Flooded)
+
+        after (ShoreUp(Engineer, positionToShoreUp, position2ToShoreUp) playedOn game) {
+            assertThat(locationFloodStates[mapSiteToShoreUp.location]).isEqualTo(Unflooded)
+            assertThat(locationFloodStates[mapSite2ToShoreUp.location]).isEqualTo(Unflooded)
+        }
+    }
+
+    @Test
     fun `give treasure card action on game state changes player cards`() {
         val game = Game.newRandomGameFor(immListOf(Messenger, Engineer), GameMap.newRandomMap())
                 .withPlayerCards(Messenger to cards(earth, earth), Engineer to cards(earth, earth))
