@@ -1,23 +1,15 @@
 package com.grahamlea.forbiddenisland.play
 
-import com.grahamlea.forbiddenisland.*
-import com.grahamlea.forbiddenisland.StartingFloodLevel.Novice
+import com.grahamlea.forbiddenisland.AdventurersWon
+import com.grahamlea.forbiddenisland.GameResult
+import com.grahamlea.forbiddenisland.PlayerObligationAction
+import com.grahamlea.forbiddenisland.StartingFloodLevel
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import kotlin.math.max
-
-interface GamePlayer {
-
-    fun newContext(game: Game, random: Random): GamePlayContext
-    fun done() { }
-
-    interface GamePlayContext {
-        fun selectNextAction(): GameAction
-    }
-}
 
 private const val gamePlayerTestSeedGeneratorSeed = 78345763246952L
 private val startingSeeds = Random(gamePlayerTestSeedGeneratorSeed).let { seedGenerator ->
@@ -66,63 +58,6 @@ private fun runGamePlayerTest(
                 )
             }
         }.toList()
-}
-
-interface Logger {
-    fun info(s: String)
-    fun detail(s: String)
-}
-
-class ConsoleLogger(val printDetail: Boolean = false): Logger {
-    override fun info(s: String) {
-        println(s)
-    }
-
-    override fun detail(s: String) {
-        if (printDetail) {
-            synchronized(System.out) {
-                print("   ")
-                println(s)
-            }
-        }
-    }
-}
-
-fun playGame(
-    gamePlayer: GamePlayer,
-    numberOfPlayers: Int? = null,
-    startingFloodLevel: StartingFloodLevel = Novice,
-    random: Random = Random(),
-    logger: Logger? = null
-): Game {
-
-    val playerCount = numberOfPlayers ?: 2 + random.nextInt(3)
-    logger?.detail("numberOfPlayers = ${numberOfPlayers}")
-
-    val game = Game.newRandomGameFor(
-        GameSetup.newRandomGameSetupFor(playerCount, random),
-        startingFloodLevel = startingFloodLevel,
-        random = random
-    )
-    logger?.detail("game:\n ${GamePrinter.toString(game)}")
-
-    val gamePlayContext = gamePlayer.newContext(game, random)
-
-    var numberOfActions = 0
-
-    while (game.gameState.result == null) {
-        logger?.detail(game.gameState.phase.toString())
-
-        val action = gamePlayContext.selectNextAction()
-        logger?.detail("    $action")
-
-        game.process(action)
-        numberOfActions++
-    }
-    logger?.detail("numberOfActions = ${numberOfActions}")
-    logger?.info("result = ${game.gameState.result}")
-
-    return game
 }
 
 class GameTestResult(val gamesPerCategory: Int, gameResults: Map<GameTestCategory, List<GameSummary>>) {
