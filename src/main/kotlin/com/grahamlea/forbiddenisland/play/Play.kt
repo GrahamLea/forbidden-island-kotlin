@@ -7,7 +7,6 @@ import java.util.*
 interface GamePlayer {
 
     fun newContext(game: Game, random: Random): GamePlayContext
-    fun done() { }
 
     interface GamePlayContext {
         fun selectNextAction(): GameAction

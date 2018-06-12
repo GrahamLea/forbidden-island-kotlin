@@ -18,6 +18,10 @@ private val startingSeeds = Random(gamePlayerTestSeedGeneratorSeed).let { seedGe
     }.toMap()
 }
 
+interface TestingAware {
+    fun testingComplete() { }
+}
+
 fun testGamePlayer(
     gamePlayer: GamePlayer,
     gamesPerCategory: Int = 1000,
@@ -37,7 +41,7 @@ fun testGamePlayer(
     }
     val results = fixedThreadPool.invokeAll(tasks)
     fixedThreadPool.shutdown()
-    gamePlayer.done()
+    (gamePlayer as? TestingAware)?.testingComplete()
     return GameTestResult(gamesPerCategory, results.map { it.get() }.toMap())
 }
 
