@@ -28,7 +28,7 @@ private val startingSeeds = Random(gamePlayerTestSeedGeneratorSeed).let { seedGe
 
 fun testGamePlayer(
     gamePlayer: GamePlayer,
-    gamesPerCategory: Int = 250,
+    gamesPerCategory: Int = 1000,
     startingFloodLevels: Iterable<StartingFloodLevel> = StartingFloodLevel.values().toList()
 ): GameTestResult {
     val numberOfThreads = max(1, Runtime.getRuntime().availableProcessors() - 1)
