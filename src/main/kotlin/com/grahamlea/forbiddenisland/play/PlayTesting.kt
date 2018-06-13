@@ -1,9 +1,6 @@
 package com.grahamlea.forbiddenisland.play
 
-import com.grahamlea.forbiddenisland.AdventurersWon
-import com.grahamlea.forbiddenisland.GameResult
-import com.grahamlea.forbiddenisland.PlayerObligationAction
-import com.grahamlea.forbiddenisland.StartingFloodLevel
+import com.grahamlea.forbiddenisland.*
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
@@ -17,6 +14,15 @@ private val startingSeeds = Random(gamePlayerTestSeedGeneratorSeed).let { seedGe
         (2..4).map { numberOfPlayers -> Pair(startingFloodLevel, numberOfPlayers) to seedGenerator.nextLong() }
     }.toMap()
 }
+
+fun firstGame(startingFloodLevel: StartingFloodLevel, numberOfPlayers: Int) =
+    Random(startingSeeds.getValue(Pair(startingFloodLevel, numberOfPlayers))).let { random ->
+        Game.newRandomGameFor(
+            GameSetup.newRandomGameSetupFor(numberOfPlayers, random),
+            random,
+            startingFloodLevel
+        )
+    }
 
 interface TestingAware {
     fun testingComplete() { }
