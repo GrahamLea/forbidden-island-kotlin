@@ -340,6 +340,7 @@ data class GameState(
     override fun toString(): String {
         return buildString {
             append(GamePrinter.toString(this@GameState))
+            append("\n")
             append("phase: $phase\n")
             append("treasuresCollected: ${treasuresCollected.filterValues { it }}\n")
             append("floodLevel: $floodLevel\n")
