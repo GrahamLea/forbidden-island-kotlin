@@ -1,25 +1,36 @@
 package com.grahamlea.forbiddenisland.play
 
+import com.grahamlea.forbiddenisland.AdventurersWon
 import com.grahamlea.forbiddenisland.StartingFloodLevel
 import java.util.*
 
 object VarianceCheck {
+
+    val gamePlayer = RandomGamePlayer()
+
     @JvmStatic
     fun main(args: Array<String>) {
-        generateSequence(1) { it * 2 }.takeWhile { it < 3000 }.forEach { limit ->
-            val gamePlayer = RandomGamePlayer()
-            println("$limit,${getAverageActions(limit, gamePlayer)},${getAverageActions(limit, gamePlayer)},${getAverageActions(limit, gamePlayer)},${getAverageActions(limit, gamePlayer)},${getAverageActions(limit, gamePlayer)}")
+        val batchNumbers = 1..5
+        println("Games per batch,${batchNumbers.map { "Batch $it avg. actions" }.joinToString(",")},${batchNumbers.map { "Batch $it win rate" }.joinToString(",")}")
+        generateSequence(1) { it * 2 }.takeWhile { it < 5000 }.forEach { limit ->
+            val random = Random(88)
+            val results = batchNumbers.map { getAverageActionsAndWinRate(limit, gamePlayer, random) }
+            println("${"%4d".format(limit)},${results.map { it.first }.joinToString(",")},${results.map { "%4.1f%%".format(it.second) }.joinToString(",")}")
         }
     }
 
-    private fun getAverageActions(limit: Int, gamePlayer: RandomGamePlayer): Int {
+    private fun getAverageActionsAndWinRate(limit: Int, gamePlayer: GamePlayer, random: Random): Pair<Int, Float> {
         var runs = 0
         var totalActions = 0
+        var totalWins = 0
         while (runs < limit) {
             runs++
-            totalActions += playGame(gamePlayer, 4, StartingFloodLevel.Novice, Random(88)).gameState.previousActions.size
+            val gameState = playGame(gamePlayer, 4, StartingFloodLevel.Novice, random).gameState
+            totalActions += gameState.previousActions.size
+            totalWins += if (gameState.result == AdventurersWon) 1 else 0
         }
         val averageActions = totalActions / runs
-        return averageActions
+        val winRate = totalWins * 100f / runs
+        return Pair(averageActions, winRate)
     }
 }
