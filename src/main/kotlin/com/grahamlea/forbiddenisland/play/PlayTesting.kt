@@ -7,19 +7,22 @@ import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import kotlin.math.max
+import kotlin.math.min
 
 private const val gamePlayerTestSeedGeneratorSeed = 78345763246952L
-private val startingSeeds = Random(gamePlayerTestSeedGeneratorSeed).let { seedGenerator ->
+
+private val startingSeedsByCategory = Random(gamePlayerTestSeedGeneratorSeed).let { seedGenerator ->
     StartingFloodLevel.values().flatMap { startingFloodLevel ->
         (2..4).map { numberOfPlayers -> Pair(startingFloodLevel, numberOfPlayers) to seedGenerator.nextLong() }
     }.toMap()
 }
 
 fun firstGame(startingFloodLevel: StartingFloodLevel, numberOfPlayers: Int) =
-    Random(startingSeeds.getValue(Pair(startingFloodLevel, numberOfPlayers))).let { random ->
+    Random(startingSeedsByCategory.getValue(Pair(startingFloodLevel, numberOfPlayers))).let { categorySeedGenerator ->
+        val deterministicRandomForTask = Random(categorySeedGenerator.nextLong())
         Game.newRandomGameFor(
-            GameSetup.newRandomGameSetupFor(numberOfPlayers, random),
-            random,
+            GameSetup.newRandomGameSetupFor(numberOfPlayers, deterministicRandomForTask),
+            deterministicRandomForTask,
             startingFloodLevel
         )
     }
@@ -34,21 +37,30 @@ fun testGamePlayer(
     numbersOfPlayers: Iterable<Int> = (2..4),
     startingFloodLevels: Iterable<StartingFloodLevel> = StartingFloodLevel.values().toList()
 ): GameTestResult {
+    val gamesPerTask = 100
     val numberOfThreads = max(1, Runtime.getRuntime().availableProcessors() - 1)
     println("Testing ${gamePlayer::class.qualifiedName?.split('.')?.takeLast(2)?.joinToString(".")} with $numberOfThreads threads")
     val fixedThreadPool = Executors.newFixedThreadPool(numberOfThreads)
     val tasks = startingFloodLevels.flatMap { startingFloodLevel ->
-        numbersOfPlayers.map { numberOfPlayers ->
-            val deterministicRandomForThread = Random(startingSeeds.getValue(Pair(startingFloodLevel, numberOfPlayers)))
-            Callable {
-                runGamePlayerTest(startingFloodLevel, numberOfPlayers, gamesPerCategory, gamePlayer, deterministicRandomForThread)
+        numbersOfPlayers.flatMap { numberOfPlayers ->
+            val categorySeedGenerator = Random(startingSeedsByCategory.getValue(Pair(startingFloodLevel, numberOfPlayers)))
+            (0 until gamesPerCategory step gamesPerTask).map { firstGameNumber ->
+                val deterministicRandomForTask = Random(categorySeedGenerator.nextLong())
+                val games = min(gamesPerTask, gamesPerCategory - firstGameNumber)
+                Callable {
+                    runGamePlayerTest(startingFloodLevel, numberOfPlayers, games, gamePlayer, deterministicRandomForTask)
+                }
             }
         }
     }
     val results = fixedThreadPool.invokeAll(tasks)
     fixedThreadPool.shutdown()
     (gamePlayer as? TestingAware)?.testingComplete()
-    return GameTestResult(gamesPerCategory, results.map { it.get() }.toMap())
+    return GameTestResult(gamesPerCategory,
+        results.map { it.get() }.groupingBy { it.first }.aggregate { _, acc, it, first ->
+            if (first) it.second else acc!! + it.second
+        }
+    )
 }
 
 private fun runGamePlayerTest(
