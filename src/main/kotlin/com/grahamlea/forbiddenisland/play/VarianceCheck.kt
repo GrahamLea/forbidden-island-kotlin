@@ -12,7 +12,7 @@ object VarianceCheck {
     fun main(args: Array<String>) {
         val batchNumbers = 1..5
         println("Games per batch,${batchNumbers.map { "Batch $it avg. actions" }.joinToString(",")},${batchNumbers.map { "Batch $it win rate" }.joinToString(",")}")
-        generateSequence(1) { it * 2 }.takeWhile { it < 5000 }.forEach { limit ->
+        generateSequence(1) { it * 2 }.takeWhile { it < 10_000 }.forEach { limit ->
             val random = Random(88)
             val results = batchNumbers.map { getAverageActionsAndWinRate(limit, gamePlayer, random) }
             println("${"%4d".format(limit)},${results.map { it.first }.joinToString(",")},${results.map { "%4.1f%%".format(it.second) }.joinToString(",")}")
