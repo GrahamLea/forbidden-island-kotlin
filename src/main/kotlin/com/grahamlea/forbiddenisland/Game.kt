@@ -12,7 +12,7 @@ import java.util.*
  *
  * New Games are most easily created using one of the [newRandomGameFor] functions.
  */
-class Game(val gameSetup: GameSetup, gameState: GameState, val random: Random = Random()) {
+class Game(val gameSetup: GameSetup, gameState: GameState, private val random: Random = Random()) {
 
     var gameState: GameState = gameState
         private set
