@@ -6,7 +6,7 @@ import java.util.*
 
 interface GamePlayer {
 
-    fun newContext(game: Game, random: Random): GamePlayContext
+    fun newContext(game: Game, deterministicRandomForGamePlayerDecisions: Random): GamePlayContext
 
     interface GamePlayContext {
         fun selectNextAction(): GameAction
@@ -44,6 +44,8 @@ fun playGame(
     val playerCount = numberOfPlayers ?: 2 + random.nextInt(3)
     logger?.detail("numberOfPlayers = ${numberOfPlayers}")
 
+    val gameContextRandom = Random(random.nextLong())
+
     val game = Game.newRandomGameFor(
         GameSetup.newRandomGameSetupFor(playerCount, random),
         startingFloodLevel = startingFloodLevel,
@@ -51,7 +53,7 @@ fun playGame(
     )
     logger?.detail("game:\n ${GamePrinter.toString(game)}")
 
-    val gamePlayContext = gamePlayer.newContext(game, random)
+    val gamePlayContext = gamePlayer.newContext(game, gameContextRandom)
 
     var numberOfActions = 0
 

@@ -68,11 +68,11 @@ private fun runGamePlayerTest(
     numberOfPlayers: Int,
     gamesPerCategory: Int,
     gamePlayer: GamePlayer,
-    random: Random
+    gameSeedGenerator: Random
 ): Pair<GameTestResult.GameTestCategory, List<GameTestResult.GameSummary>> {
     return GameTestResult.GameTestCategory(startingFloodLevel, numberOfPlayers) to
         (1..gamesPerCategory).asSequence().map {
-            playGame(gamePlayer, numberOfPlayers, startingFloodLevel, random).let { game ->
+            playGame(gamePlayer, numberOfPlayers, startingFloodLevel, Random(gameSeedGenerator.nextLong())).let { game ->
                 GameTestResult.GameSummary(
                     game.gameState.result!!,
                     game.gameState.previousActions.filter { it !is PlayerObligationAction }.size,

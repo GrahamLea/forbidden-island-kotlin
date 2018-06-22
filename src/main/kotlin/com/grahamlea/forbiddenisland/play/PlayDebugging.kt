@@ -7,7 +7,7 @@ typealias Selector = String
 
 interface ExplainingGamePlayer: GamePlayer {
 
-    override fun newContext(game: Game, random: Random): ExplainingGamePlayContext
+    override fun newContext(game: Game, deterministicRandomForGamePlayerDecisions: Random): ExplainingGamePlayContext
 
     abstract class ExplainingGamePlayContext: GamePlayer.GamePlayContext {
         abstract fun selectNextActionWithSelector(): Pair<GameAction, Selector>

@@ -6,7 +6,8 @@ import java.util.*
 
 class RandomGamePlayer : GamePlayer {
 
-    override fun newContext(game: Game, random: Random): GamePlayer.GamePlayContext = Context(game, random)
+    override fun newContext(game: Game, deterministicRandomForGamePlayerDecisions: Random) =
+        Context(game, deterministicRandomForGamePlayerDecisions)
 
     inner class Context(private val game: Game, private val random: Random) : GamePlayer.GamePlayContext {
         override fun selectNextAction(): GameAction =
