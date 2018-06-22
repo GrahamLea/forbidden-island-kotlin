@@ -125,7 +125,7 @@ fun printGamePlayerTestResult(result: GameTestResult) {
 }
 
 private fun printGameWonRatioPerPlayerNumber(result: GameTestResult) {
-    val percentFormat = DecimalFormat("0.0%")
+    val percentFormat = DecimalFormat("0.00%")
     result.numbersOfPlayers.forEach { numberOfPlayers ->
         val results = result.startingFloodLevels.map { result[it, numberOfPlayers].let { (it.gamesWonRatio()) } }
         println("|$numberOfPlayers players win rate|${results.joinToString("|") { percentFormat.format(it) }}|")
