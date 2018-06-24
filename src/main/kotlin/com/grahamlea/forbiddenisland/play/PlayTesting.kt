@@ -20,16 +20,34 @@ private val startingSeedsByCategory = Random(gamePlayerTestSeedGeneratorSeed).le
     }.toMap()
 }
 
+/**
+ * Interface for a [GamePlayer] that wants to be notified when testing has completed.
+ */
 interface TestingAware {
     fun testingComplete() { }
 }
 
+/**
+ * Tests [gamePlayer] by running many games and returning a summary of the results.
+ *
+ * Tests are run in multiple threads to increase throughput.
+ * Expect your CPU to get smashed when invoking this function with large numbers of tests.
+ *
+ * The total number of tests run is `numbersOfPlayers.size * startingFloodLevels.size * gamesPerCategory`.
+ *
+ * Results should be deterministic on the same machine and across multiple machines with the same number of
+ * [available processors][Runtime.availableProcessors].
+ *
+ * @param gamesPerCategory The number of games to play for every numberOfPlayers/StartingFloodLevel combination
+ * @param numbersOfPlayers A list of numbers of players for which to test the [gamePlayer]
+ * @param startingFloodLevels A list of starting flood levels for which to test the [gamePlayer]
+ */
 fun testGamePlayer(
     gamePlayer: GamePlayer,
     gamesPerCategory: Int = 1000,
     numbersOfPlayers: Iterable<Int> = (2..4),
     startingFloodLevels: Iterable<StartingFloodLevel> = StartingFloodLevel.values().toList()
-): GameTestResult {
+): GamePlayerTestResult {
     val gamesPerTask = 100
     val numberOfThreads = max(1, Runtime.getRuntime().availableProcessors() - 1)
     println("Testing ${gamePlayer::class.qualifiedName?.split('.')?.takeLast(2)?.joinToString(".")} with $numberOfThreads threads")
@@ -49,7 +67,7 @@ fun testGamePlayer(
     val results = fixedThreadPool.invokeAll(tasks)
     fixedThreadPool.shutdown()
     (gamePlayer as? TestingAware)?.testingComplete()
-    return GameTestResult(gamesPerCategory,
+    return GamePlayerTestResult(gamesPerCategory,
         results.map { it.get() }.groupingBy { it.first }.aggregate { _, acc, it, first ->
             if (first) it.second else acc!! + it.second
         }
@@ -62,11 +80,11 @@ private fun runGamePlayerTest(
     gamesPerCategory: Int,
     gamePlayer: GamePlayer,
     gameSeedGenerator: Random
-): Pair<GameTestResult.GameTestCategory, List<GameTestResult.GameSummary>> {
-    return GameTestResult.GameTestCategory(startingFloodLevel, numberOfPlayers) to
+): Pair<GamePlayerTestResult.GameTestCategory, List<GamePlayerTestResult.GameSummary>> {
+    return GamePlayerTestResult.GameTestCategory(startingFloodLevel, numberOfPlayers) to
         (1..gamesPerCategory).asSequence().map {
             playGame(gamePlayer, numberOfPlayers, startingFloodLevel, Random(gameSeedGenerator.nextLong())).let { game ->
-                GameTestResult.GameSummary(
+                GamePlayerTestResult.GameSummary(
                     game.gameState.result!!,
                     game.gameState.previousActions.filter { it !is PlayerObligationAction }.size,
                     game.gameState.treasuresCollected.count { it.value == true }
@@ -75,7 +93,7 @@ private fun runGamePlayerTest(
         }.toList()
 }
 
-class GameTestResult(val gamesPerCategory: Int, gameResults: Map<GameTestCategory, List<GameSummary>>) {
+class GamePlayerTestResult(val gamesPerCategory: Int, gameResults: Map<GameTestCategory, List<GameSummary>>) {
 
     val gameResults: Map<GameTestCategory, GameSummaries> = gameResults.mapValues { GameSummaries(it.value) }
 
@@ -108,7 +126,10 @@ class GameTestResult(val gamesPerCategory: Int, gameResults: Map<GameTestCategor
     }
 }
 
-fun printGamePlayerTestResult(result: GameTestResult) {
+/**
+ * Print a summary of the results of a [game player test][testGamePlayer] to [System.out].
+ */
+fun printGamePlayerTestResult(result: GamePlayerTestResult) {
     println("| |${result.startingFloodLevels.joinToString("|")}|")
     println("|---|${"---:|".repeat(result.startingFloodLevels.size)}")
     printGameWonRatioPerPlayerNumber(result)
@@ -117,7 +138,7 @@ fun printGamePlayerTestResult(result: GameTestResult) {
     printAverageActions(result)
 }
 
-private fun printGameWonRatioPerPlayerNumber(result: GameTestResult) {
+private fun printGameWonRatioPerPlayerNumber(result: GamePlayerTestResult) {
     val percentFormat = DecimalFormat("0.00%")
     result.numbersOfPlayers.forEach { numberOfPlayers ->
         val results = result.startingFloodLevels.map { result[it, numberOfPlayers].let { (it.gamesWonRatio()) } }
@@ -125,7 +146,7 @@ private fun printGameWonRatioPerPlayerNumber(result: GameTestResult) {
     }
 }
 
-private fun printGameResultBreakdown(result: GameTestResult) {
+private fun printGameResultBreakdown(result: GamePlayerTestResult) {
     val percentFormat = DecimalFormat("0.0%")
     val resultTypes = result.gameResults.flatMap { it.value.summaries.map { it.result::class } }.toSortedSet(compareBy { it.simpleName })
     for (resultType in resultTypes) {
@@ -136,7 +157,7 @@ private fun printGameResultBreakdown(result: GameTestResult) {
     }
 }
 
-private fun printAverageTreasuresCaptured(result: GameTestResult) {
+private fun printAverageTreasuresCaptured(result: GamePlayerTestResult) {
     val decimalFormat = DecimalFormat("0.00")
     result.startingFloodLevels
         .map { level -> result[level].totalTreasuresCaptured() }
@@ -144,7 +165,7 @@ private fun printAverageTreasuresCaptured(result: GameTestResult) {
         .let { println("|Avg. Treasures|${it.joinToString("|") { decimalFormat.format(it) }}|") }
 }
 
-private fun printAverageActions(result: GameTestResult) {
+private fun printAverageActions(result: GamePlayerTestResult) {
     val intFormat = NumberFormat.getIntegerInstance()
     result.startingFloodLevels
         .map { level -> result[level].totalActions() }

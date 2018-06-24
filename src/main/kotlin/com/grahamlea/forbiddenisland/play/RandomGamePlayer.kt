@@ -4,6 +4,9 @@ import com.grahamlea.forbiddenisland.Game
 import com.grahamlea.forbiddenisland.GameAction
 import java.util.*
 
+/**
+ * A simplistic [GamePlayer] implementation that always selects a random action.
+ */
 class RandomGamePlayer : GamePlayer {
 
     override fun newContext(game: Game, deterministicRandomForGamePlayerDecisions: Random) =

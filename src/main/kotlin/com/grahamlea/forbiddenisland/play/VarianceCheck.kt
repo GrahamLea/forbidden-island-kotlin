@@ -22,6 +22,14 @@ typealias ActionCount = Int
 typealias WinRatio = Float
 typealias BatchResult = Pair<ActionCount, WinRatio>
 
+/**
+ * Runs a series of random games against a [gamePlayer] in multiple batches of increasing size and prints out the
+ * average number of actions and average win ratio of each batch.
+ * The results allow a [GamePlayer] author to analyse the amount of variance they should expect to see in random
+ * [game play testing][testGamePlayer] at various batch sizes.
+ *
+ * @return a map of batch sizes to the results from the batches with that batch size
+ */
 fun runVarianceCheck(gamePlayer: RandomGamePlayer, batchesPerBatchSize: Int, batchSizeLimit: Int): Map<BatchSize, List<BatchResult>> {
     val numberOfThreads = max(1, Runtime.getRuntime().availableProcessors() - 1)
     val fixedThreadPool = Executors.newFixedThreadPool(numberOfThreads)
@@ -38,6 +46,9 @@ fun runVarianceCheck(gamePlayer: RandomGamePlayer, batchesPerBatchSize: Int, bat
     return results.map { it.get() }.reversed().toMap()
 }
 
+/**
+ * Prints the results of a [variance check][runVarianceCheck].
+ */
 fun printVarianceCheckResults(results: Map<BatchSize, List<BatchResult>>) {
     val batchNumbers = 1 .. results.values.first().size
     println("Games per batch,${batchNumbers.map { "Batch $it avg. actions" }.joinToString(",")},${batchNumbers.map { "Batch $it win rate" }.joinToString(",")}")

@@ -5,16 +5,30 @@ import java.util.*
 
 typealias Selector = String
 
+/**
+ * An extension of [GamePlayer] for implementations that wish to be able to be [stepped through][stepThroughGame] or
+ * [conditionally debugged][debugGame].
+ */
 interface ExplainingGamePlayer: GamePlayer {
 
     override fun newContext(game: Game, deterministicRandomForGamePlayerDecisions: Random): ExplainingGamePlayContext
 
     abstract class ExplainingGamePlayContext: GamePlayer.GamePlayContext {
+        /**
+         * Selects and returns the next [action][GameAction] to be played on the [Game] that was given to this context
+         * at [the time of its creation][newContext], along with a short description of the condition that led to the
+         * action being selected.
+         */
         abstract fun selectNextActionWithSelector(): Pair<GameAction, Selector>
+
         final override fun selectNextAction() = selectNextActionWithSelector().first
     }
 }
 
+/**
+ * Step through [game] as played by [gamePlayer], printing the game state to [System.out] at each step and requiring
+ * a newline to be typed in order for play to progress.
+ */
 fun stepThroughGame(game: Game, gamePlayer: ExplainingGamePlayer, random: Random = Random()) {
     val gamePlayContext = gamePlayer.newContext(game, random)
     val scanner = Scanner(System.`in`)
@@ -29,6 +43,13 @@ fun stepThroughGame(game: Game, gamePlayer: ExplainingGamePlayer, random: Random
     println("Game Result: ${game.gameState.result}")
 }
 
+/**
+ * A predicate used to determine whether an
+ * [action selection][ExplainingGamePlayer.ExplainingGamePlayContext.selectNextActionWithSelector]
+ * should result in the GameState being debugged.
+ *
+ * @see debugGame
+ */
 typealias DebugPredicate =
     (
         gameState: GameState,
@@ -38,6 +59,9 @@ typealias DebugPredicate =
         previousSelector: Selector?
     ) -> Boolean
 
+/**
+ * Run [game] as played by [gamePlayer], printing the game state to [System.out] whenever [debugPredicate] returns true.
+ */
 fun debugGame(game: Game, gamePlayer: ExplainingGamePlayer, debugPredicate: DebugPredicate, random: Random = Random()) {
     val gamePlayContext = gamePlayer.newContext(game, random)
     var previousAction: GameAction? = null
