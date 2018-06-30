@@ -2,6 +2,7 @@ package com.grahamlea.forbiddenisland.play
 
 import com.grahamlea.forbiddenisland.*
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 typealias Selector = String
 
@@ -9,11 +10,11 @@ typealias Selector = String
  * An extension of [GamePlayer] for implementations that wish to be able to be [stepped through][stepThroughGame] or
  * [conditionally debugged][debugGame].
  */
-interface ExplainingGamePlayer: GamePlayer {
+abstract class ExplainingGamePlayer: GamePlayer, TestingAware {
 
-    override fun newContext(game: Game, deterministicRandomForGamePlayerDecisions: Random): ExplainingGamePlayContext
+    abstract override fun newContext(game: Game, deterministicRandomForGamePlayerDecisions: Random): ExplainingGamePlayContext
 
-    abstract class ExplainingGamePlayContext: GamePlayer.GamePlayContext {
+    abstract inner class ExplainingGamePlayContext: GamePlayer.GamePlayContext {
         /**
          * Selects and returns the next [action][GameAction] to be played on the [Game] that was given to this context
          * at [the time of its creation][newContext], along with a short description of the condition that led to the
@@ -21,7 +22,22 @@ interface ExplainingGamePlayer: GamePlayer {
          */
         abstract fun selectNextActionWithSelector(): Pair<GameAction, Selector>
 
-        final override fun selectNextAction() = selectNextActionWithSelector().first
+        final override fun selectNextAction(): GameAction {
+            selectNextActionWithSelector().let { (action, selector) ->
+                selectorUses.compute(selector) { _, count -> (count ?: 0) + 1 }
+                return action
+            }
+        }
+    }
+
+    val selectorUses = ConcurrentHashMap<Selector, Int>()
+
+    override fun testingComplete() {
+        val percent = 100f / selectorUses.values.sum()
+        println("Selector usage breakdown:")
+        selectorUses.toList().sortedBy { it.second }.forEach { println("${"%5.2f%%".format(it.second * percent)} ${it.first}") }
+        println()
+        selectorUses.clear()
     }
 }
 
@@ -75,8 +91,6 @@ fun debugGame(game: Game, gamePlayer: ExplainingGamePlayer, debugPredicate: Debu
         previousAction = action
         previousSelector = selector
     }
-    println(game.gameState)
-    println("Game Result: ${game.gameState.result}")
 }
 
 private fun printGameState(game: Game, selectedAction: GameAction, selector: Selector) {
