@@ -11,6 +11,19 @@ You could use it to:
 * enjoy the fun and challenge of implementing the rules yourself; or
 * implement a game playable by humans. (Yawn)
 
+## Run a sample player
+
+If you want to see the program in action you first need to compile the Kotlin code:
+```bash
+kotlinc src/main/kotlin/ -d forbidden_island.jar
+```
+Now you can run the player of your choice and see the results of the simulations, e.g.:
+```bash
+kotlin -classpath forbidden_island.jar \
+    com.grahamlea.forbiddenisland.play.grahamlea.RuleBasedGamePlayerKt
+```
+Note that this may take a significant amount of time to run, see below.
+
 ## Want to create a program that plays the game?
 
 There is a `play` subpackge in `src/main` that contains a `GamePlayer` interface for 
