@@ -142,7 +142,7 @@ enum class Location(
     DunesOfDeception("Dunes of Deception"),
     LostLagoon("Lost Lagoon");
 
-    override fun toString() = name + if (pickupLocationForTreasure != null) "^" else ""
+    override fun toString() = displayName + if (pickupLocationForTreasure != null) "^" else ""
 
     companion object {
         val allLocationsSet = values().toSet()
