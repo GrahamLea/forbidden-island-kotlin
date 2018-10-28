@@ -13,16 +13,16 @@ You could use it to:
 
 ## Run a sample player
 
-If you want to see the program in action you first need to compile the Kotlin code:
+If you want to see a program in action, you can either start it with Maven:
+```bash
+mvn exec:java -Dexec.mainClass="com.grahamlea.forbiddenisland.play.RandomGamePlayer"
+```
+
+Or compile and execute it using Kotlin's tools:
 ```bash
 kotlinc src/main/kotlin/ -d forbidden_island.jar
+kotlin -classpath forbidden_island.jar com.grahamlea.forbiddenisland.play.RandomGamePlayer
 ```
-Now you can run the player of your choice and see the results of the simulations, e.g.:
-```bash
-kotlin -classpath forbidden_island.jar \
-    com.grahamlea.forbiddenisland.play.grahamlea.RuleBasedGamePlayerKt
-```
-Note that this may take a significant amount of time to run, see below.
 
 ## Want to create a program that plays the game?
 
