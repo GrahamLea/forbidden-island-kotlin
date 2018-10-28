@@ -11,6 +11,19 @@ You could use it to:
 * enjoy the fun and challenge of implementing the rules yourself; or
 * implement a game playable by humans. (Yawn)
 
+## Run a sample player
+
+If you want to see a program in action, you can either start it with Maven:
+```bash
+mvn exec:java -Dexec.mainClass="com.grahamlea.forbiddenisland.play.RandomGamePlayer"
+```
+
+Or compile and execute it using Kotlin's tools:
+```bash
+kotlinc src/main/kotlin/ -d forbidden_island.jar
+kotlin -classpath forbidden_island.jar com.grahamlea.forbiddenisland.play.RandomGamePlayer
+```
+
 ## Want to create a program that plays the game?
 
 There is a `play` subpackge in `src/main` that contains a `GamePlayer` interface for 
